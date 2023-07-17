@@ -43,7 +43,7 @@ def new_message(request):
     new_message.save()
 
     channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)("chat1", {"type": "chat.message", "message": '123'})
+    async_to_sync(channel_layer.group_send)("chat1", {"type": "chat.message", "message": json.dumps({'text': data['message'], 'type': 'text'})})
         # json.dumps({
     #     'file': None,
     #     'text': data['message'],
