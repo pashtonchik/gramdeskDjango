@@ -37,6 +37,8 @@ def new_message(request):
 
     new_message = TicketMessage(
         tg_user=cur_user,
+        sender='client',
+        content_type='text',
         message_text=data['message'],
         ticket=cur_ticket,
     )

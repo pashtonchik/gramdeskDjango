@@ -53,7 +53,7 @@ plaintext = private_key.decrypt(
 
 print('plain', plaintext)
 
-currect_message = base64.b64decode(plaintext).decode('utf-8')
+currect_message = base64.b64decode(b'EXZ5BGo2OPtd+57DhaK3tRyTTP9+eAWwQt27kRIrYDvoeiycLlBE91SkJfIHs2OAI25jYdflDOIP0VhWXGvkW8ldiRF6Glqn69Yd6+CP1xQW6CMqZ1wv0OA=').decode('utf-8')
 
 print(currect_message)
 

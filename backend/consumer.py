@@ -11,12 +11,26 @@ from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
 
+from backend.models import Ticket
+from backend.serializers import TicketSerializer
+
 
 class LiveScoreConsumer(WebsocketConsumer):
     def connect(self):
         async_to_sync(self.channel_layer.group_add)("chat1", self.channel_name)
         print(self.channel_name)
+
+        tickets = Ticket.objects.all()
+
+        new_tickets = tickets.filter(status='created')[:20]
+        in_progress_tickets = tickets.filter(status='in_progress')[:20]
+        # closed_tickets = tickets.filter(status='closed')[:20]
+
+
+        data = TicketSerializer(new_tickets, many=True).data + TicketSerializer(in_progress_tickets, many=True).data
+
         self.accept()
+        self.send(json.dumps(data))
 
     def disconnect(self, close_code):
         pass
