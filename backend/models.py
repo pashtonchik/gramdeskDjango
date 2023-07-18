@@ -54,7 +54,7 @@ class TicketMessage(models.Model):
     tg_user = models.ForeignKey(to=TelegramUser, on_delete=models.PROTECT)
     message_text = models.TextField()
     message_file = models.FileField()
-    content_type = models.CharField()
+    content_type = models.CharField(max_length=20)
     read_by_manager = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
 
