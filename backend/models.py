@@ -27,7 +27,7 @@ class Ticket(models.Model):
         return f'{self.tg_user.tg_username} {self.date_created}'
 
     def get_count_unread_messages(self):
-        return TicketMessage.objects.filter(ticket=self, read_by_manager=False)
+        return TicketMessage.objects.filter(ticket=self, read_by_manager=False).count()
 
     def get_last_message(self):
         return TicketMessage.objects.filter(ticket=self).order_by('-date_created').first()
