@@ -29,8 +29,10 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         data = TicketSerializer(new_tickets, many=True).data + TicketSerializer(in_progress_tickets, many=True).data
 
+        print(data)
+
         self.accept()
-        self.send(json.dumps(data))
+        # self.send(json.dumps(data))
 
     def disconnect(self, close_code):
         pass
