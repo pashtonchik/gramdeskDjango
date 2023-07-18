@@ -30,7 +30,11 @@ class Ticket(models.Model):
         return TicketMessage.objects.filter(ticket=self, read_by_manager=False).count()
 
     def get_last_message(self):
-        return TicketMessage.objects.filter(ticket=self).order_by('-date_created').first()
+        last_message = TicketMessage.objects.filter(ticket=self).order_by('-date_created').first()
+        return {
+            'content_type': last_message.content_type,
+            'message': last_message.text
+        }
 
     def get_user_name(self):
         return self.tg_user.tg_username
