@@ -33,7 +33,7 @@ class Ticket(models.Model):
         last_message = TicketMessage.objects.filter(ticket=self).order_by('-date_created').first()
         return {
             'content_type': last_message.content_type,
-            'message': last_message.text
+            'message': last_message.message_text
         }
 
     def get_user_name(self):
