@@ -32,7 +32,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         print(data)
 
         self.accept()
-        # self.send(json.dumps(data))
+        self.send(json.dumps(data))
 
     def disconnect(self, close_code):
         pass
