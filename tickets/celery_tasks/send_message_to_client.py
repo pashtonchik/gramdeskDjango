@@ -18,7 +18,7 @@ def send_message_to_client(message_id):
     data = {
         "chat_id": msg.tg_user.tg_id,
         "parse_mode": "HTML",
-        "text": msg.text,
+        "text": msg.message_text,
     }
 
     send_message = requests.get(
