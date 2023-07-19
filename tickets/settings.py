@@ -26,7 +26,6 @@ SECRET_KEY = 'django-insecure-@4sam!l!rt52jm_45govd0+rws#ieetc-0!fa$sy&&d5c8no_o
 DEBUG = True
 CHANNEL_REDIS_HOST = 6380
 ALLOWED_HOSTS = ['*']
-AUTH_USER_MODEL = 'dispatcher.User'
 
 
 # Application definition
@@ -57,7 +56,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'tickets.urls'
-
+AUTH_USER_MODEL = 'backend.User'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
