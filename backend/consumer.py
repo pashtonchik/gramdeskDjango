@@ -15,8 +15,8 @@ from backend.models import Ticket, TicketMessage, SupportUser
 from backend.serializers import TicketSerializer, ClientSerializer, TicketMessageSerializer
 
 
-class LiveScoreConsumer(WebsocketConsumer):
-    def connect(self):
+class LiveScoreConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
         async_to_sync(self.channel_layer.group_add)("chat1", self.channel_name)
         print(self.channel_name)
 
@@ -32,13 +32,14 @@ class LiveScoreConsumer(WebsocketConsumer):
         data['in_progress_tickets'] = TicketSerializer(in_progress_tickets, many=True).data
         data['ok'] = True
 
-        self.accept()
-        self.send(json.dumps(data))
+        await self.accept()
+        await self.send(json.dumps(data))
 
-    def disconnect(self, close_code):
+
+    async def disconnect(self, close_code):
         pass
 
-    def open_chat(self, data):
+    async def open_chat(self, data):
         chat_id = data['chat_id']
 
         ticket = Ticket.objects.get(uuid=chat_id)
@@ -50,10 +51,10 @@ class LiveScoreConsumer(WebsocketConsumer):
         output_data['total_messages'] = last_messages.count()
         output_data['client'] = ClientSerializer(client).data
         output_data['messages'] = TicketMessageSerializer(last_messages[:20], many=True).data
-        self.send(text_data=json.dumps(output_data))
+        await self.send(text_data=json.dumps(output_data))
 
 
-    def get_messages(self, data):
+    async def get_messages(self, data):
         chat_id = data['chat_id']
         last_message = data['last_message_id']
         ticket = Ticket.objects.get(uuid=chat_id)
@@ -66,10 +67,10 @@ class LiveScoreConsumer(WebsocketConsumer):
         output_data['action'] = 'get_messages'
         output_data['total_messages'] = last_messages.count()
         output_data['messages'] = TicketMessageSerializer(message_to_output[:20], many=True).data
-        self.send(text_data=json.dumps(output_data))
+        await self.send(text_data=json.dumps(output_data))
 
 
-    def new_message_to_client(self, data):
+    async def new_message_to_client(self, data):
         new_message = data['message']
         ticket = Ticket.objects.get(uuid=new_message['chat_id'])
 
@@ -91,22 +92,23 @@ class LiveScoreConsumer(WebsocketConsumer):
             'message': TicketMessageSerializer(message).data,
         }
 
-        self.send(text_data=json.dumps(data))
 
 
-    def receive(self, text_data):
+        await self.send(text_data=json.dumps(data))
+
+    async def receive(self, text_data):
         print(text_data)
 
         data = json.loads(text_data)
 
         if data['action'] == 'open_chat':
-            self.open_chat(data)
+            await self.open_chat(data)
 
         elif data['action'] == 'get_messages':
-            self.get_messages(data)
+            await self.get_messages(data)
 
         elif data['action'] == 'send_message':
-            self.new_message_to_client(data)
+            await self.new_message_to_client(data)
 
         # text_data_json = json.loads(text_data)
         # message = text_data_json["message"]
