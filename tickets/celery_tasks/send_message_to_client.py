@@ -1,5 +1,10 @@
-import requests
+import json
 
+import requests
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+
+from backend.serializers import TicketMessageSerializer
 from tickets.celery import app
 from tickets.settings import SUPPORTBOT
 
@@ -26,6 +31,11 @@ def send_message_to_client(message_id):
     if send_message.status_code == 200:
         msg.sending_state = 'delivered'
         msg.save()
+
+        channel_layer = get_channel_layer()
+        data = {'type': 'new_message', 'message': TicketMessageSerializer(msg).data}
+        async_to_sync(channel_layer.group_send)("chat1", {"type": "chat.message",
+                                                          "message": json.dumps(data)})
 
 
 
