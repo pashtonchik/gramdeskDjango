@@ -33,7 +33,7 @@ def send_message_to_client(message_id):
         msg.save()
 
         channel_layer = get_channel_layer()
-        data = {'type': 'new_message', 'message': TicketMessageSerializer(msg).data}
+        data = {'type': 'message_delivered', 'message': TicketMessageSerializer(msg).data}
         async_to_sync(channel_layer.group_send)("chat1", {"type": "chat.message",
                                                           "message": json.dumps(data)})
 
