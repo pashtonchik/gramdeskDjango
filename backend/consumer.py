@@ -43,16 +43,29 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         ticket = Ticket.objects.get(uuid=chat_id)
         client = ticket.tg_user
-        last_messages = TicketMessage.objects.filter(ticket=ticket)[:20]
+        last_messages = TicketMessage.objects.filter(ticket=ticket).order_by('-date_created')
 
         output_data = {}
         output_data['action'] = 'open_chat'
+        output_data['total_messages'] = last_messages.count()
         output_data['client'] = ClientSerializer(client).data
-        output_data['messages'] = TicketMessageSerializer(last_messages, many=True).data
+        output_data['messages'] = TicketMessageSerializer(last_messages[:20], many=True).data
         self.send(text_data=json.dumps(output_data))
 
+    def get_messages(self, data):
+        chat_id = data['chat_id']
+        last_message = data['last_message_id']
+        ticket = Ticket.objects.get(uuid=chat_id)
+        last_messages = TicketMessage.objects.filter(ticket=ticket).order_by('-date_created')
+        last_message = last_messages.get(id=last_message)
 
+        message_to_output = last_messages.filter(date_created__lt=last_message.date_created).order_by('-date_created')
 
+        output_data = {}
+        output_data['action'] = 'get_messages'
+        output_data['total_messages'] = last_messages.count()
+        output_data['messages'] = TicketMessageSerializer(message_to_output[:20], many=True).data
+        self.send(text_data=json.dumps(output_data))
 
 
     def receive(self, text_data):
@@ -62,6 +75,9 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         if data['action'] == 'open_chat':
             self.open_chat(data)
+
+        elif data['action'] == 'get_messages':
+            self.get_messages(data)
 
         # text_data_json = json.loads(text_data)
         # message = text_data_json["message"]
