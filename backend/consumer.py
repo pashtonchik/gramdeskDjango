@@ -23,7 +23,7 @@ class LiveScoreConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add("chat1", self.channel_name)
         print(self.channel_name)
 
-        tickets = await database_sync_to_async(list)(Ticket.objects.all())
+        tickets = await database_sync_to_async(Ticket.objects.all)()
 
         new_tickets = await database_sync_to_async(list)(tickets.filter(status='created')[:20])
         in_progress_tickets = await database_sync_to_async(list)(tickets.filter(status='in_progress')[:20])
