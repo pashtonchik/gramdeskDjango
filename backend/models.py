@@ -98,7 +98,7 @@ class TicketMessage(models.Model):
     message_text = models.TextField()
     message_file = models.FileField()
     content_type = models.CharField(max_length=20)
-    read_by_manager = models.BooleanField(default=False)
+    read_by_received = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def get_ticket_id(self):

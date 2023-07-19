@@ -40,6 +40,7 @@ def new_message(request):
         tg_user=cur_user,
         sender='client',
         content_type='text',
+        sending_state='sent',
         message_text=data['message'],
         ticket=cur_ticket,
     )

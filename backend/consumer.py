@@ -11,7 +11,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
 
-from backend.models import Ticket, TicketMessage
+from backend.models import Ticket, TicketMessage, SupportUser
 from backend.serializers import TicketSerializer, ClientSerializer, TicketMessageSerializer
 
 
@@ -69,6 +69,31 @@ class LiveScoreConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps(output_data))
 
 
+    def new_message_to_client(self, data):
+        new_message = data['message']
+        ticket = Ticket.objects.get(uuid=new_message['chat_id'])
+
+        message = TicketMessage(
+            tg_user=ticket.cur_user,
+            employee=SupportUser.objects.all().first(),
+            sender='employee',
+            content_type='text',
+            sending_state='sent',
+            message_text=new_message['content'],
+            ticket=ticket,
+        )
+
+        message.save()
+
+
+        data = {
+            'ok': True,
+            'message': TicketMessageSerializer(message).data,
+        }
+
+        self.send(text_data=json.dumps(data))
+
+
     def receive(self, text_data):
         print(text_data)
 
@@ -78,6 +103,9 @@ class LiveScoreConsumer(WebsocketConsumer):
             self.open_chat(data)
 
         elif data['action'] == 'get_messages':
+            self.get_messages(data)
+
+        elif data['action'] == 'send_message':
             self.get_messages(data)
 
         # text_data_json = json.loads(text_data)
