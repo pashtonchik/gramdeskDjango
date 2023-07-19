@@ -16,6 +16,7 @@ from django.contrib.auth.models import AnonymousUser
 from backend.models import Ticket, TicketMessage, SupportUser
 from backend.serializers import TicketSerializer, ClientSerializer, TicketMessageSerializer
 from tickets.celery_tasks.send_message_to_client import send_message_to_client
+from django.db import transaction
 
 
 class LiveScoreConsumer(WebsocketConsumer):
@@ -76,10 +77,10 @@ class LiveScoreConsumer(WebsocketConsumer):
         output_data['messages'] = TicketMessageSerializer(message_to_output[:20], many=True).data
         self.send(text_data=json.dumps(output_data))
 
-    @transction.atomic()
+    @transaction.atomic()
     def new_message_to_client(self, data):
         new_message = data['message']
-        ticket = Ticket.objects.get(uuid=new_message['chat_id'])
+        ticket = Ticket.objects.select_for_update().get(uuid=new_message['chat_id'])
 
         message = TicketMessage(
             tg_user=ticket.tg_user,
@@ -100,9 +101,6 @@ class LiveScoreConsumer(WebsocketConsumer):
                 'info': 'Тикет уже был закрыт.',
                 'message': TicketMessageSerializer(message).data,
             }
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
-                                                               "message": json.dumps(data)})
         else:
 
             send_message_to_client.delay(message_id=message.id)
@@ -113,9 +111,10 @@ class LiveScoreConsumer(WebsocketConsumer):
                 'message': TicketMessageSerializer(message).data,
             }
 
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
-                                                               "message": json.dumps(data)})
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+                                                           "message": json.dumps(data)})
+        ticket.save()
 
     def read_message_by_support(self, data):
         message_id = data['message_id']
@@ -133,18 +132,28 @@ class LiveScoreConsumer(WebsocketConsumer):
         async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
                                                           "message": json.dumps(data)})
 
+    @transaction.atomic()
     def close_ticket(self, data):
         chat_id = data['chat_id']
-        cur_ticket = Ticket.objects.get(uuid=chat_id)
+        cur_ticket = Ticket.objects.select_for_update().get(uuid=chat_id)
 
-        cur_ticket.status = 'closed'
-        cur_ticket.save()
+        if cur_ticket.status == 'closed':
+            data = {
+                'action': 'accept_close_ticket',
+                'info': 'Тикет уже закрыт.',
+                'ok': False,
+                'message': TicketSerializer(cur_ticket).data,
+            }
+        else:
 
-        data = {
-            'action': 'accept_close_ticket',
-            'ok': True,
-            'message': TicketSerializer(cur_ticket).data,
-        }
+            cur_ticket.status = 'closed'
+            cur_ticket.save()
+
+            data = {
+                'action': 'accept_close_ticket',
+                'ok': True,
+                'message': TicketSerializer(cur_ticket).data,
+            }
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
                                                           "message": json.dumps(data)})
