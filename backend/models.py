@@ -58,11 +58,9 @@ class Ticket(models.Model):
     def __str__(self):
         return f'{self.tg_user.tg_username} {self.date_created}'
 
-    @database_sync_to_async
     def get_count_unread_messages(self):
         return TicketMessage.objects.filter(ticket=self, read_by_received=False).count()
 
-    @database_sync_to_async
     def get_last_message(self):
         last_message = TicketMessage.objects.filter(ticket=self).order_by('-date_created').first()
         return {
