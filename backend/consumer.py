@@ -106,7 +106,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             self.get_messages(data)
 
         elif data['action'] == 'send_message':
-            self.get_messages(data)
+            self.new_message_to_client(data)
 
         # text_data_json = json.loads(text_data)
         # message = text_data_json["message"]
