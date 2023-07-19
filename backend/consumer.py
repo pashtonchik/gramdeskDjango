@@ -17,7 +17,7 @@ from backend.serializers import TicketSerializer, ClientSerializer, TicketMessag
 
 class LiveScoreConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        async_to_sync(self.channel_layer.group_add)("chat1", self.channel_name)
+        await self.channel_layer.group_add("chat1", self.channel_name)
         print(self.channel_name)
 
         tickets = Ticket.objects.all()
