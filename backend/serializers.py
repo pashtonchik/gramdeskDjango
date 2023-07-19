@@ -29,7 +29,7 @@ class TicketMessageSerializer(serializers.ModelSerializer):
     is_outgoing = serializers.ReadOnlyField(source='get_is_outgoing')
     content = serializers.ReadOnlyField(source='message_text')
     media = serializers.ReadOnlyField(source='get_file')
-    date = serializers.ReadOnlyField(source='date_created')
+    date = serializers.ReadOnlyField(source='get_date')
 
     class Meta:
         fields = ('id', 'chat_id', 'sending_state', 'sender_id', 'is_outgoing', 'content', 'media', 'date')
