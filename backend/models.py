@@ -89,7 +89,7 @@ class TicketMessage(models.Model):
 
     ticket = models.ForeignKey(to=Ticket, on_delete=models.PROTECT)
     sender = models.CharField(max_length=20, choices=sender_selector)
-    employee = models.ForeignKey(to=SupportUser, on_delete=models.PROTECT)
+    employee = models.ForeignKey(to=SupportUser, on_delete=models.PROTECT, blank=True, null=True)
     tg_user = models.ForeignKey(to=Client, on_delete=models.PROTECT)
     sending_state = models.CharField(max_length=50)
     message_text = models.TextField()
