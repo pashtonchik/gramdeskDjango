@@ -56,7 +56,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'tickets.urls'
-AUTH_USER_MODEL = 'backend.User'
+AUTH_USER_MODEL = 'backend.SupportUser'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
