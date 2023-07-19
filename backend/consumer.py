@@ -45,10 +45,14 @@ class LiveScoreConsumer(WebsocketConsumer):
         client = ticket.tg_user
         last_messages = TicketMessage.objects.filter(ticket=ticket)[:20]
 
-        data = {}
-        data['action'] = 'open_chat'
-        data['client'] = ClientSerializer(client).data
-        data['messages'] = TicketMessageSerializer(last_messages, many=True).data
+        output_data = {}
+        output_data['action'] = 'open_chat'
+        output_data['client'] = ClientSerializer(client).data
+        output_data['messages'] = TicketMessageSerializer(last_messages, many=True).data
+        self.send(text_data=json.dumps({"message": '789'}))
+
+
+
 
 
     def receive(self, text_data):
