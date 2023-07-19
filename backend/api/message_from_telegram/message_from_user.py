@@ -47,7 +47,6 @@ def new_message(request):
     )
     new_message.save()
 
-    send_message_to_client.delay(message_id=new_message.id)
 
     channel_layer = get_channel_layer()
 
