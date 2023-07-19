@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from backend.models import *
 from backend.serializers import TicketMessageSerializer
+from tickets.celery_tasks import send_message_to_client
 
 
 @transaction.atomic()
@@ -45,6 +46,8 @@ def new_message(request):
         ticket=cur_ticket,
     )
     new_message.save()
+
+    send_message_to_client.delay(message_id=new_message.id)
 
     channel_layer = get_channel_layer()
 

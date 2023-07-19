@@ -10,7 +10,7 @@ from tickets.settings import SUPPORTBOT
 
 
 @app.task
-def send_message_to_client(message_id):
+async def send_message_to_client(message_id):
     from backend.models import TicketMessage
 
     msg = TicketMessage.objects.get(id=message_id)
