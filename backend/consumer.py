@@ -102,7 +102,6 @@ class LiveScoreConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps(data))
 
     def receive(self, text_data):
-        print(text_data)
 
         data = json.loads(text_data)
 
