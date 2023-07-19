@@ -42,8 +42,8 @@ class Client(models.Model):
     def get_date_added(self):
         return int(self.date_added.timestamp()) if self.date_added else '-'
 
-    def get_uuid_str(self):
-        return str(self.uuid)
+    # def get_uuid_str(self):
+    #     return str(self.uuid)
 
 
 class Ticket(models.Model):
