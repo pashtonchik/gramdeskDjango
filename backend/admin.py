@@ -3,7 +3,7 @@ from django.contrib import admin
 from backend.models import *
 
 
-@admin.register(TelegramUser)
+@admin.register(Client)
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ('tg_id', 'tg_username', 'is_blocked')
     readonly_fields = ('date_added', )

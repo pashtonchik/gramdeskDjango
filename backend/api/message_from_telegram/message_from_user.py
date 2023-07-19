@@ -14,11 +14,11 @@ from backend.models import *
 def new_message(request):
     data = json.loads(request.body.decode("utf-8"))
 
-    users = TelegramUser.objects.filter(tg_id=data['tg_id'])
-    if TelegramUser.objects.filter(tg_id=data['tg_id']).exists():
+    users = Client.objects.filter(tg_id=data['tg_id'])
+    if Client.objects.filter(tg_id=data['tg_id']).exists():
         cur_user = users.first()
     else:
-        cur_user = TelegramUser(
+        cur_user = Client(
             tg_id=data['tg_id'],
             tg_username=data['tg_username']
         )
