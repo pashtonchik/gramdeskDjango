@@ -7,6 +7,7 @@ from channels.db import database_sync_to_async
 # Импорты сторонних библиотек.
 from channels.exceptions import DenyConnection
 from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
+from channels.layers import get_channel_layer
 
 # Импорты Django.
 from django.core.exceptions import ObjectDoesNotExist
@@ -21,7 +22,7 @@ class LiveScoreConsumer(WebsocketConsumer):
 
 
     def connect(self):
-        async_to_sync(self.channel_layer.group_add)("chat1", self.channel_name)
+        async_to_sync(self.channel_layer.group_add)("active", self.channel_name)
         print(self.channel_name)
 
         tickets = Ticket.objects.all()
@@ -50,13 +51,15 @@ class LiveScoreConsumer(WebsocketConsumer):
         client = ticket.tg_user
         last_messages = TicketMessage.objects.filter(ticket=ticket).order_by('-date_created')
 
+        unread_message = last_messages.filter(read_by_received=False)
+        unread_message.update(read_by_received=True)
+
         output_data = {}
         output_data['action'] = 'open_chat'
         output_data['total_messages'] = last_messages.count()
         output_data['client'] = ClientSerializer(client).data
         output_data['messages'] = TicketMessageSerializer(last_messages[:20], many=True).data
         self.send(text_data=json.dumps(output_data))
-
 
     def get_messages(self, data):
         chat_id = data['chat_id']
@@ -72,7 +75,6 @@ class LiveScoreConsumer(WebsocketConsumer):
         output_data['total_messages'] = last_messages.count()
         output_data['messages'] = TicketMessageSerializer(message_to_output[:20], many=True).data
         self.send(text_data=json.dumps(output_data))
-
 
     def new_message_to_client(self, data):
         new_message = data['message']
@@ -93,13 +95,46 @@ class LiveScoreConsumer(WebsocketConsumer):
         send_message_to_client.delay(message_id=message.id)
 
         data = {
+            'action': 'accept_new_message',
             'ok': True,
             'message': TicketMessageSerializer(message).data,
         }
 
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+                                                           "message": json.dumps(data)})
 
+    def read_message_by_support(self, data):
+        message_id = data['message_id']
+        cur_message = TicketMessage.objects.get(id=message_id)
 
-        self.send(text_data=json.dumps(data))
+        cur_message.read_by_received = True
+        cur_message.save()
+
+        data = {
+            'action': 'accept_read_message',
+            'ok': True,
+            'message': TicketMessageSerializer(cur_message).data,
+        }
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+                                                          "message": json.dumps(data)})
+
+    def close_ticket(self, data):
+        chat_id = data['chat_id']
+        cur_ticket = Ticket.objects.get(uuid=chat_id)
+
+        cur_ticket.status = 'closed'
+        cur_ticket.save()
+
+        data = {
+            'action': 'accept_close_ticket',
+            'ok': True,
+            'message': TicketSerializer(cur_ticket).data,
+        }
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+                                                          "message": json.dumps(data)})
 
     def receive(self, text_data):
 
@@ -113,6 +148,12 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         elif data['action'] == 'send_message':
             self.new_message_to_client(data)
+
+        elif data['action'] == 'read_message':
+            self.read_message_by_support(data)
+
+        elif data['action'] == 'close_ticket':
+            self.close_ticket(data)
 
         # text_data_json = json.loads(text_data)
         # message = text_data_json["message"]

@@ -51,7 +51,7 @@ def new_message(request):
     channel_layer = get_channel_layer()
 
     data = {'type': 'new_message', 'message': TicketMessageSerializer(new_message).data}
-    async_to_sync(channel_layer.group_send)("chat1", {"type": "chat.message",
+    async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
                                                       "message": json.dumps(data)})
     # json.dumps({
     #     'file': None,
