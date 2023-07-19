@@ -49,7 +49,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         output_data['action'] = 'open_chat'
         output_data['client'] = ClientSerializer(client).data
         output_data['messages'] = TicketMessageSerializer(last_messages, many=True).data
-        self.send(text_data=json.dumps({"message": '789'}))
+        self.send(text_data=json.dumps(output_data))
 
 
 
@@ -65,8 +65,6 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         # text_data_json = json.loads(text_data)
         # message = text_data_json["message"]
-
-        self.send(text_data=json.dumps({"message": '123'}))
 
 
 
