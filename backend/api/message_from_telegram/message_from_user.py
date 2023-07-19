@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from backend.models import *
+from backend.serializers import TicketMessageSerializer
 
 
 @transaction.atomic()
@@ -45,8 +46,9 @@ def new_message(request):
     new_message.save()
 
     channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)("chat1", {"type": "chat.message", "message": json.dumps({'text': data['message'], 'type': 'text'})})
-        # json.dumps({
+    async_to_sync(channel_layer.group_send)("chat1", {"type": "chat.message",
+                                                      "message": json.dumps(TicketMessageSerializer(new_message).data)})
+    # json.dumps({
     #     'file': None,
     #     'text': data['message'],
     #     'date': int(new_message.date_created.timestamp())

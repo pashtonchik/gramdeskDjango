@@ -52,6 +52,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         output_data['messages'] = TicketMessageSerializer(last_messages[:20], many=True).data
         self.send(text_data=json.dumps(output_data))
 
+
     def get_messages(self, data):
         chat_id = data['chat_id']
         last_message = data['last_message_id']
