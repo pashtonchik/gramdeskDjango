@@ -31,6 +31,6 @@ class TicketMessageSerializer(serializers.ModelSerializer):
     date = serializers.ReadOnlyField(source='date_created')
 
     class Meta:
-        fields = ('id', 'sending_state', )
+        fields = ('id', 'chat_id', 'sending_state', 'sender_id', 'is_outgoing', 'content', 'media', 'date')
         model = Client
 
