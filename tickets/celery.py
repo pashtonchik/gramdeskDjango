@@ -6,8 +6,7 @@ from email.utils import make_msgid
 
 from django.db.models import Subquery, OuterRef
 
-from profiat.settings import APP_NAME_CELERY
-import pyotp
+from tickets.settings import APP_NAME_CELERY
 from datetime import datetime
 import os
 
