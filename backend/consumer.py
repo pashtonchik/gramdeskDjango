@@ -20,7 +20,7 @@ class LiveScoreConsumer(WebsocketConsumer):
 
 
     def connect(self):
-        await async_to_sync(self.channel_layer.group_add)("chat1", self.channel_name)
+        async_to_sync(self.channel_layer.group_add)("chat1", self.channel_name)
         print(self.channel_name)
 
         tickets = Ticket.objects.all()
