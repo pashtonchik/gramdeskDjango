@@ -14,6 +14,7 @@ class TicketSerializer(serializers.ModelSerializer):
 
 
 class ClientSerializer(serializers.ModelSerializer):
+    uuid = serializers.CharField(source='uuid')
     closed_tickets = serializers.ReadOnlyField(source='get_count_tickets')
     date_added = serializers.ReadOnlyField(source='get_date_added')
 
