@@ -74,7 +74,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         ticket = Ticket.objects.get(uuid=new_message['chat_id'])
 
         message = TicketMessage(
-            tg_user=ticket.cur_user,
+            tg_user=ticket.tg_user,
             employee=SupportUser.objects.all().first(),
             sender='employee',
             content_type='text',
