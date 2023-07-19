@@ -76,6 +76,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         output_data['messages'] = TicketMessageSerializer(message_to_output[:20], many=True).data
         self.send(text_data=json.dumps(output_data))
 
+    @transction.atomic()
     def new_message_to_client(self, data):
         new_message = data['message']
         ticket = Ticket.objects.get(uuid=new_message['chat_id'])
@@ -89,20 +90,32 @@ class LiveScoreConsumer(WebsocketConsumer):
             message_text=new_message['content'],
             ticket=ticket,
         )
-
         message.save()
+        if ticket.status == 'closed':
+            message.sending_state = 'failed'
+            message.save()
+            data = {
+                'action': 'accept_new_message',
+                'ok': False,
+                'info': 'Тикет уже был закрыт.',
+                'message': TicketMessageSerializer(message).data,
+            }
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+                                                               "message": json.dumps(data)})
+        else:
 
-        send_message_to_client.delay(message_id=message.id)
+            send_message_to_client.delay(message_id=message.id)
 
-        data = {
-            'action': 'accept_new_message',
-            'ok': True,
-            'message': TicketMessageSerializer(message).data,
-        }
+            data = {
+                'action': 'accept_new_message',
+                'ok': True,
+                'message': TicketMessageSerializer(message).data,
+            }
 
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
-                                                           "message": json.dumps(data)})
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+                                                               "message": json.dumps(data)})
 
     def read_message_by_support(self, data):
         message_id = data['message_id']
