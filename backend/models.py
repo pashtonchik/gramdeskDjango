@@ -68,7 +68,7 @@ class Ticket(models.Model):
             'message': last_message.message_text
         }
 
-    async def get_user_name(self):
+    def get_user_name(self):
         return self.tg_user.tg_username
 
 
