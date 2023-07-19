@@ -106,7 +106,7 @@ class TicketMessage(models.Model):
 
     def get_sender_id(self):
         if self.sender == 'client':
-            return self.tg_user.get_uuid_str()
+            return self.tg_user.uuid
         else:
             return self.employee.id
 

@@ -24,8 +24,8 @@ class ClientSerializer(serializers.ModelSerializer):
 
 
 class TicketMessageSerializer(serializers.ModelSerializer):
-    chat_id = serializers.ReadOnlyField(source='get_ticket_id')
-    sender_id = serializers.CharField(source='get_sender_id')
+    chat_id = serializers.CharField(source='get_ticket_id', read_only=True)
+    sender_id = serializers.CharField(source='get_sender_id', read_only=True)
     is_outgoing = serializers.ReadOnlyField(source='get_is_outgoing')
     content = serializers.ReadOnlyField(source='message_text')
     media = serializers.ReadOnlyField(source='get_file')
