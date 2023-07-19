@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from backend.models import Ticket, Client
+from backend.models import Ticket, Client, TicketMessage
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -32,5 +32,5 @@ class TicketMessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = ('id', 'chat_id', 'sending_state', 'sender_id', 'is_outgoing', 'content', 'media', 'date')
-        model = Client
+        model = TicketMessage
 
