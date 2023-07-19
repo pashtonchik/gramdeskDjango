@@ -23,16 +23,16 @@ class LiveScoreConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add("chat1", self.channel_name)
         print(self.channel_name)
 
-        tickets = Ticket.objects.all()
+        tickets = await database_sync_to_async(list)(Ticket.objects.all())
 
-        # new_tickets = await database_sync_to_async(list)(tickets.filter(status='created')[:20])
-        # in_progress_tickets = await database_sync_to_async(list)(tickets.filter(status='in_progress')[:20])
-        # # closed_tickets = tickets.filter(status='closed')[:20]
-        #
+        new_tickets = await database_sync_to_async(list)(tickets.filter(status='created')[:20])
+        in_progress_tickets = await database_sync_to_async(list)(tickets.filter(status='in_progress')[:20])
+        # closed_tickets = tickets.filter(status='closed')[:20]
+
         data = {}
-        #
-        # data['new_tickets'] = TicketSerializer(new_tickets, many=True).data
-        # data['in_progress_tickets'] = TicketSerializer(in_progress_tickets, many=True).data
+
+        data['new_tickets'] = TicketSerializer(new_tickets, many=True).data
+        data['in_progress_tickets'] = TicketSerializer(in_progress_tickets, many=True).data
         data['ok'] = True
 
         await self.accept()
