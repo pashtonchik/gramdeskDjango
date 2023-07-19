@@ -3,6 +3,7 @@ import json
 
 from asgiref.sync import async_to_sync, sync_to_async
 from channels.consumer import AsyncConsumer
+from channels.db import database_sync_to_async
 # Импорты сторонних библиотек.
 from channels.exceptions import DenyConnection
 from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
@@ -17,8 +18,6 @@ from backend.serializers import TicketSerializer, ClientSerializer, TicketMessag
 
 class LiveScoreConsumer(AsyncWebsocketConsumer):
 
-    def get_serialized_tickets(self, tickets):
-        return TicketSerializer(tickets, many=True).data
 
     async def connect(self):
         await self.channel_layer.group_add("chat1", self.channel_name)
@@ -26,14 +25,14 @@ class LiveScoreConsumer(AsyncWebsocketConsumer):
 
         tickets = Ticket.objects.all()
 
-        new_tickets = tickets.filter(status='created')[:20]
-        in_progress_tickets = tickets.filter(status='in_progress')[:20]
+        new_tickets = await database_sync_to_async(list)(tickets.filter(status='created')[:20])
+        in_progress_tickets = await database_sync_to_async(list)(tickets.filter(status='in_progress')[:20])
         # closed_tickets = tickets.filter(status='closed')[:20]
 
         data = {}
 
-        data['new_tickets'] = sync_to_async(self.get_serialized_tickets(new_tickets))
-        data['in_progress_tickets'] = sync_to_async(self.get_serialized_tickets(in_progress_tickets))
+        data['new_tickets'] = TicketSerializer(new_tickets, many=True).data
+        data['in_progress_tickets'] = TicketSerializer(in_progress_tickets, many=True).data
         data['ok'] = True
 
         await self.accept()
