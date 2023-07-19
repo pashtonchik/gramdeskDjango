@@ -14,7 +14,7 @@ from django.contrib.auth.models import AnonymousUser
 
 from backend.models import Ticket, TicketMessage, SupportUser
 from backend.serializers import TicketSerializer, ClientSerializer, TicketMessageSerializer
-from tickets.celery_tasks import send_message_to_client
+from tickets.celery_tasks.send_message_to_client import send_message_to_client
 
 
 class LiveScoreConsumer(WebsocketConsumer):
