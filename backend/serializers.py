@@ -14,7 +14,7 @@ class TicketSerializer(serializers.ModelSerializer):
 
 
 class ClientSerializer(serializers.ModelSerializer):
-    uuid = serializers.CharField(read_only=True)
+    uuid = serializers.CharField(source='get_uuid_str')
     closed_tickets = serializers.ReadOnlyField(source='get_count_tickets')
     date_added = serializers.ReadOnlyField(source='get_date_added')
 
@@ -24,8 +24,8 @@ class ClientSerializer(serializers.ModelSerializer):
 
 
 class TicketMessageSerializer(serializers.ModelSerializer):
-    chat_id = serializers.ReadOnlyField(source='get_ticket_id', read_only=True)
-    sender_id = serializers.CharField(source='get_sender_id', read_only=True)
+    chat_id = serializers.ReadOnlyField(source='get_ticket_id')
+    sender_id = serializers.CharField(source='get_sender_id')
     is_outgoing = serializers.ReadOnlyField(source='get_is_outgoing')
     content = serializers.ReadOnlyField(source='message_text')
     media = serializers.ReadOnlyField(source='get_file')

@@ -102,7 +102,7 @@ class TicketMessage(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
     def get_ticket_id(self):
-        return self.ticket.uuid
+        return str(self.ticket.uuid)
 
     def get_sender_id(self):
         if self.sender == 'client':
