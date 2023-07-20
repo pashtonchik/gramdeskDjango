@@ -1,9 +1,10 @@
 import uuid as uuid
 
 from channels.db import database_sync_to_async
-from django.conf.global_settings import MEDIA_ROOT
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+from tickets.settings import MEDIA_ROOT
 
 
 class SupportUser(AbstractUser):
