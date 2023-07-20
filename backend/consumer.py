@@ -123,6 +123,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         message_id = data['message_id']
         cur_message = TicketMessage.objects.get(id=message_id)
 
+        cur_message.sending_state = 'read'
         cur_message.read_by_received = True
         cur_message.save()
 
