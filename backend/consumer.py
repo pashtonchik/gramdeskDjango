@@ -33,7 +33,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         # closed_tickets = tickets.filter(status='closed')[:20]
 
         data = {}
-
+        data['type'] = 'tickets'
         data['new_tickets'] = TicketSerializer(new_tickets, many=True).data
         data['in_progress_tickets'] = TicketSerializer(in_progress_tickets, many=True).data
         data['ok'] = True
