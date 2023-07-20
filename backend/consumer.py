@@ -148,7 +148,7 @@ class LiveScoreConsumer(WebsocketConsumer):
                 'ok': False,
                 'ticket': TicketSerializer(cur_ticket).data,
             }
-            self.send(json.dumps(data))
+            self.send(json.dumps(data).encode('utf-8'))
         else:
 
             cur_ticket.status = 'closed'
