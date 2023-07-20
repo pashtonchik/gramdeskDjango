@@ -14,7 +14,7 @@ from tickets.celery_tasks import send_message_to_client
 @transaction.atomic()
 @api_view(['POST'])
 def new_message(request):
-    data = json.loads(request.body.decode("utf-8"))
+    data = request.POST
 
     users = Client.objects.filter(tg_id=data['tg_id'])
     if Client.objects.filter(tg_id=data['tg_id']).exists():
@@ -37,15 +37,30 @@ def new_message(request):
     else:
         cur_ticket = tickets.order_by('-date_created').first()
 
-    new_message = TicketMessage(
-        tg_user=cur_user,
-        sender='client',
-        content_type='text',
-        sending_state='sent',
-        message_text=data['message'],
-        ticket=cur_ticket,
-    )
-    new_message.save()
+    if data['content_type'] == 'text':
+        new_message = TicketMessage(
+            tg_user=cur_user,
+            sender='client',
+            content_type='text',
+            sending_state='sent',
+            message_text=data['message'],
+            ticket=cur_ticket,
+        )
+        new_message.save()
+    elif data['content_type'] == 'file':
+        new_message = TicketMessage(
+            tg_user=cur_user,
+            sender='client',
+            content_type='file',
+            sending_state='sent',
+            message_text=data['caption'],
+            ticket=cur_ticket,
+        )
+        new_message.save()
+
+        file = request.data['file']
+        new_message.message_file.save(file.name, file, save=True)
+        new_message.save()
 
 
     channel_layer = get_channel_layer()
