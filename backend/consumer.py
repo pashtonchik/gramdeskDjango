@@ -148,6 +148,7 @@ class LiveScoreConsumer(WebsocketConsumer):
                 'ok': False,
                 'message': TicketSerializer(cur_ticket).data,
             }
+            self.send(json.dumps(data))
         else:
 
             cur_ticket.status = 'closed'
@@ -158,7 +159,10 @@ class LiveScoreConsumer(WebsocketConsumer):
                 'ok': True,
                 'message': TicketSerializer(cur_ticket).data,
             }
-        self.send(json.dumps(data))
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+                                                               "message": json.dumps(data)})
+
 
     def receive(self, text_data):
 
