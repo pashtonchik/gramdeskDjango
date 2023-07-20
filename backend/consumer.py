@@ -127,7 +127,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         cur_message.save()
 
         data = {
-            'action': 'accept_read_message',
+            'type': 'accept_read_message',
             'ok': True,
             'message': TicketMessageSerializer(cur_message).data,
         }
