@@ -64,11 +64,11 @@ def new_message(request):
 
 
 
-    if data['content_type'] == 'text':
-        channel_layer = get_channel_layer()
-        data = {'type': 'new_message', 'message': TicketMessageSerializer(new_message).data}
-        async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
-                                                      "message": json.dumps(data)})
+
+    channel_layer = get_channel_layer()
+    data = {'type': 'new_message', 'message': TicketMessageSerializer(new_message).data}
+    async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+                                                  "message": json.dumps(data)})
     # json.dumps({
     #     'file': None,
     #     'text': data['message'],
