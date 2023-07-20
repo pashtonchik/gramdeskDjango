@@ -123,7 +123,7 @@ class TicketMessage(models.Model):
         file_location = MEDIA_ROOT + '/' + self.message_file.name
 
         print(file_location)
-        return str(open(file_location, 'rb')) if self.message_file else None
+        return open(file_location, 'rb') if self.message_file else None
         # return file_location
 
     def get_date(self):
