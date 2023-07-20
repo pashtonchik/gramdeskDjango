@@ -158,9 +158,7 @@ class LiveScoreConsumer(WebsocketConsumer):
                 'ok': True,
                 'message': TicketSerializer(cur_ticket).data,
             }
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
-                                                          "message": json.dumps(data)})
+        self.send(json.dumps(data))
 
     def receive(self, text_data):
 
