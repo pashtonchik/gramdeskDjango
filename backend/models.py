@@ -1,4 +1,5 @@
 import base64
+import io
 import uuid as uuid
 
 from channels.db import database_sync_to_async
@@ -121,11 +122,12 @@ class TicketMessage(models.Model):
             return True
 
     def get_file(self):
-        file_location = MEDIA_ROOT + '/' + self.message_file.name
-
-        print(file_location)
-        return base64.b64encode(open(file_location, 'r')) if self.message_file else None
-        # return file_location
+        if self.message_file:
+            file_location = MEDIA_ROOT + '/' + self.message_file.name
+            with open(file_location, mode='rb') as file:
+                img = file.read()
+            return base64.encodebytes(img).decode('utf-8')
+        return None
 
     def get_date(self):
         return int(self.date_created.timestamp()) if self.date_created else '-'
