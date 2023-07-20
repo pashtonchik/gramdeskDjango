@@ -120,7 +120,10 @@ class TicketMessage(models.Model):
 
     def get_file(self):
         file_location = MEDIA_ROOT + '/' + self.message_file.name
-        return str(open(file_location, 'rb')) if self.message_file else None
+
+        print(file_location)
+        # return str(open(file_location, 'rb')) if self.message_file else None
+        return file_location
 
     def get_date(self):
         return int(self.date_created.timestamp()) if self.date_created else '-'
