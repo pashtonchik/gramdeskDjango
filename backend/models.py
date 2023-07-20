@@ -118,7 +118,7 @@ class TicketMessage(models.Model):
             return True
 
     def get_file(self):
-        return None
+        return self.message_file.open('rb')
 
     def get_date(self):
         return int(self.date_created.timestamp()) if self.date_created else '-'
