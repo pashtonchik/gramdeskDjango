@@ -34,6 +34,7 @@ SECRET_KEY = 'django-insecure-@4sam!l!rt52jm_45govd0+rws#ieetc-0!fa$sy&&d5c8no_o
 DEBUG = True
 CHANNEL_REDIS_HOST = 6380
 ALLOWED_HOSTS = ['*']
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Application definition
