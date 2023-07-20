@@ -143,7 +143,7 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         if cur_ticket.status == 'closed':
             data = {
-                'action': 'accept_close_ticket',
+                'type': 'accept_close_ticket',
                 'info': 'Тикет уже закрыт.',
                 'ok': False,
                 'message': TicketSerializer(cur_ticket).data,
@@ -155,7 +155,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             cur_ticket.save()
 
             data = {
-                'action': 'accept_close_ticket',
+                'type': 'accept_close_ticket',
                 'ok': True,
                 'message': TicketSerializer(cur_ticket).data,
             }
