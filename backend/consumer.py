@@ -56,7 +56,9 @@ class LiveScoreConsumer(WebsocketConsumer):
         unread_message.update(read_by_received=True)
 
         output_data = {}
-        output_data['action'] = 'open_chat'
+        output_data['type'] = 'chat_detail'
+        output_data['ok'] = True
+        output_data['chat_id'] = chat_id
         output_data['total_messages'] = last_messages.count()
         output_data['client'] = ClientSerializer(client).data
         output_data['messages'] = TicketMessageSerializer(last_messages[:20], many=True).data
@@ -73,6 +75,7 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         output_data = {}
         output_data['action'] = 'get_messages'
+        output_data['ok'] = True
         output_data['total_messages'] = last_messages.count()
         output_data['messages'] = TicketMessageSerializer(message_to_output[:20], many=True).data
         self.send(text_data=json.dumps(output_data))
@@ -96,7 +99,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             message.sending_state = 'failed'
             message.save()
             data = {
-                'action': 'accept_new_message',
+                'try': 'accept_new_message',
                 'ok': False,
                 'info': 'Тикет уже был закрыт.',
                 'message': TicketMessageSerializer(message).data,
@@ -106,7 +109,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             send_message_to_client.delay(message_id=message.id)
 
             data = {
-                'action': 'accept_new_message',
+                'try': 'accept_new_message',
                 'ok': True,
                 'message': TicketMessageSerializer(message).data,
             }
