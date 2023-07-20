@@ -15,7 +15,7 @@ from tickets.celery_tasks import send_message_to_client
 @api_view(['POST'])
 def new_message(request):
     data = request.POST
-
+    print(data)
     users = Client.objects.filter(tg_id=data['tg_id'])
     if Client.objects.filter(tg_id=data['tg_id']).exists():
         cur_user = users.first()
