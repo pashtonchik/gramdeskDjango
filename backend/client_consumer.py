@@ -21,11 +21,9 @@ from django.db import transaction
 
 class ClientConsumer(WebsocketConsumer):
 
-
     def connect(self):
         # print(self.channel_name)
         print(self.scope['user'])
-
 
         cur_ticket = Ticket.objects.filter(
             tg_user=self.scope["user"],
@@ -43,6 +41,12 @@ class ClientConsumer(WebsocketConsumer):
 
         last_messages = TicketMessage.objects.filter(ticket=cur_ticket).order_by('-date_created')
 
+        last_messages.filter(read_by_received=False, sender='support').update(read_by_received=True,
+                                                                              sending_state='read')
+        #
+        # отправка саппорту по каналу инфы, что последние сообщения прочитаны
+        #
+
         # async_to_sync(self.channel_layer.group_add)(f'user_{self.scope["user"]}', self.channel_name)
         data = {}
         data['type'] = 'ticket'
@@ -55,7 +59,6 @@ class ClientConsumer(WebsocketConsumer):
         print(data)
         self.accept()
         self.send(json.dumps(data))
-
 
     def disconnect(self, close_code):
         pass
@@ -84,7 +87,7 @@ class ClientConsumer(WebsocketConsumer):
         message = TicketMessage(
             tg_user=ticket.tg_user,
             employee=User.objects.all().first(),
-            sender='employee',
+            sender='client',
             content_type='text',
             sending_state='sent',
             message_text=new_message['content'],
@@ -102,7 +105,9 @@ class ClientConsumer(WebsocketConsumer):
             }
         else:
 
-            send_message_to_client.delay(message_id=message.id)
+            #
+            #    отправка сообщения саппорту по каналу
+            #
 
             data = {
                 'try': 'accept_new_message',
@@ -110,56 +115,32 @@ class ClientConsumer(WebsocketConsumer):
                 'message': TicketMessageSerializer(message).data,
             }
 
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
-                                                           "message": json.dumps(data)})
+        # channel_layer = get_channel_layer()
+        # async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+        #                                                    "message": json.dumps(data)})
         ticket.save()
-    #
-    # def read_message_by_support(self, data):
-    #     message_id = data['message_id']
-    #     cur_message = TicketMessage.objects.get(id=message_id)
-    #
-    #     cur_message.sending_state = 'read'
-    #     cur_message.read_by_received = True
-    #     cur_message.save()
-    #
-    #     data = {
-    #         'type': 'accept_read_message',
-    #         'ok': True,
-    #         'message': TicketMessageSerializer(cur_message).data,
-    #     }
-    #     channel_layer = get_channel_layer()
-    #     async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
-    #                                                       "message": json.dumps(data)})
-    #
-    # @transaction.atomic()
-    # def close_ticket(self, data):
-    #     chat_id = data['chat_id']
-    #     cur_ticket = Ticket.objects.select_for_update().get(uuid=chat_id)
-    #
-    #     if cur_ticket.status == 'closed':
-    #         data = {
-    #             'type': 'accept_close_ticket',
-    #             'info': 'Тикет уже закрыт.',
-    #             'ok': False,
-    #             'ticket': TicketSerializer(cur_ticket).data,
-    #         }
-    #         self.send(json.dumps(data))
-    #     else:
-    #
-    #         cur_ticket.status = 'closed'
-    #         cur_ticket.save()
-    #
-    #         data = {
-    #             'type': 'accept_close_ticket',
-    #             'ok': True,
-    #             'ticket': TicketSerializer(cur_ticket).data,
-    #         }
-    #         channel_layer = get_channel_layer()
-    #         async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
-    #                                                            "message": json.dumps(data)})
-    #
-    #
+
+    def read_message_by_client(self, data):
+        message_id = data['message_id']
+        cur_message = TicketMessage.objects.get(id=message_id)
+
+        cur_message.sending_state = 'read'
+        cur_message.read_by_received = True
+        cur_message.save()
+
+        data = {
+            'type': 'accept_read_message',
+            'ok': True,
+            'message': TicketMessageSerializer(cur_message).data,
+        }
+        #
+        #   отправка саппорту по каналу инфы что сообщение прочтено клиентом
+        #
+
+        # channel_layer = get_channel_layer()
+        # async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+        #                                                   "message": json.dumps(data)})
+
     def receive(self, text_data):
 
         data = json.loads(text_data)
@@ -168,18 +149,13 @@ class ClientConsumer(WebsocketConsumer):
             self.get_messages(data)
 
         elif data['action'] == 'send_message':
-            self.new_message_to_client(data)
+            self.new_message_to_support(data)
 
         elif data['action'] == 'read_message':
-            self.read_message_by_support(data)
-
-        elif data['action'] == 'close_ticket':
-            self.close_ticket(data)
+            self.read_message_by_client(data)
 
         # text_data_json = json.loads(text_data)
         # message = text_data_json["message"]
-
-
 
     def chat_message(self, event):
         self.send(text_data=event["message"])
