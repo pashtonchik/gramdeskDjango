@@ -13,7 +13,7 @@ app.autodiscover_tasks()
 
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(10.0, update_items_fee.s())
+    sender.add_periodic_task(60.0, update_items_fee.s())
 
 
 @app.task

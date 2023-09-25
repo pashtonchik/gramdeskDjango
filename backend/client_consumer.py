@@ -1,6 +1,7 @@
 # Встроенные импорты.
 import datetime
 import json
+from json import JSONDecodeError
 
 from asgiref.sync import async_to_sync, sync_to_async
 from channels.consumer import AsyncConsumer
@@ -165,19 +166,40 @@ class ClientConsumer(WebsocketConsumer):
 
     def receive(self, text_data):
 
-        data = json.loads(text_data)
+        if text_data == 'heartbeat':
+            current_connection = SocketConnection.objects.get(channel_name=self.channel_name)
+            current_connection.approve_heartbeat = True
+            current_connection.save()
+        else:
 
-        if data['action'] == 'get_messages':
-            self.get_messages(data)
+            try:
+                data = json.loads(text_data)
 
-        elif data['action'] == 'send_message':
-            self.new_message_to_support(data)
+                if data['action'] == 'get_messages':
+                    self.get_messages(data)
 
-        elif data['action'] == 'read_message':
-            self.read_message_by_client(data)
+                elif data['action'] == 'send_message':
+                    self.new_message_to_support(data)
 
-        # text_data_json = json.loads(text_data)
-        # message = text_data_json["message"]
+                elif data['action'] == 'read_message':
+                    self.read_message_by_client(data)
+
+                else:
+                    data = {
+                        'message': 'Incorrect Action',
+                        'ok': False,
+                    }
+
+                    self.send(json.dumps(data))
+
+
+            except JSONDecodeError:
+                data = {
+                    'message': 'Incorrect Message',
+                    'ok': False,
+                }
+
+                self.send(json.dumps(data))
 
     def chat_message(self, event):
         self.send(text_data=event["message"])
