@@ -11,6 +11,7 @@ from django.urls import path, re_path
 from backend.consumer import LiveScoreConsumer
 from backend.client_consumer import ClientConsumer
 from backend.socket_auth import TokenAuthMiddleware
+from backend.socket_heartbeat import HeartbeatMiddleware
 
 # from .wsgi import application
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tickets.settings')
@@ -21,12 +22,12 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tickets.settings')
 
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
-    'websocket': AllowedHostsOriginValidator(TokenAuthMiddleware(
+    'websocket': AllowedHostsOriginValidator(HeartbeatMiddleware(TokenAuthMiddleware(
         URLRouter(
             [
                 re_path("apiapi/", LiveScoreConsumer.as_asgi()),
                 re_path("client/", ClientConsumer.as_asgi()),
             ]
         )
-    ))
+    )))
 })
