@@ -11,9 +11,10 @@ from backend.models import JWTToken
 def get_user(token_key):
     try:
         token = JWTToken.objects.get(jwt=token_key)
-        return token.user
+        return token.user, token
     except JWTToken.DoesNotExist:
-        return AnonymousUser()
+        return AnonymousUser(), None
+
 
 
 class TokenAuthMiddleware(BaseMiddleware):
@@ -30,9 +31,8 @@ class TokenAuthMiddleware(BaseMiddleware):
             try:
                 token_name, token_key = headers[b'authorization'].decode().split()
                 if token_name == 'Token':
-                    scope['user'] = await get_user(token_key)
-                    scope['jwt'] = JWTToken.objects.get(jwt=token_key)
+                    scope['user'], scope['jwt'] = await get_user(token_key)
             except JWTToken.DoesNotExist:
-                scope['user'] = AnonymousUser()
+                scope['user'], scope['jwt'] = AnonymousUser()
             print(scope['user'])
         return await self.inner(scope, receive, send)
