@@ -14,7 +14,7 @@ def heart_beat_connector():
 @shared_task()
 def heart_beat():
     from backend.models import SocketConnection
-    active_connections = SocketConnection.objects.filter(active=True, approve_heartbeat=True)
+    active_connections = SocketConnection.objects.filter(active=True)
 
     channel_layer = get_channel_layer()
     #
