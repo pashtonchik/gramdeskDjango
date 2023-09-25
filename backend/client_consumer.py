@@ -75,10 +75,12 @@ class ClientConsumer(WebsocketConsumer):
         self.send(json.dumps(data))
 
     def disconnect(self, close_code):
+
         current_connection = SocketConnection.objects.get(id=self.connection_id)
         current_connection.active = False
         current_connection.date_closed = datetime.datetime.now().timestamp()
         current_connection.save()
+        async_to_sync(self.channel_layer.group_discard)(f'client_{self.scope["user"].id}', self.channel_name)
 
 
     def get_messages(self, data):

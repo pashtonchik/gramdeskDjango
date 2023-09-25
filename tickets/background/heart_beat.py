@@ -20,7 +20,8 @@ def heart_beat():
     channel_layer = get_channel_layer()
 
     for connection in active_connections:
-        async_to_sync(channel_layer.close)(connection.channel_name)
+        async_to_sync(channel_layer.group_discard)("active_connections", connection.channel_name)
+        async_to_sync(channel_layer.group_discard)(f'client_{connection.user.id}', connection.channel_name)
 
     if not active_connections.exists():
         return "connections dont exist"
