@@ -1,4 +1,4 @@
-from tickets.celery import Celery
+from celery import Celery
 
 from tickets.settings import APP_NAME_CELERY
 import os
