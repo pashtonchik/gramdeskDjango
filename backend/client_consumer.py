@@ -48,6 +48,8 @@ class ClientConsumer(WebsocketConsumer):
         #
 
         async_to_sync(self.channel_layer.group_add)(f'user_{self.scope["user"].id}', self.channel_name)
+
+        print(self.channel_layer.)
         data = {}
         data['type'] = 'ticket'
         data['ticket'] = TicketSerializer(cur_ticket).data
@@ -116,6 +118,9 @@ class ClientConsumer(WebsocketConsumer):
             }
 
         channel_layer = get_channel_layer()
+
+        print(channel_layer)
+
         async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
                                                            "message": json.dumps(data)})
         ticket.save()
