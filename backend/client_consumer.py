@@ -24,7 +24,7 @@ class ClientConsumer(WebsocketConsumer):
     def connect(self):
         print(self.channel_name)
         print(self.scope['user'])
-
+        self.setup_heartbeat()
         cur_ticket = Ticket.objects.filter(
             tg_user=self.scope["user"],
             status='created',
