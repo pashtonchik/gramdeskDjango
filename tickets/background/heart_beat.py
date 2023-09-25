@@ -6,6 +6,8 @@ from channels.layers import get_channel_layer
 from django.db import transaction
 import requests
 
+from backend.client_consumer import ClientConsumer
+
 
 def heart_beat_connector():
     heart_beat.delay()
@@ -24,6 +26,11 @@ def heart_beat():
 
         async_to_sync(channel_layer.group_discard)("active_connections", connection.channel_name)
         async_to_sync(channel_layer.group_discard)(f'client_{connection.user.id}', connection.channel_name)
+        consumer = ClientConsumer()
+
+        consumer.disconnect(400)
+
+
 
     if not active_connections.exists():
         return "connections dont exist"
