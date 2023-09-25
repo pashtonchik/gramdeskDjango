@@ -49,7 +49,7 @@ class ClientConsumer(WebsocketConsumer):
 
         async_to_sync(self.channel_layer.group_add)(f'user_{self.scope["user"].id}', self.channel_name)
 
-        print(self.channel_layer.)
+
         data = {}
         data['type'] = 'ticket'
         data['ticket'] = TicketSerializer(cur_ticket).data
