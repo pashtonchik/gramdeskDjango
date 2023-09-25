@@ -21,3 +21,13 @@ class UserTransactionAdmin(admin.ModelAdmin):
     readonly_fields = ('date_created', )
     ordering = ('-date_created', )
 
+
+@admin.register(JWTToken)
+class JWTTokenAdmin(admin.ModelAdmin):
+    list_display = ('user', 'active', 'date_created')
+
+
+@admin.register(SocketConnection)
+class SocketConnectionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'active', 'date_created', 'date_closed')
+
