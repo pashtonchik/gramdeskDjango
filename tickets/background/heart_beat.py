@@ -5,11 +5,11 @@ from django.db import transaction
 import requests
 
 
-def trade_dispenser_connector():
-    trade_dispenser.delay()
+def heart_beat_connector():
+    heart_beat.delay()
 
 @shared_task()
-def trade_dispenser():
+def heart_beat():
     from backend.models import SocketConnection
     active_connections = SocketConnection.objects.filter(active=True)
     if not active_connections.exists():

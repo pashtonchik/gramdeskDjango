@@ -1,5 +1,6 @@
 from celery import Celery
 
+from tickets.background.heart_beat import heart_beat_connector
 from tickets.settings import APP_NAME_CELERY
 import os
 
@@ -17,5 +18,5 @@ def setup_periodic_tasks(sender, **kwargs):
 
 @app.task
 def update_items_fee():
-
+    heart_beat_connector()
 
