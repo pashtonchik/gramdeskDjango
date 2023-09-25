@@ -15,7 +15,7 @@ def heart_beat():
     if not active_connections.exists():
         return "connections dont exist"
     channel_layer = get_channel_layer()
-    for connection in active_connections:
-        async_to_sync(channel_layer.send)(connection.channel_name, {"chat.message": "123", "text": 'Hey!'})
+    async_to_sync(channel_layer.group_send)("active_connections", {"type": "chat.message",
+                                                  "message": "heartbeat"})
 
 

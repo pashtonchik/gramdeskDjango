@@ -24,6 +24,7 @@ class LiveScoreConsumer(WebsocketConsumer):
 
     def connect(self):
         async_to_sync(self.channel_layer.group_add)("active_support", self.channel_name)
+        async_to_sync(self.channel_layer.group_add)(f'active_connections', self.channel_name)
         print(self.channel_name)
 
         tickets = Ticket.objects.all()
@@ -117,6 +118,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
                                                            "message": json.dumps(data)})
+
         ticket.save()
 
     def read_message_by_support(self, data):

@@ -48,6 +48,7 @@ class ClientConsumer(WebsocketConsumer):
         #
 
         async_to_sync(self.channel_layer.group_add)(f'client_{self.scope["user"].id}', self.channel_name)
+        async_to_sync(self.channel_layer.group_add)(f'active_connections', self.channel_name)
 
 
         data = {}
