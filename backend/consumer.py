@@ -23,7 +23,7 @@ class LiveScoreConsumer(WebsocketConsumer):
 
 
     def connect(self):
-        async_to_sync(self.channel_layer.group_add)("active", self.channel_name)
+        async_to_sync(self.channel_layer.group_add)("active_support", self.channel_name)
         print(self.channel_name)
 
         tickets = Ticket.objects.all()
@@ -115,7 +115,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             }
 
         channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+        async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
                                                            "message": json.dumps(data)})
         ticket.save()
 
@@ -133,7 +133,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             'message': TicketMessageSerializer(cur_message).data,
         }
         channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+        async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
                                                           "message": json.dumps(data)})
 
     @transaction.atomic()
@@ -160,7 +160,7 @@ class LiveScoreConsumer(WebsocketConsumer):
                 'ticket': TicketSerializer(cur_ticket).data,
             }
             channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+            async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
                                                                "message": json.dumps(data)})
 
 
