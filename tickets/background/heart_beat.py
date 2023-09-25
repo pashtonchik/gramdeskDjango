@@ -3,10 +3,6 @@ import datetime
 from asgiref.sync import async_to_sync
 from celery import shared_task
 from channels.layers import get_channel_layer
-from django.db import transaction
-import requests
-
-from backend.client_consumer import ClientConsumer
 
 
 def heart_beat_connector():
