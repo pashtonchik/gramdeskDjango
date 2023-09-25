@@ -2,6 +2,7 @@ import base64
 
 import rsa
 from rest_framework import permissions
+from tickets.settings import PROFIAT_PUBKEY
 
 
 class ProfiatIntegration(permissions.BasePermission):
