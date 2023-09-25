@@ -40,14 +40,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
     'channels',
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'backend',
+    'rest_framework_simplejwt.token_blacklist',
     # 'rest_framework',
     'django.contrib.staticfiles',
 ]
@@ -70,7 +71,7 @@ CELERY_TASK_SERIALIZER = 'json'
 
 
 ROOT_URLCONF = 'tickets.urls'
-AUTH_USER_MODEL = 'backend.SupportUser'
+AUTH_USER_MODEL = 'backend.User'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -89,14 +90,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tickets.wsgi.application'
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6380)],
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("127.0.0.1", 6380)],
+#         },
+#     },
+# }
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

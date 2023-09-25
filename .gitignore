@@ -1,11 +1,11 @@
 venv
 db.sqlite3
-tickets/migrations/*
-!tickets/migrations/__init__.py
+backend/migrations/*
+!backend/migrations/__init__.py
 .idea
 __pycache__/
-tickets/__pycache__/
-tickets/migrations/__pycache__/
+backend/__pycache__/
+backend/migrations/__pycache__/
 info.log
 error.log
 debug.log

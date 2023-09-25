@@ -2,11 +2,12 @@ from rest_framework import routers
 from django.urls import path
 
 from backend.api.message_from_telegram.message_from_user import new_message
+from backend.api.profiat_accounts.auth import profiat_auth_client
 
 router = routers.DefaultRouter()
 
 urlpatterns = [
-    # path('api/v3/accounts/auth/verify/', verify_token),
+    path('api/v2/client/auth/', profiat_auth_client),
     # path('api/v3/accounts/auth/', auth),
     # path('api/v3/accounts/auth/refresh/', TokenRefreshView.as_view()),
     # path('api/v3/accounts/signup/', registrate),

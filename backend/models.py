@@ -5,56 +5,36 @@ import uuid as uuid
 from channels.db import database_sync_to_async
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 
 from tickets.settings import MEDIA_ROOT
 
 
-class SupportUser(AbstractUser):
+class User(AbstractUser):
+
+    sender_selector = (
+        ('client', 'Клиент'),
+        ('employee', 'Сотрудник')
+    )
+
+    type = models.CharField(max_length=5000, blank=True)
     my_email = models.CharField(max_length=5000, unique=True, null=True, blank=True)
     username = models.CharField(max_length=50, unique=True)
     phone = models.CharField(max_length=50, blank=True, null=True)
     is_blocked = models.BooleanField(default=False)
-    verify_email = models.BooleanField(default=False)
-    verify_phone = models.BooleanField(default=False)
-    avatar = models.URLField(default='', null=True, blank=True)
-    api_access = models.BooleanField(default=False)
-    balance = models.DecimalField(default=0, max_digits=300, decimal_places=2)
-    otp_auth = models.BooleanField(default=False)
-    flex_wallet = models.BooleanField(default=False)
-    flex_wallet_uuid = models.CharField(max_length=200, blank=True, null=True)
-    enable_withdraws = models.BooleanField(default=True)
-    enable_deposits = models.BooleanField(default=True)
-
-    sms_secret_key = models.CharField(max_length=200, null=True, blank=True)
-    otp_secret_key = models.CharField(max_length=200, null=True, blank=True)
-
-
-class Client(models.Model):
-
-    uuid = models.UUIDField(primary_key=True, max_length=40, default=uuid.uuid4, editable=False, unique=True)
-    tg_id = models.CharField(max_length=100)
-    tg_username = models.CharField(max_length=500)
+    profiat_id = models.CharField(max_length=100, blank=True, null=True)
+    profiat_username = models.CharField(max_length=100, blank=True, null=True)
+    profiat_email = models.CharField(max_length=100, blank=True, null=True)
+    tg_id = models.CharField(max_length=100, blank=True, null=True)
+    tg_username = models.CharField(max_length=500, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    is_blocked = models.BooleanField(default=False)
     date_added = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.tg_username
-
-    def get_count_tickets(self):
-        return Ticket.objects.filter(tg_user=self, status='closed').count()
-
-    def get_date_added(self):
-        return int(self.date_added.timestamp()) if self.date_added else '-'
-    #
-    # def get_uuid_str(self):
-    #     return str(self.uuid)
 
 
 class Ticket(models.Model):
 
     uuid = models.UUIDField(primary_key=True, max_length=40, default=uuid.uuid4, editable=False, unique=True)
-    tg_user = models.ForeignKey(to=Client, on_delete=models.PROTECT)
+    tg_user = models.ForeignKey(to=User, on_delete=models.PROTECT)
     status = models.CharField(max_length=50)
     date_created = models.DateTimeField(auto_now_add=True)
     date_closed = models.DateTimeField(blank=True, null=True)
@@ -66,11 +46,15 @@ class Ticket(models.Model):
         return TicketMessage.objects.filter(ticket=self, read_by_received=False).count()
 
     def get_last_message(self):
-        last_message = TicketMessage.objects.filter(ticket=self).order_by('-date_created').first()
-        return {
-            'content_type': last_message.content_type,
-            'message': last_message.message_text
-        }
+        last_message = TicketMessage.objects.filter(ticket=self).order_by('-date_created')
+        if last_message.exists():
+            last_message = last_message.first()
+            return {
+                'content_type': last_message.content_type,
+                'message': last_message.message_text
+            }
+        else:
+            return None
 
     def get_user_name(self):
         return self.tg_user.tg_username
@@ -97,8 +81,8 @@ class TicketMessage(models.Model):
 
     ticket = models.ForeignKey(to=Ticket, on_delete=models.PROTECT)
     sender = models.CharField(max_length=20, choices=sender_selector)
-    employee = models.ForeignKey(to=SupportUser, on_delete=models.PROTECT, blank=True, null=True)
-    tg_user = models.ForeignKey(to=Client, on_delete=models.PROTECT)
+    employee = models.ForeignKey(to=User, on_delete=models.PROTECT, blank=True, null=True, related_name='ticket_message_employee')
+    tg_user = models.ForeignKey(to=User, on_delete=models.PROTECT, related_name='ticket_message_client')
     sending_state = models.CharField(max_length=50)
     message_text = models.TextField()
     message_file = models.FileField()
@@ -111,7 +95,7 @@ class TicketMessage(models.Model):
 
     def get_sender_id(self):
         if self.sender == 'client':
-            return self.tg_user.uuid
+            return self.tg_user.id
         else:
             return self.employee.id
 
@@ -131,6 +115,18 @@ class TicketMessage(models.Model):
 
     def get_date(self):
         return int(self.date_created.timestamp()) if self.date_created else '-'
+
+
+class JWTToken(models.Model):
+    class Meta:
+        verbose_name = 'JWT'
+        verbose_name_plural = 'JWT'
+
+    user = models.ForeignKey(to=User, blank=True, null=True, on_delete=models.PROTECT)
+    jwt = models.TextField(blank=True, null=True, unique=True)
+    active = models.BooleanField(default=True)
+    refresh = models.ForeignKey(to=OutstandingToken, blank=True, null=True, on_delete=models.CASCADE)
+    date_created = models.IntegerField(blank=True, null=True)
 
 
 

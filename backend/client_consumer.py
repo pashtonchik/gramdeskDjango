@@ -19,50 +19,46 @@ from tickets.celery_tasks.send_message_to_client import send_message_to_client
 from django.db import transaction
 
 
-class LiveScoreConsumer(WebsocketConsumer):
+class ClientConsumer(WebsocketConsumer):
 
 
     def connect(self):
-        async_to_sync(self.channel_layer.group_add)("active", self.channel_name)
-        print(self.channel_name)
+        # print(self.channel_name)
+        print(self.scope['user'])
 
-        tickets = Ticket.objects.all()
 
-        new_tickets = tickets.filter(status='created')[:20]
-        in_progress_tickets = tickets.filter(status='in_progress')[:20]
-        # closed_tickets = tickets.filter(status='closed')[:20]
+        cur_ticket = Ticket.objects.filter(
+            tg_user=self.scope["user"],
+            status='created',
+        )
 
+        if not cur_ticket.exists():
+            cur_ticket = Ticket(
+                tg_user=self.scope["user"],
+                status='created',
+            )
+            cur_ticket.save()
+        else:
+            cur_ticket = cur_ticket.first()
+
+        last_messages = TicketMessage.objects.filter(ticket=cur_ticket).order_by('-date_created')
+
+        # async_to_sync(self.channel_layer.group_add)(f'user_{self.scope["user"]}', self.channel_name)
         data = {}
-        data['type'] = 'tickets'
-        data['new_tickets'] = TicketSerializer(new_tickets, many=True).data
-        data['in_progress_tickets'] = TicketSerializer(in_progress_tickets, many=True).data
+        data['type'] = 'ticket'
+        data['ticket'] = TicketSerializer(cur_ticket).data
         data['ok'] = True
+        data['chat_id'] = str(cur_ticket.uuid)
+        data['total_messages'] = last_messages.count()
+        data['messages'] = TicketMessageSerializer(last_messages[:20], many=True).data
 
+        print(data)
         self.accept()
         self.send(json.dumps(data))
 
 
     def disconnect(self, close_code):
         pass
-
-    def open_chat(self, data):
-        chat_id = data['chat_id']
-
-        ticket = Ticket.objects.get(uuid=chat_id)
-        client = ticket.tg_user
-        last_messages = TicketMessage.objects.filter(ticket=ticket).order_by('-date_created')
-
-        unread_message = last_messages.filter(read_by_received=False)
-        unread_message.update(read_by_received=True)
-
-        output_data = {}
-        output_data['type'] = 'chat_detail'
-        output_data['ok'] = True
-        output_data['chat_id'] = chat_id
-        output_data['total_messages'] = last_messages.count()
-        # output_data['client'] = ClientSerializer(client).data
-        output_data['messages'] = TicketMessageSerializer(last_messages[:20], many=True).data
-        self.send(text_data=json.dumps(output_data))
 
     def get_messages(self, data):
         chat_id = data['chat_id']
@@ -81,7 +77,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps(output_data))
 
     @transaction.atomic()
-    def new_message_to_client(self, data):
+    def new_message_to_support(self, data):
         new_message = data['message']
         ticket = Ticket.objects.select_for_update().get(uuid=new_message['chat_id'])
 
@@ -118,60 +114,57 @@ class LiveScoreConsumer(WebsocketConsumer):
         async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
                                                            "message": json.dumps(data)})
         ticket.save()
-
-    def read_message_by_support(self, data):
-        message_id = data['message_id']
-        cur_message = TicketMessage.objects.get(id=message_id)
-
-        cur_message.sending_state = 'read'
-        cur_message.read_by_received = True
-        cur_message.save()
-
-        data = {
-            'type': 'accept_read_message',
-            'ok': True,
-            'message': TicketMessageSerializer(cur_message).data,
-        }
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
-                                                          "message": json.dumps(data)})
-
-    @transaction.atomic()
-    def close_ticket(self, data):
-        chat_id = data['chat_id']
-        cur_ticket = Ticket.objects.select_for_update().get(uuid=chat_id)
-
-        if cur_ticket.status == 'closed':
-            data = {
-                'type': 'accept_close_ticket',
-                'info': 'Тикет уже закрыт.',
-                'ok': False,
-                'ticket': TicketSerializer(cur_ticket).data,
-            }
-            self.send(json.dumps(data))
-        else:
-
-            cur_ticket.status = 'closed'
-            cur_ticket.save()
-
-            data = {
-                'type': 'accept_close_ticket',
-                'ok': True,
-                'ticket': TicketSerializer(cur_ticket).data,
-            }
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
-                                                               "message": json.dumps(data)})
-
-
+    #
+    # def read_message_by_support(self, data):
+    #     message_id = data['message_id']
+    #     cur_message = TicketMessage.objects.get(id=message_id)
+    #
+    #     cur_message.sending_state = 'read'
+    #     cur_message.read_by_received = True
+    #     cur_message.save()
+    #
+    #     data = {
+    #         'type': 'accept_read_message',
+    #         'ok': True,
+    #         'message': TicketMessageSerializer(cur_message).data,
+    #     }
+    #     channel_layer = get_channel_layer()
+    #     async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+    #                                                       "message": json.dumps(data)})
+    #
+    # @transaction.atomic()
+    # def close_ticket(self, data):
+    #     chat_id = data['chat_id']
+    #     cur_ticket = Ticket.objects.select_for_update().get(uuid=chat_id)
+    #
+    #     if cur_ticket.status == 'closed':
+    #         data = {
+    #             'type': 'accept_close_ticket',
+    #             'info': 'Тикет уже закрыт.',
+    #             'ok': False,
+    #             'ticket': TicketSerializer(cur_ticket).data,
+    #         }
+    #         self.send(json.dumps(data))
+    #     else:
+    #
+    #         cur_ticket.status = 'closed'
+    #         cur_ticket.save()
+    #
+    #         data = {
+    #             'type': 'accept_close_ticket',
+    #             'ok': True,
+    #             'ticket': TicketSerializer(cur_ticket).data,
+    #         }
+    #         channel_layer = get_channel_layer()
+    #         async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+    #                                                            "message": json.dumps(data)})
+    #
+    #
     def receive(self, text_data):
 
         data = json.loads(text_data)
 
-        if data['action'] == 'open_chat':
-            self.open_chat(data)
-
-        elif data['action'] == 'get_messages':
+        if data['action'] == 'get_messages':
             self.get_messages(data)
 
         elif data['action'] == 'send_message':

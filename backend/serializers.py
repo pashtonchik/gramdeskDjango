@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from backend.models import Ticket, Client, TicketMessage
+from backend.models import Ticket, TicketMessage
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -13,14 +13,14 @@ class TicketSerializer(serializers.ModelSerializer):
         model = Ticket
 
 
-class ClientSerializer(serializers.ModelSerializer):
-    uuid = serializers.CharField(read_only=True)
-    closed_tickets = serializers.ReadOnlyField(source='get_count_tickets')
-    date_added = serializers.ReadOnlyField(source='get_date_added')
-
-    class Meta:
-        exclude = ('is_blocked', )
-        model = Client
+# class ClientSerializer(serializers.ModelSerializer):
+#     uuid = serializers.CharField(read_only=True)
+#     closed_tickets = serializers.ReadOnlyField(source='get_count_tickets')
+#     date_added = serializers.ReadOnlyField(source='get_date_added')
+#
+#     class Meta:
+#         exclude = ('is_blocked', )
+#         model = Client
 
 
 class TicketMessageSerializer(serializers.ModelSerializer):
