@@ -10,13 +10,20 @@ import requests
 def heart_beat_connector():
     heart_beat.delay()
 
+
 @shared_task()
 def heart_beat():
     from backend.models import SocketConnection
     active_connections = SocketConnection.objects.filter(active=True)
+
+    active_connections.filter(approve_heartbeat=False)
+    channel_layer = get_channel_layer()
+
+    for connection in active_connections:
+        async_to_sync(channel_layer.close)(connection.channel_name)
+
     if not active_connections.exists():
         return "connections dont exist"
-    channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)("active_connections", {"type": "chat.message",
                                                   "message": "heartbeat"})
 
