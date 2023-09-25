@@ -17,10 +17,10 @@ def heart_beat():
     active_connections = SocketConnection.objects.filter(active=True, approve_heartbeat=True)
 
     channel_layer = get_channel_layer()
-
-    for connection in active_connections.filter(approve_heartbeat=False):
-        async_to_sync(channel_layer.group_discard)("active_connections", connection.channel_name)
-        async_to_sync(channel_layer.group_discard)(f'client_{connection.user.id}', connection.channel_name)
+    #
+    # for connection in active_connections.filter(approve_heartbeat=False):
+    #     async_to_sync(channel_layer.group_discard)("active_connections", connection.channel_name)
+    #     async_to_sync(channel_layer.group_discard)(f'client_{connection.user.id}', connection.channel_name)
 
     if not active_connections.exists():
         return "connections dont exist"
