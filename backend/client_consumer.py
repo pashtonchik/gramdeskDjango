@@ -22,7 +22,7 @@ from django.db import transaction
 class ClientConsumer(WebsocketConsumer):
 
     def connect(self):
-        # print(self.channel_name)
+        print(self.channel_name)
         print(self.scope['user'])
 
         cur_ticket = Ticket.objects.filter(
@@ -47,7 +47,7 @@ class ClientConsumer(WebsocketConsumer):
         # отправка саппорту по каналу инфы, что последние сообщения прочитаны
         #
 
-        # async_to_sync(self.channel_layer.group_add)(f'user_{self.scope["user"]}', self.channel_name)
+        async_to_sync(self.channel_layer.group_add)(f'user_{self.scope["user"].id}', self.channel_name)
         data = {}
         data['type'] = 'ticket'
         data['ticket'] = TicketSerializer(cur_ticket).data
@@ -115,9 +115,9 @@ class ClientConsumer(WebsocketConsumer):
                 'message': TicketMessageSerializer(message).data,
             }
 
-        # channel_layer = get_channel_layer()
-        # async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
-        #                                                    "message": json.dumps(data)})
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
+                                                           "message": json.dumps(data)})
         ticket.save()
 
     def read_message_by_client(self, data):
