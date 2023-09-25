@@ -138,7 +138,7 @@ class SocketConnection(models.Model):
     jwt = models.ForeignKey(to=JWTToken, blank=True, null=True, on_delete=models.PROTECT)
     channel_name = models.CharField(max_length=200)
     active = models.BooleanField(default=True)
-    last_heartbeat = models.IntegerField()
+    last_heartbeat = models.IntegerField(default=0)
     approve_heartbeat = models.BooleanField(default=False)
     date_created = models.IntegerField()
     date_closed = models.IntegerField(default=0)
