@@ -136,6 +136,7 @@ class SocketConnection(models.Model):
 
     user = models.ForeignKey(to=User, blank=True, null=True, on_delete=models.PROTECT)
     jwt = models.ForeignKey(to=JWTToken, blank=True, null=True, on_delete=models.PROTECT)
+    channel_name = models.CharField(max_length=200)
     active = models.BooleanField(default=True)
     date_created = models.IntegerField()
     date_closed = models.IntegerField(default=0)

@@ -64,6 +64,7 @@ class ClientConsumer(WebsocketConsumer):
         new_socket_connection = SocketConnection(
             user=self.scope['user'],
             jwt=self.scope['jwt'],
+            channel_name=self.channel_name,
             date_created=datetime.datetime.now().timestamp()
         )
         new_socket_connection.save()
