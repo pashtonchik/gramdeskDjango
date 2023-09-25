@@ -17,7 +17,6 @@ from django.contrib.auth.models import AnonymousUser
 
 from backend.models import Ticket, TicketMessage, User, SocketConnection
 from backend.serializers import TicketSerializer, TicketMessageSerializer
-from tickets.celery_tasks.send_message_to_client import send_message_to_client
 from django.db import transaction
 
 
