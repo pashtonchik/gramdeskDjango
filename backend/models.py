@@ -129,6 +129,19 @@ class JWTToken(models.Model):
     date_created = models.IntegerField(blank=True, null=True)
 
 
+class SocketConnection(models.Model):
+    class Meta:
+        verbose_name = 'Socket Connection'
+        verbose_name_plural = 'Socket Connections'
+
+    user = models.ForeignKey(to=User, blank=True, null=True, on_delete=models.PROTECT)
+    jwt = models.ForeignKey(to=JWTToken, blank=True, null=True, on_delete=models.PROTECT)
+    active = models.BooleanField(default=True)
+    date_created = models.IntegerField()
+    date_closed = models.IntegerField(default=0)
+
+
+
 
 
 

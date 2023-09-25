@@ -1,4 +1,5 @@
 # Встроенные импорты.
+import datetime
 import json
 
 from asgiref.sync import async_to_sync, sync_to_async
@@ -13,7 +14,7 @@ from channels.layers import get_channel_layer
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
 
-from backend.models import Ticket, TicketMessage, User
+from backend.models import Ticket, TicketMessage, User, SocketConnection
 from backend.serializers import TicketSerializer, TicketMessageSerializer
 from tickets.celery_tasks.send_message_to_client import send_message_to_client
 from django.db import transaction
@@ -24,7 +25,6 @@ class ClientConsumer(WebsocketConsumer):
     def connect(self):
         print(self.channel_name)
         print(self.scope['user'])
-        self.setup_heartbeat()
         cur_ticket = Ticket.objects.filter(
             tg_user=self.scope["user"],
             status='created',
@@ -60,10 +60,23 @@ class ClientConsumer(WebsocketConsumer):
 
         print(data)
         self.accept()
+
+        new_socket_connection = SocketConnection(
+            user=self.scope['user'],
+            jwt=self.scope['jwt'],
+            date_created=datetime.datetime.now().timestamp()
+        )
+        new_socket_connection.save()
+        self.connection_id = new_socket_connection.id
+
         self.send(json.dumps(data))
 
     def disconnect(self, close_code):
-        pass
+        current_connection = SocketConnection.objects.get(id=self.connection_id)
+        current_connection.active = False
+        current_connection.date_closed = datetime.datetime.now().timestamp()
+        current_connection.save()
+
 
     def get_messages(self, data):
         chat_id = data['chat_id']

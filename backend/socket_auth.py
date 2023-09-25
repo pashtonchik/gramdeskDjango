@@ -31,6 +31,7 @@ class TokenAuthMiddleware(BaseMiddleware):
                 token_name, token_key = headers[b'authorization'].decode().split()
                 if token_name == 'Token':
                     scope['user'] = await get_user(token_key)
+                    scope['jwt'] = JWTToken.objects.get(jwt=token_key)
             except JWTToken.DoesNotExist:
                 scope['user'] = AnonymousUser()
             print(scope['user'])
