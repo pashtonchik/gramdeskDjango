@@ -25,7 +25,10 @@ def heart_beat():
 
         async_to_sync(channel_layer.group_add)(f'active_connections_to_close', connection.channel_name)
 
-    async_to_sync(channel_layer.group_send)("active_connections_to_close", {"type": "disconnect"})
+    print(1)
+    async_to_sync(channel_layer.group_send)("active_connections_to_close", {"type": "aboba.aboba",
+                                                                   "message": "123"})
+    print(2)
 
 
 
