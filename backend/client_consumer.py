@@ -207,3 +207,4 @@ class ClientConsumer(WebsocketConsumer):
 
     def aboba_aboba(self, event):
         self.send(text_data=event["message"])
+        self.close()
