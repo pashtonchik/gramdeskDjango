@@ -47,7 +47,9 @@ class ClientConsumer(WebsocketConsumer):
         # отправка саппорту по каналу инфы, что последние сообщения прочитаны
         #
 
-        async_to_sync(self.channel_layer.group_add)(f'user_{self.scope["user"].id}', self.channel_name)
+        async_to_sync(self.channel_layer.group_add)(f'client_{self.scope["user"].id}', self.channel_name)
+
+        print(f'user_{self.scope["user"].id}')
 
 
         data = {}
@@ -118,8 +120,8 @@ class ClientConsumer(WebsocketConsumer):
             }
 
         channel_layer = get_channel_layer()
-
-        print(channel_layer.group)
+        print(f'user_{self.scope["user"].id}')
+        print(channel_layer)
         async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
                                                            "message": json.dumps(data)})
         ticket.save()
