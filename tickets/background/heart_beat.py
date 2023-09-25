@@ -26,9 +26,10 @@ def heart_beat():
 
         async_to_sync(channel_layer.group_discard)("active_connections", connection.channel_name)
         async_to_sync(channel_layer.group_discard)(f'client_{connection.user.id}', connection.channel_name)
-        consumer = ClientConsumer()
 
-        consumer.disconnect(400)
+        async_to_sync(channel_layer.group_add)(f'active_connections_to_close', connection.channel_name)
+
+    async_to_sync(channel_layer.group_send)("active_connections_to_close", {"type": "disconnect"})
 
 
 
