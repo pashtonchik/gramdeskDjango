@@ -1,6 +1,6 @@
 import os
 
-from django.http import HttpResponse, FileResponse
+from django.http import HttpResponse, FileResponse, HttpResponseNotFound
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -22,20 +22,15 @@ def get_attachment(request, attachment):
 
     file_location = MEDIA_ROOT + '/' + cur_attachment.file.name
 
-    # try:
-    with open(file_location, 'rb') as f:
-       file_data = f.read()
+    try:
+        with open(file_location, 'rb') as f:
+           file_data = f.read()
 
-    ext = os.path.splitext(str(cur_attachment.file.name))[1]
-    # sending response
-    response = HttpResponse(file_data, content_type=f'application/{ext}')
-    response['Content-Disposition'] = f'attachment; filename="{cur_attachment.file.name}"'
+        ext = os.path.splitext(str(cur_attachment.file.name))[1]
+        response = HttpResponse(file_data, content_type=f'application/{ext}')
+        response['Content-Disposition'] = f'attachment; filename="{cur_attachment.file.name}"'
 
-    # return FileResponse(open(file_location, 'rb'))
+    except IOError:
+        response = HttpResponseNotFound('<h1>File not exist</h1>')
 
-    # except IOError:
-    #     # handle file not exist case here
-    #     response = HttpResponseNotFound('<h1>File not exist</h1>')
-
-    # return Response(status=status.HTTP_200_OK, data=data)
     return response
