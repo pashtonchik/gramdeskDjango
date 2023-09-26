@@ -16,10 +16,15 @@ class PayMethodAdmin(admin.ModelAdmin):
 
 
 @admin.register(TicketMessage)
-class UserTransactionAdmin(admin.ModelAdmin):
+class TicketMessageAdmin(admin.ModelAdmin):
     list_display = ('tg_user', 'ticket', 'message_text', 'date_created')
     readonly_fields = ('date_created', )
     ordering = ('-date_created', )
+
+
+@admin.register(Attachment)
+class AttachmentAdmin(admin.ModelAdmin):
+    list_display = ('message', )
 
 
 @admin.register(JWTToken)
