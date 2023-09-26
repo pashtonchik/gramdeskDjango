@@ -20,4 +20,5 @@ class ProfiatIntegration(permissions.BasePermission):
             rsa.verify(message.encode(), base64.b64decode(sign), PROFIAT_PUBKEY)
             return True
         except:
+            print('govno')
             return False
