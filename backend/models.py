@@ -117,6 +117,12 @@ class TicketMessage(models.Model):
         return int(self.date_created.timestamp()) if self.date_created else '-'
 
 
+class Attachment(models.Model):
+    message = models.ForeignKey(to=TicketMessage, on_delete=models.PROTECT)
+    file = models.FileField()
+    ext = models.CharField(max_length=50)
+
+
 class JWTToken(models.Model):
     class Meta:
         verbose_name = 'JWT'
