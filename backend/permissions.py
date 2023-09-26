@@ -7,18 +7,18 @@ from tickets.settings import PROFIAT_PUBKEY
 
 class ProfiatIntegration(permissions.BasePermission):
     def has_permission(self, request, view):
-        try:
+        # try:
+        print(request.headers)
+        # logger.info(request.headers)
+        # logger.info(request.body)
+        sign = request.headers.get('X-Token-Sign')
 
-            # logger.info(request.headers)
-            # logger.info(request.body)
-            sign = request.headers.get('X-Token-Sign')
+        message = request.method + '\n' + request.body.decode()
 
-            message = request.method + '\n' + request.body.decode()
+        # logger.info(message)
 
-            # logger.info(message)
-
-            rsa.verify(message.encode(), base64.b64decode(sign), PROFIAT_PUBKEY)
-            return True
-        except:
-            print('govno')
-            return False
+        rsa.verify(message.encode(), base64.b64decode(sign), PROFIAT_PUBKEY)
+        return True
+        # except:
+        #     print('govno')
+        #     return False
