@@ -118,6 +118,8 @@ class LiveScoreConsumer(WebsocketConsumer):
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
                                                            "message": json.dumps(data)})
+        async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
+                                                           "message": json.dumps(data)})
 
         ticket.save()
 
