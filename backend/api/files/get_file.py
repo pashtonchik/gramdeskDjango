@@ -25,7 +25,7 @@ def get_attachment(request, attachment):
        file_data = f.read()
 
     # sending response
-    response = HttpResponse(file_data, content_type='application/csv')
+    response = HttpResponse(file_data, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="cheque.pdf"'
 
     # except IOError:
