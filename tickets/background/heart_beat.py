@@ -16,18 +16,18 @@ def heart_beat():
 
     channel_layer = get_channel_layer()
 
-    for connection in active_connections.filter(approve_heartbeat=False, last_heartbeat__gt=0):
+    # for connection in active_connections.filter(approve_heartbeat=False, last_heartbeat__gt=0):
+    #
+    #     print(connection)
+    #
+    #     async_to_sync(channel_layer.group_discard)("active_connections", connection.channel_name)
+    #     async_to_sync(channel_layer.group_discard)(f'client_{connection.user.id}', connection.channel_name)
 
-        print(connection)
+        # async_to_sync(channel_layer.group_add)(f'active_connections_to_close', connection.channel_name)
 
-        async_to_sync(channel_layer.group_discard)("active_connections", connection.channel_name)
-        async_to_sync(channel_layer.group_discard)(f'client_{connection.user.id}', connection.channel_name)
-
-        async_to_sync(channel_layer.group_add)(f'active_connections_to_close', connection.channel_name)
-
-    print(1)
-    async_to_sync(channel_layer.group_send)("active_connections_to_close", {"type": "disconnect.by.heartbeat",
-                                                                   "message": "disconnect"})
+    # print(1)
+    # async_to_sync(channel_layer.group_send)("active_connections_to_close", {"type": "disconnect.by.heartbeat",
+    #                                                                "message": "disconnect"})
 
 
 
