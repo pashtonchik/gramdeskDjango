@@ -1,3 +1,5 @@
+import os
+
 from django.http import HttpResponse, FileResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -24,14 +26,16 @@ def get_attachment(request, attachment):
     with open(file_location, 'rb') as f:
        file_data = f.read()
 
+    ext = os.path.splitext(str(cur_attachment.file.filename))[1]
     # sending response
-    # response = HttpResponse(file_data, content_type='application/pdf')
-    # response['Content-Disposition'] = 'attachment; filename="cheque.pdf"'
+    response = HttpResponse(file_data, content_type=f'application/{ext}')
+    response['Content-Disposition'] = f'attachment; filename="{cur_attachment.file.filename}"'
 
-    return FileResponse(open(file_location, 'rb'))
+    # return FileResponse(open(file_location, 'rb'))
 
     # except IOError:
     #     # handle file not exist case here
     #     response = HttpResponseNotFound('<h1>File not exist</h1>')
 
     # return Response(status=status.HTTP_200_OK, data=data)
+    return response
