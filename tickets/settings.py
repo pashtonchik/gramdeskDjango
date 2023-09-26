@@ -132,7 +132,7 @@ AUTH_PASSWORD_VALIDATORS = [
 import rsa
 
 with open('Profiat-GramDesk-Pub.pem', 'r') as content_file:
-    PROFIAT_PUBKEY = content_file.read()
+    PROFIAT_PUBKEY = rsa.PublicKey.load_pkcs1_openssl_pem(content_file.read())
 
 with open('Profiat-GramDesk-Priv.pem', 'r') as content_file:
     PEERXBOT_PUBKEY = content_file.read()
