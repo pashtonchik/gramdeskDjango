@@ -18,7 +18,7 @@ def get_attachment(request, attachment):
     if not cur_attachment.file:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    file_location = MEDIA_ROOT + '/' + cur_attachment.cheque.name
+    file_location = MEDIA_ROOT + '/' + cur_attachment.file.name
 
     # try:
     with open(file_location, 'rb') as f:
