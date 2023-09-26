@@ -131,11 +131,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 import rsa
 
-with open('Profiat-GramDesk_Pub.pem', 'r') as content_file:
-    PROFIAT_PUBKEY = content_file.read()
+# with open('Profiat-GramDesk_Pub.pem', 'r') as content_file:
+#     PROFIAT_PUBKEY = content_file.read()
+#
+# with open('Profiat-GramDesk_Priv.pem', 'r') as content_file:
+#     PEERXBOT_PUBKEY = content_file.read()
 
-with open('Profiat-GramDesk_Priv.pem', 'r') as content_file:
-    PEERXBOT_PUBKEY = content_file.read()
+PROFIAT_PUBKEY=123
 
 
 # Internationalization
