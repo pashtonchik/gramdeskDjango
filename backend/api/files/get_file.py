@@ -29,7 +29,7 @@ def get_attachment(request, attachment):
     ext = os.path.splitext(str(cur_attachment.file.filename))[1]
     # sending response
     response = HttpResponse(file_data, content_type=f'application/{ext}')
-    response['Content-Disposition'] = f'attachment; filename="{cur_attachment.file.filename}"'
+    response['Content-Disposition'] = f'attachment; filename="{cur_attachment.file.name}"'
 
     # return FileResponse(open(file_location, 'rb'))
 
