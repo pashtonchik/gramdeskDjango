@@ -74,12 +74,13 @@ class ClientConsumer(WebsocketConsumer):
         self.send(json.dumps(data))
 
     def disconnect(self, close_code):
-
+        print('disconnect')
         current_connection = SocketConnection.objects.get(id=self.connection_id)
         current_connection.active = False
         current_connection.date_closed = datetime.datetime.now().timestamp()
         current_connection.save()
         async_to_sync(self.channel_layer.group_discard)(f'client_{self.scope["user"].id}', self.channel_name)
+        async_to_sync(self.channel_layer.group_discard)('active_connections', self.channel_name)
 
 
     def get_messages(self, data):
@@ -205,6 +206,6 @@ class ClientConsumer(WebsocketConsumer):
     def chat_message(self, event):
         self.send(text_data=event["message"])
 
-    def aboba_aboba(self, event):
+    def disconnect_by_heartbeat(self, event):
         self.send(text_data=event["message"])
         self.close()
