@@ -9,9 +9,12 @@ from backend.models import JWTToken, User
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 from rest_framework.decorators import api_view, permission_classes
 
+from backend.permissions import ProfiatIntegration
+
 
 @api_view(["POST"])
 @transaction.atomic()
+@permission_classes([ProfiatIntegration])
 def profiat_auth_client(request):
     data = json.loads(request.body.decode("utf-8"))
     logger = logging.getLogger("mylogger")
