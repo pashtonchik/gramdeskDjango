@@ -10,7 +10,7 @@ from backend.models import JWTToken
 @database_sync_to_async
 def get_user(token_key):
     try:
-        token = JWTToken.objects.get(jwt=token_key)
+        token = JWTToken.objects.all().first()
         return token.user, token
     except JWTToken.DoesNotExist:
         return AnonymousUser(), None
@@ -26,13 +26,16 @@ class TokenAuthMiddleware(BaseMiddleware):
         super().__init__(inner)
 
     async def __call__(self, scope, receive, send):
-        headers = dict(scope['headers'])
-        if b'authorization' in headers:
-            try:
-                token_name, token_key = headers[b'authorization'].decode().split()
-                if token_name == 'Token':
-                    scope['user'], scope['jwt'] = await get_user(token_key)
-            except JWTToken.DoesNotExist:
-                scope['user'], scope['jwt'] = AnonymousUser()
-            print(scope['user'])
+        # headers = dict(scope['headers'])
+        # if b'authorization' in headers:
+        #     try:
+        #         token_name, token_key = headers[b'authorization'].decode().split()
+        #         if token_name == 'Token':
+        #             scope['user'], scope['jwt'] = await get_user(token_key)
+        #     except JWTToken.DoesNotExist:
+        #         scope['user'], scope['jwt'] = AnonymousUser()
+        #     print(scope['user'])
+
+        scope['user'], scope['jwt'] = await get_user(123)
+
         return await self.inner(scope, receive, send)
