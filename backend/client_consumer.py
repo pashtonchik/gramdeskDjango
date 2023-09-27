@@ -59,7 +59,6 @@ class ClientConsumer(WebsocketConsumer):
         data['total_messages'] = last_messages.count()
         data['messages'] = TicketMessageSerializer(last_messages[:20], many=True).data
 
-        print(data)
         self.accept()
 
         new_socket_connection = SocketConnection(
