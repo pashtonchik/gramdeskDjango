@@ -22,8 +22,8 @@ urlpatterns = [
 
     # Support
     path('api/v3/support/auth/', auth),
-    path('api/v2/support/auth/verify/', verify_token),
-    path('api/v2/support/auth/refresh/', refresh_support),
+    path('api/v3/support/auth/verify/', verify_token),
+    path('api/v3/support/auth/refresh/', refresh_support),
 
 
 ] + router.urls
