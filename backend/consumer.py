@@ -68,7 +68,7 @@ class LiveScoreConsumer(WebsocketConsumer):
 
     def get_messages(self, data):
         chat_id = data['chat_id']
-        last_message = data.get(['last_message_id'], None)
+        last_message = data.get('last_message_id', None)
 
         ticket = Ticket.objects.get(uuid=chat_id)
         last_messages = TicketMessage.objects.filter(ticket=ticket).order_by('-date_created')
