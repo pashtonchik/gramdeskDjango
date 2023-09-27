@@ -14,7 +14,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
 
 from backend.models import Ticket, TicketMessage, User
-from backend.serializers import TicketSerializer, TicketSupportMessageSerializer
+from backend.serializers import TicketSerializer, TicketSupportMessageSerializer, TicketClientMessageSerializer
 from tickets.celery_tasks.send_message_to_client import send_message_to_client
 from django.db import transaction
 
@@ -114,7 +114,13 @@ class LiveScoreConsumer(WebsocketConsumer):
         }
         self.send(text_data=json.dumps(responce_data))
 
-        output_data = {
+        output_data_clients = {
+            'event': "incoming",
+            'type': 'new_message',
+            'message': TicketClientMessageSerializer(message).data,
+        }
+
+        output_data_supports = {
             'event': "incoming",
             'type': 'new_message',
             'message': TicketSupportMessageSerializer(message).data,
@@ -122,9 +128,9 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
-                                                           "message": json.dumps(output_data)})
+                                                           "message": json.dumps(output_data_supports)})
         async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
-                                                           "message": json.dumps(output_data)})
+                                                           "message": json.dumps(output_data_clients)})
 
         ticket.save()
 
@@ -143,17 +149,23 @@ class LiveScoreConsumer(WebsocketConsumer):
         }
         self.send(text_data=json.dumps(responce_data))
 
-        data = {
+        data_supports = {
             'event': 'incoming',
             'type': 'update_message',
             'ok': True,
             'message': TicketSupportMessageSerializer(cur_message).data,
         }
+        data_clients = {
+            'event': 'incoming',
+            'type': 'update_message',
+            'ok': True,
+            'message': TicketClientMessageSerializer(cur_message).data,
+        }
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
-                                                          "message": json.dumps(data)})
+                                                          "message": json.dumps(data_supports)})
         async_to_sync(channel_layer.group_send)(f"client_{cur_message.tg_user.id}", {"type": "chat.message",
-                                                           "message": json.dumps(data)})
+                                                           "message": json.dumps(data_clients)})
 
     @transaction.atomic()
     def close_ticket(self, data):
