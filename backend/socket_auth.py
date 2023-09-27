@@ -26,15 +26,15 @@ class TokenAuthMiddleware(BaseMiddleware):
         super().__init__(inner)
 
     async def __call__(self, scope, receive, send):
-        # headers = dict(scope['headers'])
-        # if b'authorization' in headers:
-        #     try:
-        #         token_name, token_key = headers[b'authorization'].decode().split()
-        #         if token_name == 'Token':
-        #             scope['user'], scope['jwt'] = await get_user(token_key)
-        #     except JWTToken.DoesNotExist:
-        #         scope['user'], scope['jwt'] = AnonymousUser()
-        #     print(scope['user'])
+        headers = dict(scope['headers'])
+        if b'authorization' in headers:
+            try:
+                token_name, token_key = headers[b'authorization'].decode().split()
+                if token_name == 'Token':
+                    scope['user'], scope['jwt'] = await get_user(token_key)
+            except JWTToken.DoesNotExist:
+                scope['user'], scope['jwt'] = AnonymousUser()
+            print(scope['user'])
 
         scope['user'], scope['jwt'] = await get_user(123)
 
