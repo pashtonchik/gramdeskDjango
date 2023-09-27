@@ -56,7 +56,7 @@ def profiat_auth_client(request):
         client.save()
 
     if not Ticket.objects.filter(tg_user=client).exists():
-        new_ticket = Ticket(
+        Ticket(
             tg_user=client,
             status="inactive",
         ).save()
