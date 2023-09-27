@@ -37,7 +37,7 @@ def close_access(request):
     token_mas = []
     for i in jwt_to_close:
         token_mas.append(BlacklistedToken(token=i.refresh))
-    BlacklistedToken.objects.bulk_create(token_mas, ignore_conflicts=True)
+    BlacklistedToken.objects.bulk_create(token_mas)
 
     channel_layer = get_channel_layer()
     for connection in sockets_for_close:
