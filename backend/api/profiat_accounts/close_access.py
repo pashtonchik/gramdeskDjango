@@ -52,4 +52,4 @@ def close_access(request):
 
     sockets_for_close.update(active=False)
 
-    return Response(status=status.HTTP_200_OK, data={"ok": True})
+    return Response(status=status.HTTP_200_OK, data={"ok": True, 'jwt_to_close': jwt_to_close.count()})
