@@ -38,7 +38,6 @@ def close_access(request):
             token=i.refresh,
         ).save()
 
-    # jwt_to_close.update(active=False)
     logger.info(123)
     #     token_mas.append(BlacklistedToken(token=i.refresh))
     # BlacklistedToken.objects.bulk_create(token_mas)
@@ -50,6 +49,7 @@ def close_access(request):
     async_to_sync(channel_layer.group_send)("close_access", {"type": "disconnect.by.heartbeat",
                                                                    "message": "disconnect"})
 
+    jwt_to_close.update(active=False)
     sockets_for_close.update(active=False)
 
     return Response(status=status.HTTP_200_OK, data={"ok": True, 'jwt_to_close': jwt_to_close.count()})
