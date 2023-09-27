@@ -5,7 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.db import transaction
 from django.db.models import F
 import logging
-from backend.models import JWTToken, User
+from backend.models import JWTToken, User, Ticket
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 from rest_framework.decorators import api_view, permission_classes
 
@@ -54,6 +54,12 @@ def profiat_auth_client(request):
             client.username = f"Profiat User {username}"
 
         client.save()
+
+    if not Ticket.objects.filter(tg_user=client).exists():
+        new_ticket = Ticket(
+            tg_user=client,
+            status="inactive",
+        ).save()
 
 
     refresh = RefreshToken.for_user(client)

@@ -109,6 +109,9 @@ class ClientConsumer(WebsocketConsumer):
         new_message = data['message']
         ticket = Ticket.objects.select_for_update().get(uuid=new_message['chat_id'])
 
+        if ticket.status == 'inactive':
+            ticket.status = 'created'
+
         message = TicketMessage(
             tg_user=ticket.tg_user,
             employee=User.objects.all().first(),
