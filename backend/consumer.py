@@ -67,12 +67,19 @@ class LiveScoreConsumer(WebsocketConsumer):
 
     def get_messages(self, data):
         chat_id = data['chat_id']
-        last_message = data['last_message_id']
+        last_message = data.get(['last_message_id'], None)
+
         ticket = Ticket.objects.get(uuid=chat_id)
         last_messages = TicketMessage.objects.filter(ticket=ticket).order_by('-date_created')
-        last_message = last_messages.get(id=last_message)
+        if last_message:
+            last_message = last_messages.get(id=last_message)
 
-        message_to_output = last_messages.filter(date_created__lt=last_message.date_created).order_by('-date_created')
+
+            message_to_output = last_messages.filter(date_created__lt=last_message.date_created).order_by('-date_created')
+
+        else:
+            message_to_output = last_messages.order_by('-date_created')
+
 
         output_data = {}
         output_data['action'] = 'get_messages'
@@ -172,20 +179,29 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         data = json.loads(text_data)
 
-        if data['action'] == 'open_chat':
-            self.open_chat(data)
+        if data['event'] == 'outgoing':
 
-        elif data['action'] == 'get_messages':
-            self.get_messages(data)
+            if data['action'] == 'open_chat':
+                self.open_chat(data)
 
-        elif data['action'] == 'send_message':
-            self.new_message_to_client(data)
+            elif data['action'] == 'get_messages':
+                self.get_messages(data)
 
-        elif data['action'] == 'read_message':
-            self.read_message_by_support(data)
+            elif data['action'] == 'send_message':
+                self.new_message_to_client(data)
 
-        elif data['action'] == 'close_ticket':
-            self.close_ticket(data)
+            elif data['action'] == 'read_message':
+                self.read_message_by_support(data)
+
+            elif data['action'] == 'close_ticket':
+                self.close_ticket(data)
+        else:
+            data = {
+                'message': 'Incorrect EventType',
+                'ok': False,
+            }
+
+        self.send(json.dumps(data))
 
         # text_data_json = json.loads(text_data)
         # message = text_data_json["message"]

@@ -176,23 +176,31 @@ class ClientConsumer(WebsocketConsumer):
 
             try:
                 data = json.loads(text_data)
+                if data['event'] == 'outgoing':
+                    if data['action'] == 'get_messages':
+                        self.get_messages(data)
 
-                if data['action'] == 'get_messages':
-                    self.get_messages(data)
+                    elif data['action'] == 'send_message':
+                        self.new_message_to_support(data)
 
-                elif data['action'] == 'send_message':
-                    self.new_message_to_support(data)
+                    elif data['action'] == 'read_message':
+                        self.read_message_by_client(data)
 
-                elif data['action'] == 'read_message':
-                    self.read_message_by_client(data)
+                    else:
+                        data = {
+                            'message': 'Incorrect Action',
+                            'ok': False,
+                        }
 
+                        self.send(json.dumps(data))
                 else:
                     data = {
-                        'message': 'Incorrect Action',
+                        'message': 'Incorrect EventType',
                         'ok': False,
                     }
 
-                    self.send(json.dumps(data))
+                self.send(json.dumps(data))
+
 
 
             except JSONDecodeError:
