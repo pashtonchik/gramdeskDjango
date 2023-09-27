@@ -104,6 +104,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             message_text=new_message['content'],
             ticket=ticket,
         )
+        message.save()
 
 
         responce_data = {
