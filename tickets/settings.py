@@ -139,10 +139,10 @@ with open('Profiat-GramDesk-Priv.pem', 'r') as content_file:
     PEERXBOT_PUBKEY = content_file.read()
 
 
-with open('privateKey.pem', 'r') as content_file:
+with open('privateKey_jwt.pem', 'r') as content_file:
     private_key_jwt = content_file.read()
 
-with open('publicKey.pem', 'r') as content_file:
+with open('publicKey_jwt.pem', 'r') as content_file:
     pub_key_jwt = content_file.read()
 
 

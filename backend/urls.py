@@ -5,14 +5,13 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from backend.api.files.get_file import get_attachment
 from backend.api.message_from_telegram.message_from_user import new_message
 from backend.api.profiat_accounts.auth import profiat_auth_client
-from backend.api.profiat_accounts.refresh import UserView
 from backend.permissions import ProfiatIntegration
 
 router = routers.DefaultRouter()
 
 urlpatterns = [
     path('api/v2/client/auth/', profiat_auth_client),
-    path('api/v2/client/auth/refresh/', UserView.as_view()),
+    # path('api/v2/client/auth/refresh/', UserView.as_view()),
     # path('api/v3/accounts/auth/', auth),
     # path('api/v3/accounts/auth/refresh/', TokenRefreshView.as_view()),
     # path('api/v3/accounts/signup/', registrate),
