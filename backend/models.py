@@ -11,12 +11,12 @@ from tickets.settings import MEDIA_ROOT
 
 class User(AbstractUser):
 
-    sender_selector = (
+    user_type_selector = (
         ('client', 'Клиент'),
-        ('employee', 'Сотрудник')
+        ('support', 'Поддержка')
     )
 
-    type = models.CharField(max_length=5000, blank=True)
+    type = models.CharField(max_length=5000, blank=True, choices=user_type_selector)
     my_email = models.CharField(max_length=5000, unique=True, null=True, blank=True)
     username = models.CharField(max_length=50, unique=True)
     phone = models.CharField(max_length=50, blank=True, null=True)
