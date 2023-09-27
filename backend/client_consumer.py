@@ -201,7 +201,7 @@ class ClientConsumer(WebsocketConsumer):
                         'ok': False,
                     }
 
-                self.send(json.dumps(data))
+                    self.send(json.dumps(data))
 
 
 
