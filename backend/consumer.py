@@ -138,14 +138,14 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         responce_data = {
             'event': "response_action",
-            'action': "send_message",
+            'action': "update_message",
             'message': TicketMessageSerializer(cur_message).data,
         }
         self.send(text_data=json.dumps(responce_data))
 
         data = {
             'event': 'incoming',
-            'type': 'read_by_receiver',
+            'type': 'update_message',
             'ok': True,
             'message': TicketMessageSerializer(cur_message).data,
         }

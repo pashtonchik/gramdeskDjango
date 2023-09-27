@@ -155,13 +155,13 @@ class ClientConsumer(WebsocketConsumer):
 
         response_data = {
             'event': "response_action",
-            'action': "read_by_receiver",
+            'action': "update_message",
             'message': TicketMessageSerializer(cur_message).data,
         }
         self.send(text_data=json.dumps(response_data))
         data = {
             'event': 'incoming',
-            'type': 'read_by_receiver',
+            'type': 'update_message',
             'message': TicketMessageSerializer(cur_message).data,
         }
 
