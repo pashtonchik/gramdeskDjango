@@ -14,7 +14,7 @@ from backend.permissions import ProfiatIntegration
 
 @api_view(["POST"])
 @transaction.atomic()
-@permission_classes([ProfiatIntegration])
+# @permission_classes([ProfiatIntegration])
 def profiat_auth_client(request):
     data = json.loads(request.body.decode("utf-8"))
     logger = logging.getLogger("mylogger")
