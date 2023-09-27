@@ -97,7 +97,13 @@ class TicketMessage(models.Model):
         else:
             return self.employee.id
 
-    def get_is_outgoing(self):
+    def get_is_outgoing_client(self):
+        if self.sender == 'client':
+            return True
+        else:
+            return False
+
+    def get_is_outgoing_support(self):
         if self.sender == 'client':
             return False
         else:

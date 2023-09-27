@@ -14,7 +14,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
 
 from backend.models import Ticket, TicketMessage, User
-from backend.serializers import TicketSerializer, TicketMessageSerializer
+from backend.serializers import TicketSerializer, TicketSupportMessageSerializer
 from tickets.celery_tasks.send_message_to_client import send_message_to_client
 from django.db import transaction
 
@@ -63,7 +63,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         output_data['chat_id'] = chat_id
         output_data['total_messages'] = last_messages.count()
         # output_data['client'] = ClientSerializer(client).data
-        output_data['messages'] = TicketMessageSerializer(last_messages[:20], many=True).data
+        output_data['messages'] = TicketSupportMessageSerializer(last_messages[:20], many=True).data
         self.send(text_data=json.dumps(output_data))
 
     def get_messages(self, data):
@@ -87,7 +87,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         output_data['action'] = 'get_messages'
         output_data['ok'] = True
         output_data['total_messages'] = last_messages.count()
-        output_data['messages'] = TicketMessageSerializer(message_to_output[:20], many=True).data
+        output_data['messages'] = TicketSupportMessageSerializer(message_to_output[:20], many=True).data
         self.send(text_data=json.dumps(output_data))
 
     @transaction.atomic()
@@ -110,14 +110,14 @@ class LiveScoreConsumer(WebsocketConsumer):
         responce_data = {
             'event': "response_action",
             'action': "send_message",
-            'message': TicketMessageSerializer(message).data,
+            'message': TicketSupportMessageSerializer(message).data,
         }
         self.send(text_data=json.dumps(responce_data))
 
         output_data = {
             'event': "incoming",
             'type': 'new_message',
-            'message': TicketMessageSerializer(message).data,
+            'message': TicketSupportMessageSerializer(message).data,
         }
 
         channel_layer = get_channel_layer()
@@ -139,7 +139,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         responce_data = {
             'event': "response_action",
             'action': "update_message",
-            'message': TicketMessageSerializer(cur_message).data,
+            'message': TicketSupportMessageSerializer(cur_message).data,
         }
         self.send(text_data=json.dumps(responce_data))
 
@@ -147,7 +147,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             'event': 'incoming',
             'type': 'update_message',
             'ok': True,
-            'message': TicketMessageSerializer(cur_message).data,
+            'message': TicketSupportMessageSerializer(cur_message).data,
         }
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",

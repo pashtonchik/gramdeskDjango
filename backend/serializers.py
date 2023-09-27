@@ -15,6 +15,14 @@ class TicketMessageSerializer(serializers.ModelSerializer):
         model = TicketMessage
 
 
+class TicketClientMessageSerializer(TicketMessageSerializer):
+    is_outgoing = serializers.ReadOnlyField(source='get_is_outgoing_client')
+
+
+class TicketSupportMessageSerializer(TicketMessageSerializer):
+    is_outgoing = serializers.ReadOnlyField(source='get_is_outgoing_support')
+
+
 class TicketSerializer(serializers.ModelSerializer):
     count_unread_messages = serializers.ReadOnlyField(source='get_count_unread_messages')
     last_message = serializers.ReadOnlyField(source='get_last_message')
