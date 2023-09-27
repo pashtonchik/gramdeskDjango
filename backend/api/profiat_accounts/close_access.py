@@ -39,6 +39,7 @@ def close_access(request):
         ).save()
 
     jwt_to_close.update(active=False)
+    logger.info(123)
     #     token_mas.append(BlacklistedToken(token=i.refresh))
     # BlacklistedToken.objects.bulk_create(token_mas)
 
