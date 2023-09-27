@@ -33,9 +33,6 @@ def refresh(request):
     if old_refresh.user.is_blocked:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={'ok': False, 'message': "Refresh is not valid."})
 
-    if not old_refresh.user.groups.filter(name='profiat_default_user').exists():
-        return Response(status=status.HTTP_400_BAD_REQUEST, data={'ok': False, 'message': "Refresh is not valid."})
-
     logger.info(old_refresh.id)
 
     outstanding = JWTToken.objects.select_for_update().filter(user=old_refresh.user, active=True)
