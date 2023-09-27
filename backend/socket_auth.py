@@ -16,12 +16,7 @@ def get_user(token_key):
         return AnonymousUser(), None
 
 
-
 class TokenAuthMiddleware(BaseMiddleware):
-    """
-    Token authorization middleware for Django Channels 2
-    """
-
     def __init__(self, inner):
         super().__init__(inner)
 
