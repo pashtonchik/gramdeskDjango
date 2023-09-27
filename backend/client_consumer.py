@@ -107,7 +107,7 @@ class ClientConsumer(WebsocketConsumer):
     @transaction.atomic()
     def new_message_to_support(self, data):
         new_message = data['message']
-        ticket = Ticket.objects.select_for_update().get(uuid=new_message['chat_id'])
+        ticket = Ticket.objects.select_for_update().get(uuid=new_message['chat_id'], tg_user=self.scope['user'])
 
         if ticket.status == 'inactive':
             ticket.status = 'created'

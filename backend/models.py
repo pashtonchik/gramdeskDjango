@@ -55,7 +55,7 @@ class Ticket(models.Model):
             return None
 
     def get_user_name(self):
-        return self.tg_user.tg_username
+        return self.tg_user.username
 
 
 class TicketMessage(models.Model):
