@@ -32,13 +32,13 @@ def close_access(request):
     sockets_for_close = SocketConnection.objects.select_for_update().filter(user=current_user, active=True)
     jwt_to_close = JWTToken.objects.select_for_update().filter(user=current_user, active=True)
 
-    jwt_to_close.update(active=False)
-
     token_mas = []
     for i in jwt_to_close:
         BlacklistedToken(
             token=i.refresh,
         ).save()
+
+    jwt_to_close.update(active=False)
     #     token_mas.append(BlacklistedToken(token=i.refresh))
     # BlacklistedToken.objects.bulk_create(token_mas)
 
