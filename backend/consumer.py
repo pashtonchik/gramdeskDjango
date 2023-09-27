@@ -76,10 +76,10 @@ class LiveScoreConsumer(WebsocketConsumer):
             last_message = last_messages.get(id=last_message)
 
 
-            message_to_output = last_messages.filter(date_created__lt=last_message.date_created).order_by('date_created')
+            message_to_output = last_messages.filter(date_created__lt=last_message.date_created).order_by('-date_created')
 
         else:
-            message_to_output = last_messages.order_by('date_created')
+            message_to_output = last_messages.order_by('-date_created')
 
 
         output_data = {}

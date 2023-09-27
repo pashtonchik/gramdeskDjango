@@ -87,7 +87,7 @@ class ClientConsumer(WebsocketConsumer):
         chat_id = data['chat_id']
         last_message = data.get('last_message_id', None)
         ticket = Ticket.objects.get(uuid=chat_id)
-        last_messages = TicketMessage.objects.filter(ticket=ticket).order_by('date_created')
+        last_messages = TicketMessage.objects.filter(ticket=ticket).order_by('-date_created')
         if last_message:
             last_message = last_messages.get(id=last_message)
 
@@ -95,7 +95,7 @@ class ClientConsumer(WebsocketConsumer):
                 '-date_created')
 
         else:
-            message_to_output = last_messages.order_by('date_created')
+            message_to_output = last_messages.order_by('-date_created')
 
         output_data = {}
         output_data['event'] = 'response_action'
