@@ -76,10 +76,10 @@ class LiveScoreConsumer(WebsocketConsumer):
             last_message = last_messages.get(id=last_message)
 
 
-            message_to_output = last_messages.filter(date_created__lt=last_message.date_created).order_by('-date_created')
+            message_to_output = last_messages.filter(date_created__lt=last_message.date_created).order_by('date_created')
 
         else:
-            message_to_output = last_messages.order_by('-date_created')
+            message_to_output = last_messages.order_by('date_created')
 
 
         output_data = {}
@@ -114,7 +114,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         }
         self.send(text_data=json.dumps(responce_data))
 
-        data = {
+        output_data = {
             'event': "incoming",
             'type': 'new_message',
             'message': TicketMessageSerializer(message).data,
@@ -122,9 +122,9 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
-                                                           "message": json.dumps(data)})
+                                                           "message": json.dumps(output_data)})
         async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
-                                                           "message": json.dumps(data)})
+                                                           "message": json.dumps(output_data)})
 
         ticket.save()
 
