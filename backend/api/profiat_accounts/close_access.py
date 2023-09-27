@@ -24,7 +24,7 @@ def close_access(request):
 
 
     current_user = User.objects.filter(profiat_id=profiat_id)
-    if current_user.count != 1:
+    if current_user.count() != 1:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={'ok': False, 'message': "User does not exists."})
     else:
         current_user = current_user.first()
