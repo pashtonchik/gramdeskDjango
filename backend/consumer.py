@@ -114,7 +114,8 @@ class LiveScoreConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps(responce_data))
 
         data = {
-            'type': 'accept_new_message',
+            'event': "incoming",
+            'type': 'new_message',
             'message': TicketMessageSerializer(message).data,
         }
 
@@ -142,7 +143,8 @@ class LiveScoreConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps(responce_data))
 
         data = {
-            'type': 'accept_read_message',
+            'event': 'incoming',
+            'type': 'read_by_receiver',
             'ok': True,
             'message': TicketMessageSerializer(cur_message).data,
         }
@@ -171,6 +173,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             cur_ticket.save()
 
             data = {
+                'event': "incoming",
                 'type': 'accept_close_ticket',
                 'ok': True,
                 'ticket': TicketSerializer(cur_ticket).data,
@@ -214,9 +217,6 @@ class LiveScoreConsumer(WebsocketConsumer):
 
 
     def chat_message(self, event):
-        event['message'] = json.dumps(event['message'])
-        event['message']['event'] = 'incoming'
-        event['message'] = json.loads(event['message'])
         self.send(text_data=event["message"])
 
 

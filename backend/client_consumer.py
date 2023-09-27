@@ -128,6 +128,12 @@ class ClientConsumer(WebsocketConsumer):
         }
         self.send(text_data=json.dumps(responce_data))
 
+        data = {
+            'event': "incoming",
+            'type': 'new_message',
+            'message': TicketMessageSerializer(message).data,
+        }
+
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
                                                            "message": json.dumps(data)})
@@ -144,22 +150,18 @@ class ClientConsumer(WebsocketConsumer):
         cur_message.read_by_received = True
         cur_message.save()
 
-        data = {
-            'type': 'accept_read_message',
-            'ok': True,
-            'message': TicketMessageSerializer(cur_message).data,
-        }
 
-
-        responce_data = {
+        response_data = {
             'event': "response_action",
-            'action': "read_message",
+            'action': "read_by_receiver",
             'message': TicketMessageSerializer(cur_message).data,
         }
-        self.send(text_data=json.dumps(responce_data))
-        #
-        #   отправка саппорту по каналу инфы что сообщение прочтено клиентом
-        #
+        self.send(text_data=json.dumps(response_data))
+        data = {
+            'event': 'incoming',
+            'type': 'read_by_receiver',
+            'message': TicketMessageSerializer(cur_message).data,
+        }
 
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
@@ -213,7 +215,6 @@ class ClientConsumer(WebsocketConsumer):
                 self.send(json.dumps(data))
 
     def chat_message(self, event):
-        event['message']['event'] = 'incoming'
         self.send(text_data=event["message"])
 
     def disconnect_by_heartbeat(self, event):
