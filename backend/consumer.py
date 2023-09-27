@@ -57,7 +57,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         unread_message.update(read_by_received=True)
 
         output_data = {}
-        output_data['event'] = 'responce_action'
+        output_data['event'] = 'response_action'
         output_data['action'] = 'open_chat'
         output_data['ok'] = True
         output_data['chat_id'] = chat_id
@@ -83,7 +83,7 @@ class LiveScoreConsumer(WebsocketConsumer):
 
 
         output_data = {}
-        output_data['event'] = 'responce_action'
+        output_data['event'] = 'response_action'
         output_data['action'] = 'get_messages'
         output_data['ok'] = True
         output_data['total_messages'] = last_messages.count()
@@ -107,7 +107,7 @@ class LiveScoreConsumer(WebsocketConsumer):
 
 
         responce_data = {
-            'event': "responce_action",
+            'event': "response_action",
             'action': "send_message",
             'message': TicketMessageSerializer(message).data,
         }
@@ -135,7 +135,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         cur_message.save()
 
         responce_data = {
-            'event': "responce_action",
+            'event': "response_action",
             'action': "send_message",
             'message': TicketMessageSerializer(cur_message).data,
         }

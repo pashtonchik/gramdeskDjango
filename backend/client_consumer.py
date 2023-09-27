@@ -98,7 +98,7 @@ class ClientConsumer(WebsocketConsumer):
             message_to_output = last_messages.order_by('-date_created')
 
         output_data = {}
-        output_data['event'] = 'responce_action'
+        output_data['event'] = 'response_action'
         output_data['action'] = 'get_messages'
         output_data['ok'] = True
         output_data['total_messages'] = last_messages.count()
@@ -122,7 +122,7 @@ class ClientConsumer(WebsocketConsumer):
         message.save()
 
         responce_data = {
-            'event': "responce_action",
+            'event': "response_action",
             'action': "read_message",
             'message': TicketMessageSerializer(message).data,
         }
@@ -152,7 +152,7 @@ class ClientConsumer(WebsocketConsumer):
 
 
         responce_data = {
-            'event': "responce_action",
+            'event': "response_action",
             'action': "read_message",
             'message': TicketMessageSerializer(cur_message).data,
         }
