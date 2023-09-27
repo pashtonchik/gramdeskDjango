@@ -214,7 +214,9 @@ class LiveScoreConsumer(WebsocketConsumer):
 
 
     def chat_message(self, event):
+        event['message'] = json.dumps(event['message'])
         event['message']['event'] = 'incoming'
+        event['message'] = json.loads(event['message'])
         self.send(text_data=event["message"])
 
 
