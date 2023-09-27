@@ -7,6 +7,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 
+from backend.serializers import TicketMessageSerializer
 from tickets.settings import MEDIA_ROOT
 
 
@@ -49,10 +50,7 @@ class Ticket(models.Model):
         last_message = TicketMessage.objects.filter(ticket=self).order_by('-date_created')
         if last_message.exists():
             last_message = last_message.first()
-            return {
-                'content_type': last_message.content_type,
-                'message': last_message.message_text
-            }
+            return TicketMessageSerializer(last_message).data
         else:
             return None
 
