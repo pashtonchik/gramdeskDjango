@@ -112,7 +112,7 @@ class TicketMessage(models.Model):
         return None
 
     def get_date(self):
-        return int(self.date_created.timestamp()) if self.date_created else '-'
+        return self.date_created.isoformat() if self.date_created else '-'
 
 
 class Attachment(models.Model):
