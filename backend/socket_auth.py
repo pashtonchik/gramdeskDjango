@@ -37,5 +37,5 @@ class TokenAuthMiddleware(BaseMiddleware):
             print(scope['user'])
 
         scope['user'], scope['jwt'] = await get_user(123)
-
+        print(scope['user'])
         return await self.inner(scope, receive, send)
