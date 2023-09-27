@@ -85,12 +85,17 @@ class ClientConsumer(WebsocketConsumer):
 
     def get_messages(self, data):
         chat_id = data['chat_id']
-        last_message = data['last_message_id']
+        last_message = data.get(['last_message_id'], None)
         ticket = Ticket.objects.get(uuid=chat_id)
         last_messages = TicketMessage.objects.filter(ticket=ticket).order_by('-date_created')
-        last_message = last_messages.get(id=last_message)
+        if last_message:
+            last_message = last_messages.get(id=last_message)
 
-        message_to_output = last_messages.filter(date_created__lt=last_message.date_created).order_by('-date_created')
+            message_to_output = last_messages.filter(date_created__lt=last_message.date_created).order_by(
+                '-date_created')
+
+        else:
+            message_to_output = last_messages.order_by('-date_created')
 
         output_data = {}
         output_data['action'] = 'get_messages'
