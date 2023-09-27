@@ -217,6 +217,7 @@ class ClientConsumer(WebsocketConsumer):
                 self.send(json.dumps(data))
 
     def chat_message(self, event):
+        event['message']['event'] = 'incoming'
         self.send(text_data=event["message"])
 
     def disconnect_by_heartbeat(self, event):

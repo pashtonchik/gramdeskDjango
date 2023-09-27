@@ -57,7 +57,8 @@ class LiveScoreConsumer(WebsocketConsumer):
         unread_message.update(read_by_received=True)
 
         output_data = {}
-        output_data['type'] = 'chat_detail'
+        output_data['event'] = 'responce_action'
+        output_data['action'] = 'open_chat'
         output_data['ok'] = True
         output_data['chat_id'] = chat_id
         output_data['total_messages'] = last_messages.count()
@@ -82,6 +83,7 @@ class LiveScoreConsumer(WebsocketConsumer):
 
 
         output_data = {}
+        output_data['event'] = 'responce_action'
         output_data['action'] = 'get_messages'
         output_data['ok'] = True
         output_data['total_messages'] = last_messages.count()
@@ -102,25 +104,19 @@ class LiveScoreConsumer(WebsocketConsumer):
             message_text=new_message['content'],
             ticket=ticket,
         )
-        message.save()
-        if ticket.status == 'closed':
-            message.sending_state = 'failed'
-            message.save()
-            data = {
-                'try': 'accept_new_message',
-                'ok': False,
-                'info': 'Тикет уже был закрыт.',
-                'message': TicketMessageSerializer(message).data,
-            }
-        else:
 
-            send_message_to_client.delay(message_id=message.id)
 
-            data = {
-                'try': 'accept_new_message',
-                'ok': True,
-                'message': TicketMessageSerializer(message).data,
-            }
+        responce_data = {
+            'event': "responce_action",
+            'action': "send_message",
+            'message': TicketMessageSerializer(message).data,
+        }
+        self.send(text_data=json.dumps(responce_data))
+
+        data = {
+            'type': 'accept_new_message',
+            'message': TicketMessageSerializer(message).data,
+        }
 
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
@@ -138,6 +134,13 @@ class LiveScoreConsumer(WebsocketConsumer):
         cur_message.read_by_received = True
         cur_message.save()
 
+        responce_data = {
+            'event': "responce_action",
+            'action': "send_message",
+            'message': TicketMessageSerializer(cur_message).data,
+        }
+        self.send(text_data=json.dumps(responce_data))
+
         data = {
             'type': 'accept_read_message',
             'ok': True,
@@ -146,6 +149,8 @@ class LiveScoreConsumer(WebsocketConsumer):
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
                                                           "message": json.dumps(data)})
+        async_to_sync(channel_layer.group_send)(f"client_{cur_message.tg_user.id}", {"type": "chat.message",
+                                                           "message": json.dumps(data)})
 
     @transaction.atomic()
     def close_ticket(self, data):
@@ -209,4 +214,10 @@ class LiveScoreConsumer(WebsocketConsumer):
 
 
     def chat_message(self, event):
+        event['message']['event'] = 'incoming'
         self.send(text_data=event["message"])
+
+
+    def disconnect_by_heartbeat(self, event):
+        self.send(text_data=event["message"])
+        self.close()
