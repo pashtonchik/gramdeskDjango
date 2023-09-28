@@ -35,8 +35,8 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         data = {}
         data['type'] = 'tickets'
-        data['new_tickets'] = TicketSerializer(new_tickets, many=True).data
-        data['in_progress_tickets'] = TicketSerializer(in_progress_tickets, many=True).data
+        data['new_tickets'] = TicketSerializer(new_tickets, many=True, context={"from_user_type": "support"}).data
+        data['in_progress_tickets'] = TicketSerializer(in_progress_tickets, many=True, context={"from_user_type": "support"}).data
         data['ok'] = True
 
         self.accept()

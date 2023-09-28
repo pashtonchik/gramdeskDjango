@@ -53,7 +53,7 @@ class ClientConsumer(WebsocketConsumer):
 
         data = {}
         data['type'] = 'ticket'
-        data['ticket'] = TicketSerializer(cur_ticket).data
+        data['ticket'] = TicketSerializer(cur_ticket, context={"from_user_type": "client"}).data
         data['ok'] = True
         data['chat_id'] = str(cur_ticket.uuid)
         data['total_messages'] = last_messages.count()
