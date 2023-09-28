@@ -11,7 +11,7 @@ class TicketMessageSerializer(serializers.ModelSerializer):
     date = serializers.ReadOnlyField(source='get_date')
 
     class Meta:
-        fields = ('id', 'chat_id', 'sending_state', 'sender_id', 'is_outgoing', 'content', 'media', 'date', 'replied_message')
+        fields = ('id', 'chat_id', 'sending_state', 'sender_id', 'is_outgoing', 'content', 'media', 'date')
         model = TicketMessage
 
 
