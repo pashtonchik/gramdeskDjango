@@ -16,8 +16,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
 
 from backend.models import Ticket, TicketMessage, User, SocketConnection
-from backend.serializers import TicketSerializer, TicketMessageSerializer, TicketClientMessageSerializer, \
-    TicketSupportMessageSerializer
+from backend.serializers import TicketSerializer, TicketMessageSerializer
 from django.db import transaction
 
 
@@ -140,7 +139,7 @@ class ClientConsumer(WebsocketConsumer):
         data_supports = {
             'event': "incoming",
             'type': 'new_message',
-            'message': TicketMessageSerializer(message, context={"from_user_type": "client"}).data,
+            'message': TicketMessageSerializer(message, context={"from_user_type": "support"}).data,
         }
 
         channel_layer = get_channel_layer()
@@ -175,7 +174,7 @@ class ClientConsumer(WebsocketConsumer):
         data_supports = {
             'event': 'incoming',
             'type': 'update_message',
-            'message': TicketMessageSerializer(cur_message, context={"from_user_type": "client"}).data,
+            'message': TicketMessageSerializer(cur_message, context={"from_user_type": "support"}).data,
         }
 
         channel_layer = get_channel_layer()

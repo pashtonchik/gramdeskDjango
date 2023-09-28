@@ -14,8 +14,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
 
 from backend.models import Ticket, TicketMessage, User
-from backend.serializers import TicketSerializer, TicketSupportMessageSerializer, TicketClientMessageSerializer, \
-    TicketMessageSerializer
+from backend.serializers import TicketSerializer, TicketMessageSerializer
 from tickets.celery_tasks.send_message_to_client import send_message_to_client
 from django.db import transaction
 
@@ -118,7 +117,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         output_data_clients = {
             'event': "incoming",
             'type': 'new_message',
-            'message': TicketMessageSerializer(message, context={"from_user_type": "support"}).data,
+            'message': TicketMessageSerializer(message, context={"from_user_type": "client"}).data,
         }
 
         output_data_supports = {
@@ -162,7 +161,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             'event': 'incoming',
             'type': 'update_message',
             'ok': True,
-            'message': TicketMessageSerializer(cur_message, context={"from_user_type": "support"}).data,
+            'message': TicketMessageSerializer(cur_message, context={"from_user_type": "client"}).data,
         }
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
