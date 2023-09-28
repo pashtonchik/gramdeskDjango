@@ -103,13 +103,11 @@ class TicketMessage(models.Model):
         else:
             return False
 
-    def get_is_outgoing(self, from_user_type):
-        if self.sender == 'client' and from_user_type == 'client':
-            return True
-        elif self.sender == 'support' and from_user_type == 'support':
-            return True
-        else:
+    def get_is_outgoing_support(self, from_user_type):
+        if self.sender == 'client':
             return False
+        else:
+            return True
 
     def get_file(self):
         if self.message_file:
