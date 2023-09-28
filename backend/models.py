@@ -62,7 +62,7 @@ class TicketMessage(models.Model):
 
     sender_selector = (
         ('client', 'Клиент'),
-        ('employee', 'Сотрудник')
+        ('support', 'Сотрудник')
     )
 
     content_type_selector = (
@@ -103,11 +103,13 @@ class TicketMessage(models.Model):
         else:
             return False
 
-    def get_is_outgoing_support(self):
-        if self.sender == 'client':
-            return False
-        else:
+    def get_is_outgoing(self, from_user_type):
+        if self.sender == 'client' and from_user_type == 'client':
             return True
+        elif self.sender == 'support' and from_user_type == 'support':
+            return True
+        else:
+            return False
 
     def get_file(self):
         if self.message_file:

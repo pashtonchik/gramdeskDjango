@@ -63,7 +63,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         output_data['chat_id'] = chat_id
         output_data['total_messages'] = last_messages.count()
         # output_data['client'] = ClientSerializer(client).data
-        output_data['messages'] = TicketSupportMessageSerializer(last_messages[:20], many=True).data
+        output_data['messages'] = TicketSupportMessageSerializer(last_messages[:20], many=True, context={"from_user_type": "support"}).data
         self.send(text_data=json.dumps(output_data))
 
     def get_messages(self, data):
@@ -87,7 +87,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         output_data['action'] = 'get_messages'
         output_data['ok'] = True
         output_data['total_messages'] = last_messages.count()
-        output_data['messages'] = TicketSupportMessageSerializer(message_to_output[:20], many=True).data
+        output_data['messages'] = TicketSupportMessageSerializer(message_to_output[:20], many=True, context={"from_user_type": "support"}).data
         self.send(text_data=json.dumps(output_data))
 
     @transaction.atomic()
@@ -110,20 +110,20 @@ class LiveScoreConsumer(WebsocketConsumer):
         responce_data = {
             'event': "response_action",
             'action': "send_message",
-            'message': TicketSupportMessageSerializer(message).data,
+            'message': TicketSupportMessageSerializer(message, context={"from_user_type": "support"}).data,
         }
         self.send(text_data=json.dumps(responce_data))
 
         output_data_clients = {
             'event': "incoming",
             'type': 'new_message',
-            'message': TicketClientMessageSerializer(message).data,
+            'message': TicketClientMessageSerializer(message, context={"from_user_type": "support"}).data,
         }
 
         output_data_supports = {
             'event': "incoming",
             'type': 'new_message',
-            'message': TicketSupportMessageSerializer(message).data,
+            'message': TicketSupportMessageSerializer(message, context={"from_user_type": "support"}).data,
         }
 
         channel_layer = get_channel_layer()
@@ -147,7 +147,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         responce_data = {
             'event': "response_action",
             'action': "update_message",
-            'message': TicketSupportMessageSerializer(cur_message).data,
+            'message': TicketSupportMessageSerializer(cur_message, context={"from_user_type": "support"}).data,
         }
         self.send(text_data=json.dumps(responce_data))
 
@@ -155,13 +155,13 @@ class LiveScoreConsumer(WebsocketConsumer):
             'event': 'incoming',
             'type': 'update_message',
             'ok': True,
-            'message': TicketSupportMessageSerializer(cur_message).data,
+            'message': TicketSupportMessageSerializer(cur_message, context={"from_user_type": "support"}).data,
         }
         data_clients = {
             'event': 'incoming',
             'type': 'update_message',
             'ok': True,
-            'message': TicketClientMessageSerializer(cur_message).data,
+            'message': TicketClientMessageSerializer(cur_message, context={"from_user_type": "support"}).data,
         }
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
