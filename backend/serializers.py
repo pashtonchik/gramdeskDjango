@@ -20,7 +20,7 @@ class TicketMessageSerializer(ReplyToMessageSerializer):
     chat_id = serializers.CharField(source='get_ticket_id', read_only=True)
     sender_id = serializers.CharField(source='get_sender_id', read_only=True)
     content = serializers.ReadOnlyField(source='message_text')
-    reply_to_message = ReplyToMessageSerializer()
+    message_to_reply = ReplyToMessageSerializer()
     is_outgoing = serializers.SerializerMethodField('get_is_outgoing')
     media = serializers.ReadOnlyField(source='get_file')
     date = serializers.ReadOnlyField(source='get_date')
@@ -34,7 +34,7 @@ class TicketMessageSerializer(ReplyToMessageSerializer):
             return obj.get_is_outgoing_client()
 
     class Meta:
-        fields = ('id', 'chat_id', 'sending_state', 'sender_id', 'is_outgoing', 'content', 'media', 'date', "reply_to_message")
+        fields = ('id', 'chat_id', 'sending_state', 'sender_id', 'is_outgoing', 'content', 'media', 'date', "message_to_reply")
         model = TicketMessage
 
 
