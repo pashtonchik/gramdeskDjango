@@ -98,6 +98,13 @@ class TicketMessage(models.Model):
         else:
             return self.employee.id
 
+    def get_sender_username(self):
+        if self.sender == 'client':
+            return self.tg_user.username
+        else:
+            return self.employee.username
+
+
     def get_is_outgoing_client(self):
         if self.sender == 'client':
             return True
