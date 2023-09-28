@@ -51,7 +51,7 @@ class Ticket(models.Model):
             last_message = last_message.first()
 
             from backend.serializers import TicketMessageSerializer
-            return TicketMessageSerializer(last_message).data
+            return last_message
         else:
             return None
 
