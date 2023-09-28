@@ -82,6 +82,8 @@ class TicketMessage(models.Model):
     employee = models.ForeignKey(to=User, on_delete=models.PROTECT, blank=True, null=True, related_name='ticket_message_employee')
     tg_user = models.ForeignKey(to=User, on_delete=models.PROTECT, related_name='ticket_message_client')
     sending_state = models.CharField(max_length=50)
+    message_to_reply = models.ForeignKey(to='TicketMessage', on_delete=models.CASCADE, blank=True, null=True)
+    deleted = models.BooleanField(default=False)
     message_text = models.TextField()
     message_file = models.FileField()
     content_type = models.CharField(max_length=20)
