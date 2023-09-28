@@ -17,7 +17,6 @@ class TicketMessageSerializer(serializers.ModelSerializer):
 
 class TicketClientMessageSerializer(TicketMessageSerializer):
     is_outgoing = serializers.ReadOnlyField(source='get_is_outgoing_client')
-    replied_message = TicketClientMessageSerializer()
 
 
 class TicketSupportMessageSerializer(TicketMessageSerializer):
