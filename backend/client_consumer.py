@@ -58,7 +58,7 @@ class ClientConsumer(WebsocketConsumer):
         data['ok'] = True
         data['chat_id'] = str(cur_ticket.uuid)
         data['total_messages'] = last_messages.count()
-        data['messages'] = TicketMessageSerializer(last_messages[:20], many=True).data
+        data['messages'] = TicketMessageSerializer(last_messages[:20], many=True, context={"from_user_type": "client"}).data
 
         self.accept()
 
@@ -102,7 +102,7 @@ class ClientConsumer(WebsocketConsumer):
         output_data['action'] = 'get_messages'
         output_data['ok'] = True
         output_data['total_messages'] = last_messages.count()
-        output_data['messages'] = TicketMessageSerializer(message_to_output[:20], many=True).data
+        output_data['messages'] = TicketMessageSerializer(message_to_output[:20], many=True, context={"from_user_type": "client"}).data
         self.send(text_data=json.dumps(output_data))
 
     @transaction.atomic()
@@ -127,20 +127,20 @@ class ClientConsumer(WebsocketConsumer):
         responce_data = {
             'event': "response_action",
             'action': "read_message",
-            'message': TicketMessageSerializer(message).data,
+            'message': TicketMessageSerializer(message, context={"from_user_type": "client"}).data,
         }
         self.send(text_data=json.dumps(responce_data))
 
         data_clients = {
             'event': "incoming",
             'type': 'new_message',
-            'message': TicketMessageSerializer(message).data,
+            'message': TicketMessageSerializer(message, context={"from_user_type": "client"}).data,
         }
 
         data_supports = {
             'event': "incoming",
             'type': 'new_message',
-            'message': TicketMessageSerializer(message).data,
+            'message': TicketMessageSerializer(message, context={"from_user_type": "client"}).data,
         }
 
         channel_layer = get_channel_layer()
@@ -164,18 +164,18 @@ class ClientConsumer(WebsocketConsumer):
         response_data = {
             'event': "response_action",
             'action': "update_message",
-            'message': TicketMessageSerializer(cur_message).data,
+            'message': TicketMessageSerializer(cur_message, context={"from_user_type": "client"}).data,
         }
         self.send(text_data=json.dumps(response_data))
         data_clients = {
             'event': 'incoming',
             'type': 'update_message',
-            'message': TicketMessageSerializer(cur_message).data,
+            'message': TicketMessageSerializer(cur_message, context={"from_user_type": "client"}).data,
         }
         data_supports = {
             'event': 'incoming',
             'type': 'update_message',
-            'message': TicketMessageSerializer(cur_message).data,
+            'message': TicketMessageSerializer(cur_message, context={"from_user_type": "client"}).data,
         }
 
         channel_layer = get_channel_layer()
