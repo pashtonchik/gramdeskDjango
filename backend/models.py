@@ -103,7 +103,7 @@ class TicketMessage(models.Model):
         else:
             return False
 
-    def get_is_outgoing_support(self, from_user_type):
+    def get_is_outgoing_support(self):
         if self.sender == 'client':
             return False
         else:
