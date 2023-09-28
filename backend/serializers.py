@@ -48,7 +48,7 @@ class TicketSerializer(serializers.ModelSerializer):
         model = Ticket
 
     def get_last_message(self, obj):
-        return TicketMessageSerializer(obj.last_message, context=self.context)
+        return TicketMessageSerializer(obj.last_message, context=self.context).data
 
 
 # class ClientSerializer(serializers.ModelSerializer):
