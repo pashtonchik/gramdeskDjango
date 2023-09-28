@@ -39,7 +39,7 @@ class ClientConsumer(WebsocketConsumer):
         else:
             cur_ticket = cur_ticket.first()
 
-        last_messages = TicketMessage.objects.filter(ticket=cur_ticket).order_by('-date_created')
+        last_messages = TicketMessage.objects.filter(ticket=cur_ticket, deleted=False).order_by('-date_created')
 
         last_messages.filter(read_by_received=False, sender='support').update(read_by_received=True,
                                                                               sending_state='read')
@@ -86,7 +86,7 @@ class ClientConsumer(WebsocketConsumer):
         chat_id = data['chat_id']
         last_message = data.get('last_message_id', None)
         ticket = Ticket.objects.get(uuid=chat_id)
-        last_messages = TicketMessage.objects.filter(ticket=ticket).order_by('-date_created')
+        last_messages = TicketMessage.objects.filter(ticket=ticket, deleted=False).order_by('-date_created')
         if last_message:
             last_message = last_messages.get(id=last_message)
 
@@ -156,6 +156,39 @@ class ClientConsumer(WebsocketConsumer):
         ticket.save()
 
     def update_message_by_client(self, data):
+        message = data['message']
+        cur_message = TicketMessage.objects.get(id=message['id'])
+
+        if message['sending_state'] == 'read' and cur_message.sending_state == 'sent':
+            cur_message.sending_state = 'read'
+            cur_message.read_by_received = True
+            cur_message.save()
+
+
+        response_data = {
+            'event': "response_action",
+            'action': "update_message",
+            'message': TicketMessageSerializer(cur_message, context={"from_user_type": "client"}).data,
+        }
+        self.send(text_data=json.dumps(response_data))
+        data_clients = {
+            'event': 'incoming',
+            'type': 'update_message',
+            'message': TicketMessageSerializer(cur_message, context={"from_user_type": "client"}).data,
+        }
+        data_supports = {
+            'event': 'incoming',
+            'type': 'update_message',
+            'message': TicketMessageSerializer(cur_message, context={"from_user_type": "support"}).data,
+        }
+
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+                                                          "message": json.dumps(data_supports)})
+        async_to_sync(channel_layer.group_send)(f"client_{cur_message.tg_user.id}", {"type": "chat.message",
+                                                           "message": json.dumps(data_clients)})
+
+    def delete_message_by_client(self, data):
         message_id = data['message_id']
         cur_message = TicketMessage.objects.get(id=message_id)
 

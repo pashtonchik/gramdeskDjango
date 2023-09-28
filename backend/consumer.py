@@ -51,7 +51,7 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         ticket = Ticket.objects.get(uuid=chat_id)
         client = ticket.tg_user
-        last_messages = TicketMessage.objects.filter(ticket=ticket).order_by('-date_created')
+        last_messages = TicketMessage.objects.filter(ticket=ticket, deleted=False).order_by('-date_created')
 
         unread_message = last_messages.filter(read_by_received=False)
         unread_message.update(read_by_received=True)
@@ -71,7 +71,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         last_message = data.get('last_message_id', None)
 
         ticket = Ticket.objects.get(uuid=chat_id)
-        last_messages = TicketMessage.objects.filter(ticket=ticket).order_by('-date_created')
+        last_messages = TicketMessage.objects.filter(ticket=ticket, deleted=False).order_by('-date_created')
         if last_message:
             last_message = last_messages.get(id=last_message)
 
@@ -139,10 +139,10 @@ class LiveScoreConsumer(WebsocketConsumer):
         ticket.save()
 
     def update_message_by_support(self, data):
-        message_id = data['message_id']
-        cur_message = TicketMessage.objects.get(id=message_id)
+        message = data['message']
+        cur_message = TicketMessage.objects.get(id=message['id'])
 
-        if data['message']['sending_state'] == 'read' and cur_message.sending_state == 'sent':
+        if message['sending_state'] == 'read' and cur_message.sending_state == 'sent':
             cur_message.sending_state = 'read'
             cur_message.read_by_received = True
 
@@ -172,6 +172,41 @@ class LiveScoreConsumer(WebsocketConsumer):
                                                           "message": json.dumps(data_supports)})
         async_to_sync(channel_layer.group_send)(f"client_{cur_message.tg_user.id}", {"type": "chat.message",
                                                            "message": json.dumps(data_clients)})
+
+
+    def delete_message_by_support(self, data):
+        message = data['message']
+        cur_message = TicketMessage.objects.select_for_update().get(id=message['id'])
+
+        cur_message.deleted = True
+
+        cur_message.save()
+
+        responce_data = {
+            'event': "response_action",
+            'action': "delete_message",
+            'message': TicketMessageSerializer(cur_message, context={"from_user_type": "support"}).data,
+        }
+        self.send(text_data=json.dumps(responce_data))
+
+        data_supports = {
+            'event': 'incoming',
+            'type': 'delete_message',
+            'ok': True,
+            'message': TicketMessageSerializer(cur_message, context={"from_user_type": "support"}).data,
+        }
+        data_clients = {
+            'event': 'incoming',
+            'type': 'delete_message',
+            'ok': True,
+            'message': TicketMessageSerializer(cur_message, context={"from_user_type": "client"}).data,
+        }
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+                                                          "message": json.dumps(data_supports)})
+        async_to_sync(channel_layer.group_send)(f"client_{cur_message.tg_user.id}", {"type": "chat.message",
+                                                           "message": json.dumps(data_clients)})
+
 
     @transaction.atomic()
     def close_ticket(self, data):
@@ -218,6 +253,9 @@ class LiveScoreConsumer(WebsocketConsumer):
                 self.new_message_to_client(data)
 
             elif data['action'] == 'update_message':
+                self.update_message_by_support(data)
+
+            elif data['action'] == 'delete_message':
                 self.update_message_by_support(data)
 
             elif data['action'] == 'close_ticket':

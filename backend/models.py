@@ -42,11 +42,11 @@ class Ticket(models.Model):
         return f'{self.tg_user.tg_username} {self.date_created}'
 
     def get_count_unread_messages(self):
-        return TicketMessage.objects.filter(ticket=self, read_by_received=False).count()
+        return TicketMessage.objects.filter(ticket=self, read_by_received=False, deleted=False).count()
 
     @property
     def last_message(self):
-        last_message = TicketMessage.objects.filter(ticket=self).order_by('-date_created')
+        last_message = TicketMessage.objects.filter(ticket=self, deleted=False).order_by('-date_created')
         if last_message.exists():
             last_message = last_message.first()
             return last_message
