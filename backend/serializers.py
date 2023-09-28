@@ -10,6 +10,12 @@ class ReplyToMessageSerializer(serializers.ModelSerializer):
     media = serializers.ReadOnlyField(source='get_file')
     date = serializers.ReadOnlyField(source='get_date')
 
+    def get_is_outgoing(self, obj):
+        user_type = self.context.get("from_user_type")
+        if user_type == 'support':
+            return obj.get_is_outgoing_support()
+        else:
+            return obj.get_is_outgoing_client()
 
     class Meta:
         fields = ('id', 'chat_id', 'sending_state', 'sender_id', 'is_outgoing', 'content', 'media', 'date')
