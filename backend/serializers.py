@@ -11,12 +11,13 @@ class TicketMessageSerializer(serializers.ModelSerializer):
     date = serializers.ReadOnlyField(source='get_date')
 
     class Meta:
-        fields = ('id', 'chat_id', 'sending_state', 'sender_id', 'is_outgoing', 'content', 'media', 'date')
+        fields = ('id', 'chat_id', 'sending_state', 'sender_id', 'is_outgoing', 'content', 'media', 'date', 'replied_message')
         model = TicketMessage
 
 
 class TicketClientMessageSerializer(TicketMessageSerializer):
     is_outgoing = serializers.ReadOnlyField(source='get_is_outgoing_client')
+    replied_message = TicketClientMessageSerializer()
 
 
 class TicketSupportMessageSerializer(TicketMessageSerializer):

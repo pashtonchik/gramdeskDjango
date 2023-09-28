@@ -151,13 +151,14 @@ class ClientConsumer(WebsocketConsumer):
                                                            "message": json.dumps(data_supports)})
         ticket.save()
 
-    def read_message_by_client(self, data):
+    def update_message_by_client(self, data):
         message_id = data['message_id']
         cur_message = TicketMessage.objects.get(id=message_id)
 
-        cur_message.sending_state = 'read'
-        cur_message.read_by_received = True
-        cur_message.save()
+        if data['message']['sending_state'] == 'read' and cur_message.sending_state == 'sent':
+            cur_message.sending_state = 'read'
+            cur_message.read_by_received = True
+            cur_message.save()
 
 
         response_data = {
@@ -200,8 +201,8 @@ class ClientConsumer(WebsocketConsumer):
                     elif data['action'] == 'send_message':
                         self.new_message_to_support(data)
 
-                    elif data['action'] == 'read_message':
-                        self.read_message_by_client(data)
+                    elif data['action'] == 'update_message':
+                        self.update_message_by_client(data)
 
                     else:
                         data = {

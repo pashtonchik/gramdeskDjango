@@ -134,12 +134,14 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         ticket.save()
 
-    def read_message_by_support(self, data):
+    def update_message_by_support(self, data):
         message_id = data['message_id']
         cur_message = TicketMessage.objects.get(id=message_id)
 
-        cur_message.sending_state = 'read'
-        cur_message.read_by_received = True
+        if data['message']['sending_state'] == 'read' and cur_message.sending_state == 'sent':
+            cur_message.sending_state = 'read'
+            cur_message.read_by_received = True
+
         cur_message.save()
 
         responce_data = {
@@ -211,8 +213,8 @@ class LiveScoreConsumer(WebsocketConsumer):
             elif data['action'] == 'send_message':
                 self.new_message_to_client(data)
 
-            elif data['action'] == 'read_message':
-                self.read_message_by_support(data)
+            elif data['action'] == 'update_message':
+                self.update_message_by_support(data)
 
             elif data['action'] == 'close_ticket':
                 self.close_ticket(data)
