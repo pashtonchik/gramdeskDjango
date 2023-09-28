@@ -24,10 +24,12 @@ class TicketMessageSerializer(serializers.ModelSerializer):
 
 class TicketClientMessageSerializer(TicketMessageSerializer):
     # is_outgoing = serializers.ReadOnlyField(source='get_is_outgoing_client')
+    pass
 
 
 class TicketSupportMessageSerializer(TicketMessageSerializer):
     # is_outgoing = serializers.ReadOnlyField(source='get_is_outgoing_support')
+    pass
 
 
 class TicketSerializer(serializers.ModelSerializer):
