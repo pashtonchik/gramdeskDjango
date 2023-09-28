@@ -49,8 +49,6 @@ class Ticket(models.Model):
         last_message = TicketMessage.objects.filter(ticket=self).order_by('-date_created')
         if last_message.exists():
             last_message = last_message.first()
-
-            from backend.serializers import TicketMessageSerializer
             return last_message
         else:
             return None
