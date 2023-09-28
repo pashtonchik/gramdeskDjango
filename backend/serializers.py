@@ -40,12 +40,15 @@ class TicketMessageSerializer(ReplyToMessageSerializer):
 
 class TicketSerializer(serializers.ModelSerializer):
     count_unread_messages = serializers.ReadOnlyField(source='get_count_unread_messages')
-    last_message = serializers.ReadOnlyField(source='get_last_message')
+    last_message = serializers.SerializerMethodField('get_last_message')
     user_name = serializers.ReadOnlyField(source='get_user_name')
 
     class Meta:
         exclude = ('tg_user', 'date_created', 'date_closed')
         model = Ticket
+
+    def get_last_message(self, obj):
+        return TicketMessageSerializer(obj.last_message, context=self.context)
 
 
 # class ClientSerializer(serializers.ModelSerializer):
