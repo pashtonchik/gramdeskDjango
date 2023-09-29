@@ -18,7 +18,7 @@ env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+CSRF_TRUSTED_ORIGINS = ['https://pashtonp.space']
 
 PORTREDIS = env.str("PORTREDIS")
 APP_NAME_CELERY = env.str("APP_NAME_CELERY")
