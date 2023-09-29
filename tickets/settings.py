@@ -18,7 +18,6 @@ env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-CSRF_TRUSTED_ORIGINS = ['https://pashtonp.space']
 
 PORTREDIS = env.str("PORTREDIS")
 APP_NAME_CELERY = env.str("APP_NAME_CELERY")
@@ -35,6 +34,11 @@ DEBUG = True
 CHANNEL_REDIS_HOST = 6380
 ALLOWED_HOSTS = ['*']
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
+if not DEBUG:
+    CSRF_TRUSTED_ORIGINS = ['https://pashtonp.space'] # FIX admin CSRF token issue
 
 
 # Application definition
