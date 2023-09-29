@@ -20,6 +20,8 @@ import os
 
 from django.core.asgi import get_asgi_application
 
+from backend.socket_auth import TokenAuthMiddleware
+
 DJANGO_SETTINGS_MODULE = os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tickets.settings')
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
@@ -32,7 +34,7 @@ from tickets.consumer import LiveScoreConsumer
 
 # application = get_asgi_application()
 
-application = ProtocolTypeRouter(
+application = ProtocolTypeRouter(TokenAuthMiddleware(
     {
     'http': get_asgi_application(),
     'websocket': AllowedHostsOriginValidator(
@@ -44,4 +46,5 @@ application = ProtocolTypeRouter(
         )
     )
 }
+)
 )
