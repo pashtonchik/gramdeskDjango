@@ -22,14 +22,13 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 from django.core.asgi import get_asgi_application
 
-# from backend.socket_auth import TokenAuthMiddleware
-# from backend.socket_heartbeat import HeartbeatMiddleware
-
 DJANGO_SETTINGS_MODULE = os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tickets.settings')
 
 
 # application = get_asgi_application()
 
+# from backend.socket_auth import TokenAuthMiddleware
+# from backend.socket_heartbeat import HeartbeatMiddleware
 
 application = ProtocolTypeRouter(
     {
