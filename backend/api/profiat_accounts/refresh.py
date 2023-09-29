@@ -20,7 +20,7 @@ def refresh(request):
     try:
         refresh = data['refresh']
     except KeyError:
-        return Response(status=status.HTTP_400_BAD_REQUEST, data={'ok': False, 'message': "Field Refresh is required."})
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={'ok': False, 'message': "Field Refresh is required.", 'headers': dict(request.META)})
 
     old_refresh = OutstandingToken.objects.select_for_update().get(token=str(refresh))
 
