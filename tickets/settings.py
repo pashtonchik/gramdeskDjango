@@ -28,7 +28,7 @@ SUPPORTBOT = env.str("SUPPORTBOT")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-@4sam!l!rt52jm_45govd0+rws#ieetc-0!fa$sy&&d5c8no_o'
-
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 CHANNEL_REDIS_HOST = 6380
@@ -217,4 +217,3 @@ CORS_ALLOW_HEADERS = [
     "*"
 ]
 # CSRF_TRUSTED_ORIGINS = ['https://*.pashtonp.space', 'https://*.127.0.0.1']
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
