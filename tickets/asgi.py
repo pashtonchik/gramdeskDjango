@@ -18,10 +18,11 @@
 # settings.configure()
 import os
 
+import django
 from django.core.asgi import get_asgi_application
 
-
 DJANGO_SETTINGS_MODULE = os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tickets.settings')
+django.setup()
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 from django.urls import re_path
