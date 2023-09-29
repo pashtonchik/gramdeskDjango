@@ -1,21 +1,9 @@
-# Встроенные импорты.
 import json
-
 from asgiref.sync import async_to_sync, sync_to_async
-from channels.consumer import AsyncConsumer
-from channels.db import database_sync_to_async
-# Импорты сторонних библиотек.
-from channels.exceptions import DenyConnection
-from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
+from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
-
-# Импорты Django.
-from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.models import AnonymousUser
-
 from backend.models import Ticket, TicketMessage, User
 from backend.serializers import TicketSerializer, TicketMessageSerializer
-from tickets.celery_tasks.send_message_to_client import send_message_to_client
 from django.db import transaction
 
 
