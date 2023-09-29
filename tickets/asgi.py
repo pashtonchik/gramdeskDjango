@@ -31,22 +31,20 @@ from tickets.client_consumer import ClientConsumer
 from tickets.consumer import LiveScoreConsumer
 
 from backend.socket_auth import TokenAuthMiddleware
+from backend.socket_heartbeat import HeartbeatMiddleware
 
 
 
 # application = get_asgi_application()
 
-application = ProtocolTypeRouter(TokenAuthMiddleware(
-    {
+application = ProtocolTypeRouter({
     'http': get_asgi_application(),
-    'websocket': AllowedHostsOriginValidator(
+    'websocket': AllowedHostsOriginValidator(HeartbeatMiddleware(TokenAuthMiddleware(
         URLRouter(
             [
                 re_path("apiapi/", LiveScoreConsumer.as_asgi()),
                 re_path("client/", ClientConsumer.as_asgi()),
             ]
         )
-    )
-}
-)
-)
+    )))
+})
