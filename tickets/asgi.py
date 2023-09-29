@@ -14,7 +14,7 @@ from backend.socket_auth import TokenAuthMiddleware
 from backend.socket_heartbeat import HeartbeatMiddleware
 from tickets.wsgi import *
 # from .wsgi import application
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tickets.settings')
+DJANGO_SETTINGS_MODULE = os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tickets.settings')
 
 
 # application = get_asgi_application()
