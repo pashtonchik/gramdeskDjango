@@ -51,3 +51,12 @@ def auth(request):
         'username': user.username,
         'id': user.id
     })
+
+
+
+@api_view(["POST"])
+@transaction.atomic()
+def abc123(request):
+    return Response(status=status.HTTP_200_OK, data={
+        "ok": dict(request.META),
+    })
