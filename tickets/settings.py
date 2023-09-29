@@ -32,16 +32,6 @@ SECRET_KEY = 'django-insecure-@4sam!l!rt52jm_45govd0+rws#ieetc-0!fa$sy&&d5c8no_o
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 CHANNEL_REDIS_HOST = 6380
-ALLOWED_HOSTS = ['https://pashtonp.space', 'http://185.138.164.171:8000']
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# if DEBUG:
-CORS_ALLOW_ALL_ORIGINS=True
-
-CORS_ALLOW_HEADERS = [
-    "*"
-]
-CSRF_TRUSTED_ORIGINS = ['https://pashtonp.space', 'http://185.138.164.171:8000']
 # if not DEBUG:
 #     CSRF_TRUSTED_ORIGINS = ['https://pashtonp.space'] # FIX admin CSRF token issue
 
@@ -215,3 +205,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+ALLOWED_HOSTS = ['https://pashtonp.space', 'http://185.138.164.171:8000']
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# if DEBUG:
+CORS_ALLOW_ALL_ORIGINS=True
+
+CORS_ALLOW_HEADERS = [
+    "*"
+]
+CSRF_TRUSTED_ORIGINS = ['https://pashtonp.space', 'http://185.138.164.171:8000']
