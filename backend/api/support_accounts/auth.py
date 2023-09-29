@@ -58,5 +58,5 @@ def auth(request):
 @transaction.atomic()
 def abc123(request):
     return Response(status=status.HTTP_200_OK, data={
-        "ok": dict(request.META),
+        "ok": True,
     })
