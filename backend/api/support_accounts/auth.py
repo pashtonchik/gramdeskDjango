@@ -54,7 +54,7 @@ def auth(request):
 
 
 
-@api_view(["POST"])
+@api_view(["GET"])
 @transaction.atomic()
 def abc123(request):
     return Response(status=status.HTTP_200_OK, data={
