@@ -16,10 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from backend.api.support_accounts.auth import abc123
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('abc/', abc123),
     path('', include('backend.urls')),
 ]
