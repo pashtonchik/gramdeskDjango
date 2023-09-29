@@ -36,6 +36,11 @@ ALLOWED_HOSTS = ['*']
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # if DEBUG:
+CORS_ALLOW_ALL_ORIGINS=True
+
+CORS_ALLOW_HEADERS = [
+    "*"
+]
 CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
 # if not DEBUG:
 #     CSRF_TRUSTED_ORIGINS = ['https://pashtonp.space'] # FIX admin CSRF token issue
@@ -68,8 +73,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
 ]
-
+DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 CELERY_BROKER_URL = PORTREDIS
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
