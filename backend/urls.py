@@ -19,7 +19,7 @@ urlpatterns = [
     path('api/v2/client/auth/', profiat_auth_client),
     path('api/v2/client/auth/refresh/', refresh_profiat),
     path('api/v2/client/auth/close/access/', close_access),
-    path('abc/', abc123),
+    path('api/abc/', abc123),
     # Support
     path('api/v3/support/auth/', auth),
     path('api/v3/support/auth/verify/', verify_token),
