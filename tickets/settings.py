@@ -35,10 +35,10 @@ CHANNEL_REDIS_HOST = 6380
 ALLOWED_HOSTS = ['*']
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-if DEBUG:
-    CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
-if not DEBUG:
-    CSRF_TRUSTED_ORIGINS = ['https://pashtonp.space'] # FIX admin CSRF token issue
+# if DEBUG:
+CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
+# if not DEBUG:
+#     CSRF_TRUSTED_ORIGINS = ['https://pashtonp.space'] # FIX admin CSRF token issue
 
 
 # Application definition
