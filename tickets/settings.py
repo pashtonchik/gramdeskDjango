@@ -216,4 +216,4 @@ CORS_ALLOW_ALL_ORIGINS=True
 CORS_ALLOW_HEADERS = [
     "*"
 ]
-CSRF_TRUSTED_ORIGINS = ['https://pashtonp.space', 'http://185.138.164.171:8000']
+CSRF_TRUSTED_ORIGINS = ['*']
