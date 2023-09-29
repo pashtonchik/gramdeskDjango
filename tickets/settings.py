@@ -216,5 +216,5 @@ CORS_ALLOW_ALL_ORIGINS=True
 CORS_ALLOW_HEADERS = [
     "*"
 ]
-CSRF_TRUSTED_ORIGINS = ['https://*.pashtonp.space','https://*.127.0.0.1']
+# CSRF_TRUSTED_ORIGINS = ['https://*.pashtonp.space', 'https://*.127.0.0.1']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
