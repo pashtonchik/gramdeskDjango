@@ -20,7 +20,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-from backend.socket_auth import TokenAuthMiddleware
 
 DJANGO_SETTINGS_MODULE = os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tickets.settings')
 from channels.routing import ProtocolTypeRouter, URLRouter
@@ -29,6 +28,8 @@ from django.urls import re_path
 
 from tickets.client_consumer import ClientConsumer
 from tickets.consumer import LiveScoreConsumer
+
+from backend.socket_auth import TokenAuthMiddleware
 
 
 
