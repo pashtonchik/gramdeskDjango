@@ -1,358 +1,38 @@
-# import asyncio
-#
-# # import websockets
-# #
-# # async def message():
-# # 	async with websockets.connect("ws://127.0.0.1:8001/apiapi/") as socket:
-# # 		while 1:
-# #
-# # 			# await socket.send(msg)
-# # 			await asyncio.sleep(3)
-# # 			print(await socket.recv())
-# #
-# #
-# # asyncio.get_event_loop().run_until_complete(message())
-# from cryptography.hazmat.primitives import serialization, hashes
-# from cryptography.hazmat.primitives.asymmetric import padding
-# import base64
-# with open("publicKey.pem", "rb") as key_file:
-#     public_key = serialization.load_pem_public_key(
-#         key_file.read(),
-#     )
-#
-#
-# with open("privateKey.pem", "rb") as key_file:
-#     private_key = serialization.load_pem_private_key(
-#         key_file.read(),
-#          password=None,
-#     )
-#
-# original_message = 'я люблю Ваню'
-#
-# b64_message = base64.b64encode(bytes(original_message, 'utf-8'))
-# print('b64 message', b64_message)
-# ciphertext = public_key.encrypt(
-#     b64_message,
-#     padding.OAEP(
-#         mgf=padding.MGF1(algorithm=hashes.SHA256()),
-#         algorithm=hashes.SHA256(),
-#         label=None
-#     )
-# )
-#
-# print('cipher', ciphertext)
-#
-# plaintext = private_key.decrypt(
-#     ciphertext,
-#     padding.OAEP(
-#         mgf=padding.MGF1(algorithm=hashes.SHA256()),
-#         algorithm=hashes.SHA256(),
-#         label=None
-#     )
-# )
-#
-# print('plain', plaintext)
-#
-# currect_message = base64.b64decode(b'EXZ5BGo2OPtd+57DhaK3tRyTTP9+eAWwQt27kRIrYDvoeiycLlBE91SkJfIHs2OAI25jYdflDOIP0VhWXGvkW8ldiRF6Glqn69Yd6+CP1xQW6CMqZ1wv0OA=').decode('utf-8')
-#
-# print(currect_message)
-#
+import socket
+import sys
+import os
 
+HOST = "127.0.0.1"
+PORT = 8000
+BUF_SIZE = 512
+DOWNLOAD_DIR = "downloads"
 
+def send_file(conn, file_name):
 
+    total_sent = 0
+    with open('017-4852450_5920950975.pdf', 'rb') as output:
+        while True:
+            data = output.read(BUF_SIZE)
+            if not data:
+                break
+            conn.sendall(data)
+            print('отпрауили кусок')
+            total_sent += len(data)
 
-a = '''
-239080
-239083
-239086
-239093
-239113
-239114
-239117
-239149
-239151
-239154
-239173
-239213
-239225
-239234
-239258
-239261
-239267
-239295
-239303
-239310
-239321
-239322
-239345
-239365
-239378
-239396
-239406
-239449
-239462
-239467
-239498
-239509
-239526
-239552
-239559
-239591
-239615
-239618
-239650
-239651
-239654
-239656
-239660
-239661
-239662
-239670
-239675
-239677
-239678
-239681
-239683
-239687
-239688
-239690
-239728
-239729
-239738
-239744
-239759
-239779
-239788
-239798
-239830
-239832
-239846
-239848
-239853
-239881
-239884
-239907
-239920
-239934
-239943
-239955
-239964
-239966
-239969
-239974
-239979
-240006
-240013
-240027
-240028
-240036
-240048
-240057
-240060
-240065
-240074
-240079
-240084
-240088
-240090
-240101
-240118
-240134
-240159
-240176
-240191
-240200
-240203
-240212
-240213
-240214
-240218
-240221
-240228
-240230
-240235
-240251
-240267
-240273
-240274
-240306
-240313
-240323
-240334
-240388
-240408
-240440
-240449
-240465
-240482
-240485
-240491
-240502
-240524
-240532
-240542
-240568
-240579
-240590
-240593
-240599
-240622
-240623
-240628
-240630
-240635
-240636
-240639
-240646
-240672
-240673
-240694
-240699
-240730
-240740
-240747
-240773
-240777
-240779
-240780
-240791
-240793
-240794
-240795
-240796
-240816
-240817
-240822
-240823
-240830
-240831
-240836
-240838
-240847
-240908
-240915
-240998
-241004
-241007
-241090
-241096
-241097
-241135
-241160
-241161
-241177
-241249
-241263
-241268
-241269
-241270
-241271
-241278
-241281
-241287
-241288
-241296
-241297
-241299
-241300
-241304
-241330
-241333
-241336
-241339
-241354
-241358
-241359
-241385
-241387
-241393
-241409
-241413
-241426
-241430
-241433
-241444
-241497
-241525
-241529
-241530
-241544
-241550
-241581
-241590
-241592
-241594
-241599
-241616
-241620
-241623
-241624
-241626
-241634
-241635
-241637
-241640
-241660
-241667
-241669
-241672
-241679
-241680
-241697
-241701
-241721
-241731
-241740
-241743
-241745
-241777
-241819
-241842
-241852
-241868
-241883
-241884
-241891
-241901
-241903
-241911
-241945
-241960
-241961
-241964
-241965
-241967
-242000
-242006
-242008
-242017
-242020
-242027
-242075
-242095
-242132
-242158
-242162
-242170
-242179
-242189
-242196
-242197
-242199
-242222
-242235
-242264
-242280
-242286
-242309
-242311
-242326
-'''
+    print("finished sending", total_sent, "bytes")
+    return True
 
-b = []
-for i in a.split('\n'):
-    if i:
-        b.append(i)
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+try:
+    sock.connect((HOST, PORT))
+except Exception as e:
+    print("cannot connect to server:", e, file=sys.stderr)
 
+file_name = input("\nFile to get: ")
+if not file_name:
+    sock.close()
 
-print(b)
+err = send_file(sock, file_name)
+if err:
+    print(err, file=sys.stderr)
+sock.close()

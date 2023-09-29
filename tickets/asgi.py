@@ -21,6 +21,8 @@ import os
 import django
 from django.core.asgi import get_asgi_application
 
+from tickets.upload_cunsumer import UploadConsumer
+
 DJANGO_SETTINGS_MODULE = os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tickets.settings')
 django.setup()
 from channels.routing import ProtocolTypeRouter, URLRouter
@@ -39,12 +41,15 @@ from backend.socket_heartbeat import HeartbeatMiddleware
 
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
-    'websocket': AllowedHostsOriginValidator(HeartbeatMiddleware(TokenAuthMiddleware(
-        URLRouter(
-            [
-                re_path("apiapi/", LiveScoreConsumer.as_asgi()),
-                re_path("client/", ClientConsumer.as_asgi()),
-            ]
+    'websocket': AllowedHostsOriginValidator(
+        TokenAuthMiddleware(
+            URLRouter(
+                [
+                    re_path("apiapi/", LiveScoreConsumer.as_asgi()),
+                    re_path("client/", ClientConsumer.as_asgi()),
+                    re_path("upload/", UploadConsumer.as_asgi()),
+                ]
+            )
         )
-    )))
+    )
 })

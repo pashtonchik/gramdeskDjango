@@ -131,7 +131,12 @@ class TicketMessage(models.Model):
 
 class Attachment(models.Model):
     message = models.ForeignKey(to=TicketMessage, on_delete=models.PROTECT)
-    file = models.FileField()
+    file = models.FileField(blank=True, null=True)
+    name = models.CharField(max_length=500)
+    content = models.TextField(blank=True, null=True)
+    total_bytes = models.IntegerField()
+    received_bytes = models.IntegerField(default=0)
+    uploaded = models.BooleanField(default=False)
     ext = models.CharField(max_length=50)
 
 

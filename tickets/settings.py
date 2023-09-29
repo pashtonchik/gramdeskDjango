@@ -147,6 +147,12 @@ with open('publicKey_jwt.pem', 'r') as content_file:
     pub_key_jwt = content_file.read()
 
 
+# private_key_jwt = '123'
+#
+# pub_key_jwt = '123'
+
+
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
