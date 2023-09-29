@@ -25,7 +25,7 @@ def refresh(request):
     old_refresh = OutstandingToken.objects.select_for_update().get(token=str(refresh))
 
     if old_refresh.expires_at.timestamp() <= datetime.now().timestamp():
-        return Response(status=status.HTTP_400_BAD_REQUEST, data={'ok': False, 'message': "Refresh already expired."})
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={'ok': False, 'message': "Refresh already expired.", 'headers': dict(request.META)})
 
     if BlacklistedToken.objects.filter(token=old_refresh):
         return Response(status=status.HTTP_400_BAD_REQUEST, data={'ok': False, 'message': "Refresh is not valid."})
