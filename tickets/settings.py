@@ -41,7 +41,7 @@ CORS_ALLOW_ALL_ORIGINS=True
 CORS_ALLOW_HEADERS = [
     "*"
 ]
-CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
+CSRF_TRUSTED_ORIGINS = ['pashtonp.space']
 # if not DEBUG:
 #     CSRF_TRUSTED_ORIGINS = ['https://pashtonp.space'] # FIX admin CSRF token issue
 
