@@ -4,14 +4,14 @@ from json import JSONDecodeError
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
-from backend.models import Ticket, TicketMessage, User, SocketConnection
-from backend.serializers import TicketSerializer, TicketMessageSerializer
 from django.db import transaction
 
 
 class ClientConsumer(WebsocketConsumer):
 
     def connect(self):
+        from backend.models import Ticket, TicketMessage, User, SocketConnection
+        from backend.serializers import TicketSerializer, TicketMessageSerializer
         print(self.channel_name)
         print(self.scope['user'])
         cur_ticket = Ticket.objects.filter(
@@ -62,6 +62,8 @@ class ClientConsumer(WebsocketConsumer):
         self.send(json.dumps(data))
 
     def disconnect(self, close_code):
+        from backend.models import Ticket, TicketMessage, User, SocketConnection
+        from backend.serializers import TicketSerializer, TicketMessageSerializer
         print('disconnect')
         current_connection = SocketConnection.objects.get(id=self.connection_id)
         current_connection.active = False
@@ -72,6 +74,8 @@ class ClientConsumer(WebsocketConsumer):
 
 
     def get_messages(self, data):
+        from backend.models import Ticket, TicketMessage, User, SocketConnection
+        from backend.serializers import TicketSerializer, TicketMessageSerializer
         chat_id = data['chat_id']
         last_message = data.get('last_message_id', None)
         ticket = Ticket.objects.get(uuid=chat_id)
@@ -95,6 +99,8 @@ class ClientConsumer(WebsocketConsumer):
 
     @transaction.atomic()
     def new_message_to_support(self, data):
+        from backend.models import Ticket, TicketMessage, User, SocketConnection
+        from backend.serializers import TicketSerializer, TicketMessageSerializer
         new_message = data['message']
         ticket = Ticket.objects.select_for_update().get(uuid=new_message['chat_id'], tg_user=self.scope['user'])
 
@@ -145,6 +151,8 @@ class ClientConsumer(WebsocketConsumer):
         ticket.save()
 
     def update_message_by_client(self, data):
+        from backend.models import Ticket, TicketMessage, User, SocketConnection
+        from backend.serializers import TicketSerializer, TicketMessageSerializer
         message = data['message']
         cur_message = TicketMessage.objects.get(id=message['id'])
 
@@ -178,6 +186,8 @@ class ClientConsumer(WebsocketConsumer):
                                                            "message": json.dumps(data_clients)})
 
     def delete_message_by_client(self, data):
+        from backend.models import Ticket, TicketMessage, User, SocketConnection
+        from backend.serializers import TicketSerializer, TicketMessageSerializer
         message_id = data['message_id']
         cur_message = TicketMessage.objects.get(id=message_id)
 
@@ -211,7 +221,8 @@ class ClientConsumer(WebsocketConsumer):
                                                            "message": json.dumps(data_clients)})
 
     def receive(self, text_data):
-
+        from backend.models import Ticket, TicketMessage, User, SocketConnection
+        from backend.serializers import TicketSerializer, TicketMessageSerializer
         if text_data == 'heartbeat':
             current_connection = SocketConnection.objects.get(channel_name=self.channel_name)
             current_connection.approve_heartbeat = True

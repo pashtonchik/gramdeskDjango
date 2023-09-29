@@ -2,8 +2,6 @@ import json
 from asgiref.sync import async_to_sync, sync_to_async
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
-from backend.models import Ticket, TicketMessage, User
-from backend.serializers import TicketSerializer, TicketMessageSerializer
 from django.db import transaction
 
 
@@ -11,6 +9,8 @@ class LiveScoreConsumer(WebsocketConsumer):
 
 
     def connect(self):
+        from backend.models import Ticket, TicketMessage, User
+        from backend.serializers import TicketSerializer, TicketMessageSerializer
         async_to_sync(self.channel_layer.group_add)("active_support", self.channel_name)
         async_to_sync(self.channel_layer.group_add)(f'active_connections', self.channel_name)
         print(self.channel_name)
@@ -35,6 +35,8 @@ class LiveScoreConsumer(WebsocketConsumer):
         pass
 
     def open_chat(self, data):
+        from backend.models import Ticket, TicketMessage, User
+        from backend.serializers import TicketSerializer, TicketMessageSerializer
         chat_id = data['chat_id']
 
         ticket = Ticket.objects.get(uuid=chat_id)
@@ -55,6 +57,8 @@ class LiveScoreConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps(output_data))
 
     def get_messages(self, data):
+        from backend.models import Ticket, TicketMessage, User
+        from backend.serializers import TicketSerializer, TicketMessageSerializer
         chat_id = data['chat_id']
         last_message = data.get('last_message_id', None)
 
@@ -80,6 +84,8 @@ class LiveScoreConsumer(WebsocketConsumer):
 
     @transaction.atomic()
     def new_message_to_client(self, data):
+        from backend.models import Ticket, TicketMessage, User
+        from backend.serializers import TicketSerializer, TicketMessageSerializer
         new_message = data['message']
         ticket = Ticket.objects.select_for_update().get(uuid=new_message['chat_id'])
 
@@ -127,6 +133,8 @@ class LiveScoreConsumer(WebsocketConsumer):
         ticket.save()
 
     def update_message_by_support(self, data):
+        from backend.models import Ticket, TicketMessage, User
+        from backend.serializers import TicketSerializer, TicketMessageSerializer
         message = data['message']
         cur_message = TicketMessage.objects.get(id=message['id'])
 
@@ -163,6 +171,8 @@ class LiveScoreConsumer(WebsocketConsumer):
 
 
     def delete_message_by_support(self, data):
+        from backend.models import Ticket, TicketMessage, User
+        from backend.serializers import TicketSerializer, TicketMessageSerializer
         message = data['message']
         cur_message = TicketMessage.objects.select_for_update().get(id=message['id'])
 
@@ -198,6 +208,8 @@ class LiveScoreConsumer(WebsocketConsumer):
 
     @transaction.atomic()
     def close_ticket(self, data):
+        from backend.models import Ticket, TicketMessage, User
+        from backend.serializers import TicketSerializer, TicketMessageSerializer
         chat_id = data['chat_id']
         cur_ticket = Ticket.objects.select_for_update().get(uuid=chat_id)
 
