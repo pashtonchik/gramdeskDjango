@@ -146,7 +146,7 @@ with open('privateKey_jwt.pem', 'r') as content_file:
 with open('publicKey_jwt.pem', 'r') as content_file:
     pub_key_jwt = content_file.read()
 
-
+#
 # private_key_jwt = '123'
 #
 # pub_key_jwt = '123'

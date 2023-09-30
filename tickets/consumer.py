@@ -84,7 +84,7 @@ class LiveScoreConsumer(WebsocketConsumer):
 
     @transaction.atomic()
     def new_message_to_client(self, data):
-        from backend.models import Ticket, TicketMessage, User
+        from backend.models import Ticket, TicketMessage, User, Attachment
         from backend.serializers import TicketSerializer, TicketMessageSerializer
         new_message = data['message']
         ticket = Ticket.objects.select_for_update().get(uuid=new_message['chat_id'])
@@ -102,8 +102,22 @@ class LiveScoreConsumer(WebsocketConsumer):
             if data['message_to_reply']:
                 message.message_to_reply = TicketMessage.objects.get(id=data['message_to_reply']['id'], ticket=message.ticket)
 
-        message.save()
 
+        if 'media' in data:
+            if data['media']:
+                message.sending_state = 'uploading_attachments'
+                message.save()
+                for file in data['media']:
+                    Attachment(
+                        message=message,
+                        name=file['name'],
+                        total_bytes=file['total_size'],
+                        ext=file['ext']
+                    ).save()
+            else:
+                message.save()
+        else:
+            message.save()
 
         responce_data = {
             'event': "response_action",
@@ -112,23 +126,24 @@ class LiveScoreConsumer(WebsocketConsumer):
         }
         self.send(text_data=json.dumps(responce_data))
 
-        output_data_clients = {
-            'event': "incoming",
-            'type': 'new_message',
-            'message': TicketMessageSerializer(message, context={"from_user_type": "client"}).data,
-        }
+        if message.sending_state == 'sent':
+            output_data_clients = {
+                'event': "incoming",
+                'type': 'new_message',
+                'message': TicketMessageSerializer(message, context={"from_user_type": "client"}).data,
+            }
 
-        output_data_supports = {
-            'event': "incoming",
-            'type': 'new_message',
-            'message': TicketMessageSerializer(message, context={"from_user_type": "support"}).data,
-        }
+            output_data_supports = {
+                'event': "incoming",
+                'type': 'new_message',
+                'message': TicketMessageSerializer(message, context={"from_user_type": "support"}).data,
+            }
 
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
-                                                           "message": json.dumps(output_data_supports)})
-        async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
-                                                           "message": json.dumps(output_data_clients)})
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+                                                               "message": json.dumps(output_data_supports)})
+            async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
+                                                               "message": json.dumps(output_data_clients)})
 
         ticket.save()
 

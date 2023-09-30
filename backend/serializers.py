@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from backend.models import Ticket, TicketMessage
+from backend.models import Ticket, TicketMessage, Attachment
+
 
 class ReplyToMessageSerializer(serializers.ModelSerializer):
     chat_id = serializers.CharField(source='get_ticket_id', read_only=True)
@@ -8,7 +9,7 @@ class ReplyToMessageSerializer(serializers.ModelSerializer):
     sender_username = serializers.CharField(source='get_sender_username', read_only=True)
     content = serializers.ReadOnlyField(source='message_text')
     is_outgoing = serializers.SerializerMethodField('get_is_outgoing')
-    media = serializers.ReadOnlyField(source='get_file')
+    media = serializers.ReadOnlyField(source='get_files')
     date = serializers.ReadOnlyField(source='get_date')
 
     def get_is_outgoing(self, obj):
@@ -50,6 +51,13 @@ class TicketSerializer(serializers.ModelSerializer):
 
     def get_last_message(self, obj):
         return TicketMessageSerializer(obj.last_message, context=self.context).data
+
+
+class AttachmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        exclude = ('id', 'name', 'total_bytes', 'ext', 'buf_size')
+        model = Attachment
+
 
 
 # class ClientSerializer(serializers.ModelSerializer):

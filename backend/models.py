@@ -4,8 +4,10 @@ import uuid as uuid
 
 from channels.db import database_sync_to_async
 from django.contrib.auth.models import AbstractUser
-from django.db import models
+from django.db import models, transaction
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
+
+from backend.serializers import AttachmentSerializer
 from tickets.settings import MEDIA_ROOT
 
 
@@ -117,12 +119,11 @@ class TicketMessage(models.Model):
         else:
             return True
 
-    def get_file(self):
-        if self.message_file:
-            file_location = MEDIA_ROOT + '/' + self.message_file.name
-            with open(file_location, mode='rb') as file:
-                img = file.read()
-            return base64.encodebytes(img).decode('utf-8')
+    @transaction.atomic()
+    def get_files(self):
+        attachments = Attachment.objects.select_for_update().filter(message=self)
+        if attachments.exists():
+            return AttachmentSerializer(attachments, many=True)
         return None
 
     def get_date(self):
@@ -135,6 +136,7 @@ class Attachment(models.Model):
     name = models.CharField(max_length=500)
     content = models.TextField(blank=True, null=True)
     total_bytes = models.IntegerField()
+    buf_size = models.IntegerField(default=512)
     received_bytes = models.IntegerField(default=0)
     uploaded = models.BooleanField(default=False)
     ext = models.CharField(max_length=50)

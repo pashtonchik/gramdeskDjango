@@ -12,7 +12,7 @@ def get_user(token_key):
     try:
         token = JWTToken.objects.all().first()
         return token.user, token
-    except JWTToken.DoesNotExist:
+    except Exception:
         return AnonymousUser(), None
 
 

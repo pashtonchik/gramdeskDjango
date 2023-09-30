@@ -45,7 +45,7 @@ application = ProtocolTypeRouter({
         TokenAuthMiddleware(
             URLRouter(
                 [
-                    re_path("apiapi/", LiveScoreConsumer.as_asgi()),
+                    re_path("support/", LiveScoreConsumer.as_asgi()),
                     re_path("client/", ClientConsumer.as_asgi()),
                     re_path("upload/", UploadConsumer.as_asgi()),
                 ]
