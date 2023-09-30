@@ -6,8 +6,6 @@ from channels.db import database_sync_to_async
 from django.contrib.auth.models import AbstractUser
 from django.db import models, transaction
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
-
-from backend.serializers import AttachmentSerializer
 from tickets.settings import MEDIA_ROOT
 
 
@@ -121,6 +119,7 @@ class TicketMessage(models.Model):
 
     @transaction.atomic()
     def get_files(self):
+        from backend.serializers import AttachmentSerializer
         attachments = Attachment.objects.select_for_update().filter(message=self)
         if attachments.exists():
             return AttachmentSerializer(attachments, many=True)
