@@ -32,7 +32,7 @@ def on_open(ws):
             received_size += buf_size
             # file = base64.b64encode(open('017-4852450_5920950975.pdf', 'r', encoding='utf-8').read()).decode('UTF-8')
             print(received_size)
-            ws.send(json.dumps({'event': "outgoing", 'action': "upload", 'upload_data': {"content": file}}))
+            ws.send(json.dumps({'event': "outgoing", 'action': "upload", 'upload_data': {"content": file, "id": "1"}}))
         print('отправили что ли все?')
 
         ws.close()
