@@ -19,7 +19,7 @@ def on_open(ws):
         print(11111)
         time.sleep(2)
         received_size = 0
-        buf_size = 10000
+        buf_size = 40000
         full_size = os.path.getsize("017-4852450_5920950975.pdf")
         print('full_size', full_size)
         time.sleep(1)
