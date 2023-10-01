@@ -55,7 +55,6 @@ class UploadConsumer(WebsocketConsumer):
         current_attachment = Attachment.objects.select_for_update().get(id=upload_data['id'], uploaded=False)
         # current_attachment = Attachment.objects.select_for_update().get(id=upload_data['id'], uploaded=False)
         received_bytes = upload_data['content']
-        content = base64.b64decode(received_bytes.encode('UTF-8'))
         current_attachment.received_bytes += len(base64.b64decode(received_bytes.encode('UTF-8')))
         current_attachment.content += received_bytes
         print('file')

@@ -20,26 +20,35 @@ def on_open(ws):
         time.sleep(2)
         received_size = 0
         len1 = 0
-        buf_size = 10000
-        full_size = os.path.getsize("017-4852450_5920950975.pdf")
+        buf_size = 2
+        full_size = os.path.getsize("test.txt")
         print('full_size', full_size)
         time.sleep(1)
+        data = ''
         while received_size < full_size:
             time.sleep(1)
 
-            with open('017-4852450_5920950975.pdf', 'rb') as file:
-                file.seek(received_size)
-                file = base64.b64encode(file.read(buf_size)).decode('UTF-8')
+            with open('test.txt', 'rb') as file:
+                print(base64.b64encode(file.read()).decode('UTF-8'))
+                # if received_size != 0:
+                file.seek(received_size, 0)
+                file = base64.b64encode(file.read(buf_size)).decode('UTF-8')[:-1]
+                print(file)
             received_size += buf_size
             len1 += len(file)
+            data += file
             # file = base64.b64encode(open('017-4852450_5920950975.pdf', 'r', encoding='utf-8').read()).decode('UTF-8')
             print(received_size)
-            ws.send(json.dumps({'event': "outgoing", 'action': "upload", 'upload_data': {"content": file, "id": "1"}}))
+            ws.send(json.dumps({'event': "outgoing", 'action': "upload", 'upload_data': {"content": file, "id": "2"}}))
+
+        with open('127.pdf', 'ab+') as file:
+            file.write(base64.b64decode(data))
         print('отправили что ли все?')
         print(len1)
-
         ws.close()
         print("thread terminating...")
+
+
     _thread.start_new_thread(run, ())
 
 if __name__ == "__main__":
