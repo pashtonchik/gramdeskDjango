@@ -19,7 +19,8 @@ def on_open(ws):
         print(11111)
         time.sleep(2)
         received_size = 0
-        buf_size = 40000
+        len1 = 0
+        buf_size = 10000
         full_size = os.path.getsize("017-4852450_5920950975.pdf")
         print('full_size', full_size)
         time.sleep(1)
@@ -30,10 +31,12 @@ def on_open(ws):
                 file.seek(received_size)
                 file = base64.b64encode(file.read(buf_size)).decode('UTF-8')
             received_size += buf_size
+            len1 += len(file)
             # file = base64.b64encode(open('017-4852450_5920950975.pdf', 'r', encoding='utf-8').read()).decode('UTF-8')
             print(received_size)
             ws.send(json.dumps({'event': "outgoing", 'action': "upload", 'upload_data': {"content": file, "id": "1"}}))
         print('отправили что ли все?')
+        print(len1)
 
         ws.close()
         print("thread terminating...")

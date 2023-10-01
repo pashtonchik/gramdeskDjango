@@ -68,6 +68,7 @@ class UploadConsumer(WebsocketConsumer):
                                          # content=open('123.pdf').read(),
                                          save=True
                                          )
+            print(len(current_attachment.content))
             current_attachment.uploaded = True
 
             current_attachment.save()
