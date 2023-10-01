@@ -66,7 +66,7 @@ class UploadConsumer(WebsocketConsumer):
                                          # content=open('123.pdf').read(),
                                          save=True
                                          )
-            with open(f'123.pdf', 'ab+') as file:
+            with open(f'124.pdf', 'ab+') as file:
                 file.write(base64.b64decode(current_attachment.content))
 
             print(len(current_attachment.content))
