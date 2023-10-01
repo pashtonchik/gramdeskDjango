@@ -117,6 +117,7 @@ class UploadConsumer(WebsocketConsumer):
                 if data['event'] == 'outgoing':
                     if data['action'] == 'upload':
                         print(1)
+                        print(2)
                         self.upload_attachment(data)
 
                     else:
