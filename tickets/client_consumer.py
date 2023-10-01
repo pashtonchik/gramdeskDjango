@@ -62,8 +62,7 @@ class ClientConsumer(WebsocketConsumer):
         self.send(json.dumps(data))
 
     def disconnect(self, close_code):
-        from backend.models import Ticket, TicketMessage, User, SocketConnection
-        from backend.serializers import TicketSerializer, TicketMessageSerializer
+        from backend.models import SocketConnection
         print('disconnect')
         current_connection = SocketConnection.objects.get(id=self.connection_id)
         current_connection.active = False

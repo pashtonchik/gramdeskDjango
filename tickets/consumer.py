@@ -1,8 +1,11 @@
+import datetime
 import json
 from asgiref.sync import async_to_sync, sync_to_async
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
 from django.db import transaction
+
+from backend.models import SocketConnection
 
 
 class LiveScoreConsumer(WebsocketConsumer):
@@ -20,6 +23,15 @@ class LiveScoreConsumer(WebsocketConsumer):
         new_tickets = tickets.filter(status='created')[:20]
         in_progress_tickets = tickets.filter(status='in_progress')[:20]
         # closed_tickets = tickets.filter(status='closed')[:20]
+
+        new_socket_connection = SocketConnection(
+            user=self.scope['user'],
+            jwt=self.scope['jwt'],
+            channel_name=self.channel_name,
+            date_created=datetime.datetime.now().timestamp()
+        )
+        new_socket_connection.save()
+        self.connection_id = new_socket_connection.id
 
         data = {}
         data['type'] = 'tickets'

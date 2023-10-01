@@ -6,21 +6,30 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
 from django.core.files.base import ContentFile
-from django.db import transaction
 
+from backend.models import SocketConnection
 from backend.serializers import AttachmentSerializer
 
 
 class UploadConsumer(WebsocketConsumer):
 
     def connect(self):
-        # async_to_sync(self.channel_layer.group_add)("active_support", self.channel_name)
-        # async_to_sync(self.channel_layer.group_add)(f'active_connections', self.channel_name)
-        # print(self.channel_name)
+        async_to_sync(self.channel_layer.group_add)(f'active_connections', self.channel_name)
+        print(self.channel_name)
 
         # closed_tickets = tickets.filter(status='closed')[:20]
+        new_socket_connection = SocketConnection(
+            user=self.scope['user'],
+            jwt=self.scope['jwt'],
+            channel_name=self.channel_name,
+            date_created=datetime.datetime.now().timestamp()
+        )
+        new_socket_connection.save()
+        self.connection_id = new_socket_connection.id
 
-        data = {}
+        data = {
+            'ok': True
+        }
 
         self.accept()
         self.send(json.dumps(data))
@@ -29,24 +38,21 @@ class UploadConsumer(WebsocketConsumer):
 
 
     def disconnect(self, close_code):
-        from backend.models import Ticket, TicketMessage, User, SocketConnection
-        from backend.serializers import TicketSerializer, TicketMessageSerializer
-        pass
-        # print('disconnect')
-        # current_connection = SocketConnection.objects.get(id=self.connection_id)
-        # current_connection.active = False
-        # current_connection.date_closed = datetime.datetime.now().timestamp()
-        # current_connection.save()
-        # async_to_sync(self.channel_layer.group_discard)(f'client_{self.scope["user"].id}', self.channel_name)
-        # async_to_sync(self.channel_layer.group_discard)('active_connections', self.channel_name)
+        from backend.models import SocketConnection
+        print('disconnect')
+        current_connection = SocketConnection.objects.get(id=self.connection_id)
+        current_connection.active = False
+        current_connection.date_closed = datetime.datetime.now().timestamp()
+        current_connection.save()
+        async_to_sync(self.channel_layer.group_discard)('active_connections', self.channel_name)
 
 
     def upload_attachment(self, data):
-        from backend.models import Ticket, TicketMessage, User, Attachment
-        from backend.serializers import TicketSerializer, TicketMessageSerializer
+        from backend.models import TicketMessage, Attachment
+        from backend.serializers import TicketMessageSerializer
         upload_data = data['upload_data']
 
-        current_attachment = Attachment.objects.select_for_update().get(id=upload_data['id'])
+        current_attachment = Attachment.objects.select_for_update().get(id=upload_data['id'], uploaded=False)
         # current_attachment = Attachment.objects.select_for_update().get(id=upload_data['id'], uploaded=False)
         received_bytes = upload_data['content']
         content = base64.b64decode(received_bytes.encode('UTF-8'))
@@ -99,8 +105,7 @@ class UploadConsumer(WebsocketConsumer):
 
 
     def receive(self, text_data):
-        from backend.models import Ticket, TicketMessage, User, SocketConnection
-        from backend.serializers import TicketSerializer, TicketMessageSerializer
+        from backend.models import SocketConnection
         if text_data == 'heartbeat':
             current_connection = SocketConnection.objects.get(channel_name=self.channel_name)
             current_connection.approve_heartbeat = True
@@ -131,7 +136,7 @@ class UploadConsumer(WebsocketConsumer):
 
 
 
-            except JSONDecodeError:
+            except (JSONDecodeError, KeyError):
                 data = {
                     'message': 'Incorrect Message',
                     'ok': False,
