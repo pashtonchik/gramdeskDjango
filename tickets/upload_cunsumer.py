@@ -72,7 +72,7 @@ class UploadConsumer(WebsocketConsumer):
             current_attachment.save()
 
             if not Attachment.objects.filter(message=current_attachment.message, uploaded=False).exists():
-                current_message = TicketMessage.objects.select_for_update().get(id=current_attachment.id)
+                current_message = TicketMessage.objects.select_for_update().get(id=current_attachment.message.id)
                 current_message.sending_state = 'sent'
 
                 output_data_clients = {
