@@ -29,17 +29,21 @@ def on_open(ws):
             time.sleep(1)
 
             with open('test.txt', 'rb') as file:
-                print(base64.b64encode(file.read()).decode('UTF-8'))
+                print('весь', base64.b64encode(file.read()).decode('UTF-8'))
+                file.seek(0, 0)
+                print('весь в байтах', file.read(10))
                 # if received_size != 0:
                 file.seek(received_size, 0)
-                file = base64.b64encode(file.read(buf_size)).decode('UTF-8')[:-1]
+                bytes = file.read(buf_size)
+                print('эти байты', bytes)
+                file = base64.b64encode(bytes).decode('UTF-8')
                 print(file)
             received_size += buf_size
             len1 += len(file)
             data += file
             # file = base64.b64encode(open('017-4852450_5920950975.pdf', 'r', encoding='utf-8').read()).decode('UTF-8')
             print(received_size)
-            ws.send(json.dumps({'event': "outgoing", 'action': "upload", 'upload_data': {"content": file, "id": "2"}}))
+            # ws.send(json.dumps({'event': "outgoing", 'action': "upload", 'upload_data': {"content": file, "id": "2"}}))
 
         with open('127.pdf', 'ab+') as file:
             file.write(base64.b64decode(data))
