@@ -198,7 +198,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         async_to_sync(channel_layer.group_send)(f"client_{cur_message.tg_user.id}", {"type": "chat.message",
                                                            "message": json.dumps(data_clients)})
 
-
+    @transaction.atomic()
     def delete_message_by_support(self, data):
         from backend.models import Ticket, TicketMessage, User
         from backend.serializers import TicketSerializer, TicketMessageSerializer
