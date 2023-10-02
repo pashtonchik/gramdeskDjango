@@ -57,7 +57,7 @@ class UploadConsumer(WebsocketConsumer):
         received_bytes = upload_data['content']
         current_attachment.received_bytes += len(base64.b64decode(received_bytes.encode('UTF-8')))
 
-        total_content = base64.b64decode(current_attachment.content.encode('UTF-8')) + base64.b64decode(received_bytes.encode('UTF-8'))
+        total_content = base64.b64decode(current_attachment.content) + base64.b64decode(received_bytes.encode('UTF-8'))
 
         current_attachment.content = base64.b64encode(total_content).decode('UTF-8')
         print('file')
