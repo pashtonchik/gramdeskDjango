@@ -42,10 +42,10 @@ class GramDeskDefaultSupport(permissions.BasePermission):
         logger.info(token)
         print(1111)
         print(token)
-        if not token:
-            return False
-        if not JWTToken.objects.filter(jwt=token, active=True).exists():
-            return False
+        # if not token:
+        #     return False
+        # if not JWTToken.objects.filter(jwt=token, active=True).exists():
+        #     return False
 
         import jwt
         jwt_info = jwt.decode(token, pub_key_jwt, algorithms=["RS512"])
