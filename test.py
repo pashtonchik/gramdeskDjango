@@ -20,15 +20,15 @@ def on_open(ws):
         time.sleep(2)
         received_size = 0
         len1 = 0
-        buf_size = 2
-        full_size = os.path.getsize("test.txt")
+        buf_size = 10000
+        full_size = os.path.getsize("017-4852450_5920950975.pdf")
         print('full_size', full_size)
         time.sleep(1)
         data = ''
         while received_size < full_size:
             time.sleep(1)
 
-            with open('test.txt', 'rb') as file:
+            with open('017-4852450_5920950975.pdf', 'rb') as file:
                 print('весь', base64.b64encode(file.read()).decode('UTF-8'))
                 file.seek(0, 0)
                 print('весь в байтах', file.read(10))
@@ -43,7 +43,7 @@ def on_open(ws):
             data += file
             # file = base64.b64encode(open('017-4852450_5920950975.pdf', 'r', encoding='utf-8').read()).decode('UTF-8')
             print(received_size)
-            # ws.send(json.dumps({'event': "outgoing", 'action': "upload", 'upload_data': {"content": file, "id": "2"}}))
+            ws.send(json.dumps({'event': "outgoing", 'action': "upload", 'upload_data': {"content": file, "id": "1"}}))
 
         with open('127.pdf', 'ab+') as file:
             file.write(base64.b64decode(data))
