@@ -54,13 +54,8 @@ class TicketSerializer(serializers.ModelSerializer):
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField(source='id')
-    name = serializers.ReadOnlyField(source='name')
-    total_bytes = serializers.ReadOnlyField(source='total_bytes')
-    ext = serializers.ReadOnlyField(source='ext')
-    buf_size = serializers.ReadOnlyField(source='buf_size')
     class Meta:
-        exclude = ('id', 'name', 'total_bytes', 'ext', 'buf_size')
+        fields = ('id', 'name', 'total_bytes', 'ext', 'buf_size')
         model = Attachment
 
 
