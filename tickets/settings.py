@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     # 'backend',
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
-    # 'rest_framework',
+    'rest_framework',
     'django.contrib.staticfiles',
 ]
 
@@ -73,7 +73,7 @@ CELERY_TASK_SERIALIZER = 'json'
 
 
 ROOT_URLCONF = 'tickets.urls'
-# AUTH_USER_MODEL = 'backend.User'
+AUTH_USER_MODEL = 'backend.User'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
