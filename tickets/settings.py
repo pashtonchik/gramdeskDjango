@@ -191,6 +191,16 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=10000),
 }
 
+REST_FRAMEWORK = {
+    # 'DEFAULT_PERMISSION_CLASSES':(
+    #     'rest_framework.permissions.AllowAny'
+    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    # 'DEFAULT_PERMISSION_CLASSES': ( 'rest_framework.permissions.IsAdminUser', ),
+}
+
 # PROFIAT_PUBKEY=123
 
 
