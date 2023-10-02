@@ -71,10 +71,7 @@ class UploadConsumer(WebsocketConsumer):
                                          # content=open('123.pdf').read(),
                                          save=True
                                          )
-            with open(f'124.pdf', 'ab+') as file:
-                file.write(base64.b64decode(current_attachment.content))
 
-            print(len(current_attachment.content))
             current_attachment.uploaded = True
 
             current_attachment.save()
@@ -83,24 +80,24 @@ class UploadConsumer(WebsocketConsumer):
                 current_message = TicketMessage.objects.select_for_update().get(id=current_attachment.message.id)
                 current_message.sending_state = 'sent'
                 current_message.save()
-                # output_data_clients = {
-                #     'event': "incoming",
-                #     'type': 'new_message',
-                #     'message': TicketMessageSerializer(current_message, context={"from_user_type": "client"}).data,
-                # }
-                #
-                # output_data_supports = {
-                #     'event': "incoming",
-                #     'type': 'new_message',
-                #     'message': TicketMessageSerializer(current_message, context={"from_user_type": "support"}).data,
-                # }
-                #
-                # channel_layer = get_channel_layer()
-                # async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
-                #                                                            "message": json.dumps(output_data_supports)})
-                # async_to_sync(channel_layer.group_send)(f"client_{current_message.tg_user.id}", {"type": "chat.message",
-                #                                                                          "message": json.dumps(
-                #                                                                              output_data_clients)})
+                output_data_clients = {
+                    'event': "incoming",
+                    'type': 'new_message',
+                    'message': TicketMessageSerializer(current_message, context={"from_user_type": "client"}).data,
+                }
+
+                output_data_supports = {
+                    'event': "incoming",
+                    'type': 'new_message',
+                    'message': TicketMessageSerializer(current_message, context={"from_user_type": "support"}).data,
+                }
+
+                channel_layer = get_channel_layer()
+                async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+                                                                           "message": json.dumps(output_data_supports)})
+                async_to_sync(channel_layer.group_send)(f"client_{current_message.tg_user.id}", {"type": "chat.message",
+                                                                                         "message": json.dumps(
+                                                                                             output_data_clients)})
         else:
             current_attachment.save()
 
