@@ -110,6 +110,8 @@ class LiveScoreConsumer(WebsocketConsumer):
             message_text=new_message['content'],
             ticket=ticket,
         )
+        print(new_message)
+
         if 'message_to_reply' in new_message:
             if new_message['message_to_reply']:
                 message.message_to_reply = TicketMessage.objects.get(id=data['message_to_reply']['id'], ticket=message.ticket)

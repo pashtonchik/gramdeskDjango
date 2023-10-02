@@ -39,8 +39,6 @@ class GramDeskDefaultSupport(permissions.BasePermission):
             return False
 
         bearer, token = request.headers.get('Authorization').split()
-        logger.info(token)
-        print(1111)
         print(token)
         if not token:
             return False
@@ -49,7 +47,6 @@ class GramDeskDefaultSupport(permissions.BasePermission):
 
         import jwt
         jwt_info = jwt.decode(token, pub_key_jwt, algorithms=["RS512"])
-        print(222)
         logger.info(jwt_info)
         if request.user.is_blocked:
             return False

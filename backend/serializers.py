@@ -44,6 +44,7 @@ class TicketSerializer(serializers.ModelSerializer):
     count_unread_messages = serializers.ReadOnlyField(source='get_count_unread_messages')
     last_message = serializers.SerializerMethodField('get_last_message')
     user_name = serializers.ReadOnlyField(source='get_user_name')
+    chat_id = serializers.ReadOnlyField(source='uuid')
 
     class Meta:
         exclude = ('tg_user', 'date_created', 'date_closed')
