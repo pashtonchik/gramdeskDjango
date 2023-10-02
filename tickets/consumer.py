@@ -285,7 +285,7 @@ class LiveScoreConsumer(WebsocketConsumer):
                 self.update_message_by_support(data)
 
             elif data['action'] == 'delete_message':
-                self.update_message_by_support(data)
+                self.delete_message_by_support(data)
 
             elif data['action'] == 'close_ticket':
                 self.close_ticket(data)
