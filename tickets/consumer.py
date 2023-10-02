@@ -110,7 +110,6 @@ class LiveScoreConsumer(WebsocketConsumer):
             message_text=new_message['content'],
             ticket=ticket,
         )
-        print(new_message)
 
         if 'message_to_reply' in new_message:
             if new_message['message_to_reply']:
