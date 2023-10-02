@@ -31,7 +31,7 @@ class GramDeskDefaultSupport(permissions.BasePermission):
     def has_permission(self, request, view):
         token = ''
         bearer = ''
-
+        print(request.user)
         logger = logging.getLogger("mylogger")
         logger.info(request.headers)
 
@@ -51,7 +51,7 @@ class GramDeskDefaultSupport(permissions.BasePermission):
         jwt_info = jwt.decode(token, pub_key_jwt, algorithms=["RS512"])
 
         logger.info(jwt_info)
-
+        print(request.user)
         if request.user.is_blocked:
             return False
 
