@@ -73,7 +73,7 @@ CELERY_TASK_SERIALIZER = 'json'
 
 
 ROOT_URLCONF = 'tickets.urls'
-AUTH_USER_MODEL = 'backend.User'
+# AUTH_USER_MODEL = 'backend.User'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
