@@ -40,7 +40,8 @@ class GramDeskDefaultSupport(permissions.BasePermission):
 
         bearer, token = request.headers.get('Authorization').split()
         logger.info(token)
-
+        print(1111)
+        print(token)
         if not token:
             return False
         if not JWTToken.objects.filter(jwt=token, active=True).exists():
