@@ -124,7 +124,8 @@ class LiveScoreConsumer(WebsocketConsumer):
                         message=message,
                         name=file['name'],
                         total_bytes=file['total_size'],
-                        ext=file['ext']
+                        ext=file['ext'],
+                        buf_size=10000,
                     ).save()
             else:
                 message.save()
