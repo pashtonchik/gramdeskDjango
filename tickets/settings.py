@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'backend',
+    # 'backend',
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
     # 'rest_framework',
