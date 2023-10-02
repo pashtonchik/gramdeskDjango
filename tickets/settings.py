@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework',
+    'rest_framework_simplejwt',
     'django.contrib.staticfiles',
 ]
 
