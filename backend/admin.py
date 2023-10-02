@@ -17,7 +17,7 @@ class PayMethodAdmin(admin.ModelAdmin):
 
 @admin.register(TicketMessage)
 class TicketMessageAdmin(admin.ModelAdmin):
-    list_display = ('tg_user', 'ticket', 'message_text', 'date_created')
+    list_display = ('tg_user', 'ticket', 'message_text', 'date_created', 'deleted')
     readonly_fields = ('date_created', )
     ordering = ('-date_created', )
 
