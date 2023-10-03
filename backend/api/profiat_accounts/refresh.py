@@ -59,5 +59,4 @@ def refresh(request):
         "ok": True,
         'refresh': str(new_refresh),
         'access': new_access,
-        'headers': dict(request.META)
     })
