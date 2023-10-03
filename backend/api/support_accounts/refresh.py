@@ -66,6 +66,6 @@ def refresh(request):
 
     return Response(status=status.HTTP_200_OK, data={
         "ok": True,
-        'refresh': str(refresh),
+        'refresh': str(new_refresh),
         'access': new_access,
     })
