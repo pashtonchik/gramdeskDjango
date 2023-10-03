@@ -117,7 +117,7 @@ class UploadConsumer(WebsocketConsumer):
             message=TicketMessage.objects.get(id=upload_data['message_id']),
             name=upload_data['name'],
             ext=upload_data['ext'],
-            total_size=upload_data['total_size'],
+            total_bytes=upload_data['total_size'],
             buf_size=4096,
         )
 
