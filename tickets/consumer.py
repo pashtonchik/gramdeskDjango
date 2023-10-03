@@ -113,7 +113,7 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         if 'message_to_reply' in new_message:
             if new_message['message_to_reply']:
-                message.message_to_reply = TicketMessage.objects.get(id=data['message_to_reply']['id'], ticket=message.ticket)
+                message.message_to_reply = TicketMessage.objects.get(id=new_message['message_to_reply']['id'], ticket=message.ticket)
 
         print(new_message)
         if 'media' in new_message:
