@@ -120,6 +120,10 @@ class ClientConsumer(WebsocketConsumer):
             if data['message_to_reply']:
                 message.message_to_reply = TicketMessage.objects.get(id=data['message_to_reply']['id'], ticket=message.ticket)
 
+        if 'media' in new_message:
+            if new_message['media']:
+                message.sending_state = 'uploading_attachments'
+
         message.save()
 
         responce_data = {
