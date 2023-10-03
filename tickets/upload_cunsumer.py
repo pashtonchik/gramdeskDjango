@@ -138,36 +138,36 @@ class UploadConsumer(WebsocketConsumer):
             current_connection.save()
         else:
 
-            try:
-                data = json.loads(text_data)
-                if data['event'] == 'outgoing':
-                    if data['action'] == 'upload':
-                        self.upload_attachment(data)
-                    elif data['action'] == 'new_upload':
-                        self.upload_attachment(data)
 
-                    else:
-                        data = {
-                            'message': 'Incorrect Action',
-                            'ok': False,
-                        }
+            data = json.loads(text_data)
+            if data['event'] == 'outgoing':
+                if data['action'] == 'upload':
+                    self.upload_attachment(data)
+                elif data['action'] == 'new_upload':
+                    self.upload_attachment(data)
 
-                        self.send(json.dumps(data))
                 else:
                     data = {
-                        'message': 'Incorrect EventType',
+                        'message': 'Incorrect Action',
                         'ok': False,
                     }
 
                     self.send(json.dumps(data))
-
-
-
-            except (JSONDecodeError, KeyError):
+            else:
                 data = {
-                    'message': 'Incorrect Message',
+                    'message': 'Incorrect EventType',
                     'ok': False,
                 }
+
+                self.send(json.dumps(data))
+
+
+
+            # except (JSONDecodeError, KeyError):
+            #     data = {
+            #         'message': 'Incorrect Message',
+            #         'ok': False,
+            #     }
 
                 self.send(json.dumps(data))
 
