@@ -36,7 +36,6 @@ class UploadConsumer(WebsocketConsumer):
 
 
 
-
     def disconnect(self, close_code):
         from backend.models import SocketConnection
         print('disconnect')
@@ -109,6 +108,28 @@ class UploadConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps(responce_data))
 
 
+    def new_attachment(self, data):
+        from backend.models import TicketMessage, Attachment
+        from backend.serializers import TicketMessageSerializer
+        upload_data = data['upload_data']
+
+        new_attachment = Attachment(
+            message=TicketMessage.objects.get(id=upload_data['message_id']),
+            name=upload_data['name'],
+            ext=upload_data['ext'],
+            total_size=upload_data['total_size'],
+            buf_size=4096,
+        )
+
+        new_attachment.save()
+
+        responce_data = {
+            'event': "response_action",
+            'action': "new_upload",
+            'message': AttachmentSerializer(new_attachment).data,
+        }
+        self.send(text_data=json.dumps(responce_data))
+
     def receive(self, text_data):
         from backend.models import SocketConnection
         if text_data == 'heartbeat':
@@ -121,8 +142,8 @@ class UploadConsumer(WebsocketConsumer):
                 data = json.loads(text_data)
                 if data['event'] == 'outgoing':
                     if data['action'] == 'upload':
-                        print(1)
-                        print(2)
+                        self.upload_attachment(data)
+                    elif data['action'] == 'new_upload':
                         self.upload_attachment(data)
 
                     else:

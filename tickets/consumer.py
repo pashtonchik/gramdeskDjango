@@ -120,18 +120,8 @@ class LiveScoreConsumer(WebsocketConsumer):
             if new_message['media']:
                 message.sending_state = 'uploading_attachments'
                 message.save()
-                for file in new_message['media']:
-                    Attachment(
-                        message=message,
-                        name=file['name'],
-                        total_bytes=file['total_size'],
-                        ext=file['ext'],
-                        buf_size=10000,
-                    ).save()
-            else:
-                message.save()
-        else:
-            message.save()
+
+        message.save()
 
         responce_data = {
             'event': "response_action",
