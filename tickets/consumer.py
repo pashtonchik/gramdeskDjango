@@ -115,7 +115,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             if new_message['message_to_reply']:
                 message.message_to_reply = TicketMessage.objects.get(id=new_message['message_to_reply']['id'], ticket=message.ticket)
 
-        print(new_message)
+
         if 'media' in new_message:
             if new_message['media']:
                 message.sending_state = 'uploading_attachments'
