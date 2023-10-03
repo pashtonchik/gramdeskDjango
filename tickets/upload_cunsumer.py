@@ -127,7 +127,7 @@ class UploadConsumer(WebsocketConsumer):
         responce_data = {
             'event': "response_action",
             'action': "new_upload",
-            'message': AttachmentSerializer(new_attachment).data,
+            'attachment': AttachmentSerializer(new_attachment).data,
         }
         self.send(text_data=json.dumps(responce_data))
 
