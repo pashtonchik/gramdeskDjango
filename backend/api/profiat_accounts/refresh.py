@@ -35,8 +35,8 @@ def refresh(request):
 
     logger.info(old_refresh.id)
 
-    outstanding = JWTToken.objects.select_for_update().filter(user=old_refresh.user, active=True)
-    outstanding.update(active=False)
+    old_access = JWTToken.objects.select_for_update().filter(user=old_refresh.user, active=True, refresh=old_refresh)
+    old_access.update(active=False)
 
     user = old_refresh.user
     logger.info(old_refresh.user.username)
@@ -57,7 +57,7 @@ def refresh(request):
 
     return Response(status=status.HTTP_200_OK, data={
         "ok": True,
-        'refresh': str(refresh),
+        'refresh': str(new_refresh),
         'access': new_access,
         'headers': dict(request.META)
     })
