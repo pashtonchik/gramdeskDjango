@@ -144,7 +144,7 @@ class UploadConsumer(WebsocketConsumer):
                 if data['action'] == 'upload':
                     self.upload_attachment(data)
                 elif data['action'] == 'new_upload':
-                    self.upload_attachment(data)
+                    self.new_attachment(data)
 
                 else:
                     data = {
