@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.response import Response
 import json
@@ -27,10 +28,13 @@ def auth(request):
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok" : False,  "message" : "Field Password is required"})
 
     # try:
-    user = User.objects.select_for_update().get(username=username)
-    print(user.password.split('$'))
-    if make_password(password, salt=user.password.split('$')[2]) != user.password:
-        return Response(status=status.HTTP_404_NOT_FOUND, data={"ok" : False,  "message" : "Неверный логин или пароль"})
+    try:
+        user = User.objects.select_for_update().get(username=username)
+        print(user.password.split('$'))
+        if make_password(password, salt=user.password.split('$')[2]) != user.password:
+            return Response(status=status.HTTP_404_NOT_FOUND, data={"ok" : False,  "message" : "Неверный логин или пароль"})
+    except ObjectDoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND, data={"ok": False, "message": "Неверный логин или пароль"})
     # except:
     #     return Response(status=status.HTTP_404_NOT_FOUND, data={"ok" : False, "message" : "Неверный логин или пароль"})
 
