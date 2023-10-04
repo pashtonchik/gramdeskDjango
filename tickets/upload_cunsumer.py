@@ -52,7 +52,7 @@ class UploadConsumer(WebsocketConsumer):
         from backend.serializers import TicketMessageSerializer
         upload_data = data['upload_data']
 
-        current_attachment = Attachment.objects.select_for_update().get(id=upload_data['id'], uploaded=False)
+        current_attachment = Attachment.objects.select_for_update().get(index_in_message=upload_data['index'], message__id=upload_data['message_id'], uploaded=False)
         # current_attachment = Attachment.objects.select_for_update().get(id=upload_data['id'], uploaded=False)
         received_bytes = upload_data['content']
         current_attachment.received_bytes += len(base64.b64decode(received_bytes.encode('UTF-8')))
@@ -76,7 +76,7 @@ class UploadConsumer(WebsocketConsumer):
 
             current_attachment.save()
 
-            if not Attachment.objects.filter(message=current_attachment.message, uploaded=False).exists():
+            if Attachment.objects.filter(message=current_attachment.message, uploaded=True).count() == current_attachment.message.count_attachments:
                 current_message = TicketMessage.objects.select_for_update().get(id=current_attachment.message.id)
                 current_message.sending_state = 'sent'
                 current_message.save()
@@ -115,6 +115,7 @@ class UploadConsumer(WebsocketConsumer):
         upload_data = data['upload_data']
 
         new_attachment = Attachment(
+            index_in_message=upload_data['index'],
             message=TicketMessage.objects.get(id=upload_data['message_id']),
             name=upload_data['name'],
             ext=upload_data['ext'],

@@ -119,6 +119,7 @@ class LiveScoreConsumer(WebsocketConsumer):
         if 'media' in new_message:
             if new_message['media']:
                 message.sending_state = 'uploading_attachments'
+                message.count_attachments = len(new_message['media'])
 
         message.save()
 

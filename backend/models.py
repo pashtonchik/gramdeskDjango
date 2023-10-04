@@ -86,6 +86,7 @@ class TicketMessage(models.Model):
     message_text = models.TextField()
     message_file = models.FileField()
     content_type = models.CharField(max_length=20)
+    count_attachments = models.IntegerField(default=0)
     read_by_received = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
 
@@ -130,6 +131,7 @@ class TicketMessage(models.Model):
 
 
 class Attachment(models.Model):
+    index_in_message = models.IntegerField()
     message = models.ForeignKey(to=TicketMessage, on_delete=models.PROTECT)
     file = models.FileField(blank=True, null=True)
     name = models.CharField(max_length=500)
