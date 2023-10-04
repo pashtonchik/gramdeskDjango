@@ -42,7 +42,6 @@ from backend.socket_heartbeat import HeartbeatMiddleware
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
     'websocket': AllowedHostsOriginValidator(
-        TokenAuthMiddleware(
             URLRouter(
                 [
                     re_path("support/", LiveScoreConsumer.as_asgi()),
@@ -50,6 +49,5 @@ application = ProtocolTypeRouter({
                     re_path("upload/", UploadConsumer.as_asgi()),
                 ]
             )
-        )
     )
 })
