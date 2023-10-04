@@ -9,5 +9,5 @@ from backend.permissions import GramDeskDefaultSupport
 def verify_token(request):
     return Response(status=status.HTTP_200_OK, data={
         'ok': True,
-        'message': 'JWT is valid'
+        'message': 'JWT is valid',
     })
