@@ -86,7 +86,6 @@ class TicketMessage(models.Model):
     message_text = models.TextField()
     message_file = models.FileField()
     content_type = models.CharField(max_length=20)
-    count_attachments = models.IntegerField(default=0)
     read_by_received = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
 
