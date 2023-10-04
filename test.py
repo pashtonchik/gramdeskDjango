@@ -43,7 +43,7 @@ def on_open(ws):
             data += file
             # file = base64.b64encode(open('017-4852450_5920950975.pdf', 'r', encoding='utf-8').read()).decode('UTF-8')
             print(received_size)
-            ws.send(json.dumps({'event': "outgoing", 'action': "upload", 'upload_data': {"content": file, "id": "4"}}))
+            ws.send(json.dumps({'event': "outgoing", 'action': "upload", 'upload_data': {"content": file, "id": "93"}}))
 
         with open('127.pdf', 'ab+') as file:
             file.write(base64.b64decode(data))

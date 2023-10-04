@@ -25,5 +25,7 @@ urlpatterns = [
     path('api/v3/support/auth/verify/', verify_token),
     path('api/v3/support/auth/refresh/', refresh_support),
 
+    path('file/<int:attachment>/', get_attachment)
+
 
 ] + router.urls

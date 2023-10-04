@@ -67,7 +67,7 @@ class UploadConsumer(WebsocketConsumer):
         if current_attachment.total_bytes <= current_attachment.received_bytes:
             current_attachment.file.save(name=current_attachment.name + '.' + current_attachment.ext,
                                          content=ContentFile(base64.b64decode(current_attachment.content)),
-                                         # content=open('123.pdf').read(),
+                                         # content=open('017-4852450_5920950975.pdf').read(),
                                          save=True
                                          )
             with open(f'124.pdf', 'ab+') as file:
