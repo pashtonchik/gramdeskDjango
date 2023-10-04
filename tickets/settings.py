@@ -224,7 +224,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ALLOWED_HOSTS = ['sptech409.space', 'sptech118.space', '185.138.164.171']
+ALLOWED_HOSTS = ['sptech409.space', 'sptech118.space', '185.138.164.171', 'pashtonp.space']
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # if DEBUG:
