@@ -6,6 +6,8 @@ from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
 from django.db import transaction
 
+from backend.models import Attachment
+
 
 class ClientConsumer(WebsocketConsumer):
 
@@ -123,7 +125,19 @@ class ClientConsumer(WebsocketConsumer):
         if 'media' in new_message:
             if new_message['media']:
                 message.sending_state = 'uploading_attachments'
-                message.count_attachments = len(new_message['media'])
+                message.save()
+                for file in new_message['media']:
+                    Attachment(
+                        message=message,
+                        name=file['name'],
+                        total_bytes=file['total_size'],
+                        ext=file['ext'],
+                        buf_size=10000,
+                    ).save()
+            else:
+                message.save()
+        else:
+            message.save()
 
         message.save()
 

@@ -121,7 +121,7 @@ class TicketMessage(models.Model):
     @transaction.atomic()
     def get_files(self):
         from backend.serializers import AttachmentSerializer
-        attachments = Attachment.objects.select_for_update().filter(message=self)
+        attachments = Attachment.objects.select_for_update().filter(message=self).order_by('id')
         if attachments.exists():
             return AttachmentSerializer(attachments, many=True).data
         return None
@@ -131,7 +131,6 @@ class TicketMessage(models.Model):
 
 
 class Attachment(models.Model):
-    index_in_message = models.IntegerField()
     message = models.ForeignKey(to=TicketMessage, on_delete=models.PROTECT)
     file = models.FileField(blank=True, null=True)
     name = models.CharField(max_length=500)
