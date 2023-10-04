@@ -41,7 +41,7 @@ from backend.socket_heartbeat import HeartbeatMiddleware
 
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
-    'websocket':
+    'websocket': AllowedHostsOriginValidator(
         TokenAuthMiddleware(
             URLRouter(
                 [
@@ -51,4 +51,5 @@ application = ProtocolTypeRouter({
                 ]
             )
         )
+    )
 })
