@@ -25,6 +25,7 @@ class TicketMessageAdmin(admin.ModelAdmin):
 @admin.register(Attachment)
 class AttachmentAdmin(admin.ModelAdmin):
     list_display = ('message', )
+    exclude = ('content', )
 
 
 @admin.register(JWTToken)
