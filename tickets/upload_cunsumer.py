@@ -74,7 +74,7 @@ class UploadConsumer(WebsocketConsumer):
             current_attachment.file.save(current_attachment.name + '.' + current_attachment.ext,
                                           content=received_bytes
                                           )
-
+            logger.info('SAVED')
 
 
         if current_attachment.total_bytes <= current_attachment.received_bytes:
