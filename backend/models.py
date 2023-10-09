@@ -122,7 +122,7 @@ class TicketMessage(models.Model):
         from backend.serializers import AttachmentSerializer
         attachments = Attachment.objects.filter(message=self).order_by('id')
         if attachments.exists():
-            return AttachmentSerializer(attachments, many=True).dataсука
+            return AttachmentSerializer(attachments, many=True).data
         return None
 
     def get_date(self):
