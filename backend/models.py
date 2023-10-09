@@ -120,7 +120,7 @@ class TicketMessage(models.Model):
     @transaction.atomic()
     def get_files(self):
         from backend.serializers import AttachmentSerializer
-        attachments = Attachment.objects.filter(message=self).order_by('id')
+        attachments = Attachment.objects.filter(message=self).values('id', 'name', 'total_bytes', 'received_bytes', 'ext', 'buf_size').order_by('id')
         if attachments.exists():
             return AttachmentSerializer(attachments, many=True).data
         return None
