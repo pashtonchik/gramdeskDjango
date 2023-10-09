@@ -11,7 +11,7 @@ from django.db import transaction
 from backend.models import SocketConnection
 from backend.serializers import AttachmentSerializer
 import logging
-
+import io
 from backend.models import TicketMessage, Attachment
 from backend.serializers import TicketMessageSerializer
 
@@ -66,7 +66,11 @@ class UploadConsumer(WebsocketConsumer):
         logger.info(current_attachment)
         if current_attachment.received_bytes > 0:
             logger.info('PIZDA')
-            current_attachment.file.write(received_bytes)
+            _file = io.BytesIO()
+            _file.write(received_bytes)
+            _file.seek(0)
+
+            current_attachment.file.write(_file)
         #     # current_attachment.content += memoryview(received_bytes)
         else:
             logger.info('JOPA')
