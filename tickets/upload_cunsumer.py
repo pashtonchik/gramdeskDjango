@@ -101,13 +101,6 @@ class UploadConsumer(WebsocketConsumer):
         else:
             current_attachment.save()
 
-        responce_data = {
-            'event': "response_action",
-            'action': "upload",
-            'message': AttachmentSerializer(current_attachment).data,
-        }
-        self.send(text_data=json.dumps(responce_data))
-
 
     def receive(self, text_data):
         from backend.models import SocketConnection
