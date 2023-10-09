@@ -49,7 +49,7 @@ class UploadConsumer(WebsocketConsumer):
 
     # @transaction.atomic()
     def upload_attachment(self, data):
-        logger.info(data)
+        logger.info(data['upload_data']['id'])
         from backend.models import TicketMessage, Attachment
         from backend.serializers import TicketMessageSerializer
         upload_data = data['upload_data']
