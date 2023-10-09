@@ -133,7 +133,7 @@ class Attachment(models.Model):
     message = models.ForeignKey(to=TicketMessage, on_delete=models.PROTECT)
     file = models.FileField(blank=True, null=True)
     name = models.CharField(max_length=500)
-    content = models.TextField(blank=True, null=True)
+    content = models.BinaryField(blank=True, null=True)
     total_bytes = models.IntegerField()
     buf_size = models.IntegerField(default=512)
     received_bytes = models.IntegerField(default=0)
