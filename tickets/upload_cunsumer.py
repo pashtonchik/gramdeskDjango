@@ -73,7 +73,7 @@ class UploadConsumer(WebsocketConsumer):
             logger.info(f'ДЛИНА {len(received_bytes)}')
             with current_attachment.file.open(mode='wb') as f:
                 f.write(_file.read())
-            logger.info(f'ЗАПИСАЛИ {current_attachment.file.size()}')
+            logger.info(f'ЗАПИСАЛИ {current_attachment.file.size}')
 
         #     # current_attachment.content += memoryview(received_bytes)
         else:
