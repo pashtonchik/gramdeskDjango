@@ -63,28 +63,28 @@ class UploadConsumer(WebsocketConsumer):
         # current_attachment = Attachment.objects.select_for_update().get(id=upload_data['id'], uploaded=False)
         received_bytes = upload_data['content']
         received_bytes = base64.b64decode(received_bytes.encode('UTF-8'))
-        logger.info(current_attachment)
+        # logger.info(current_attachment)
 
         _file = io.BytesIO()
         _file.write(received_bytes)
         _file.seek(0)
         if current_attachment.received_bytes > 0:
-            logger.info('PIZDA')
+            # logger.info('PIZDA')
 
             with current_attachment.file.open(mode='wb') as f:
                 f.write(_file.read())
         #     # current_attachment.content += memoryview(received_bytes)
         else:
-            logger.info('JOPA')
+            # logger.info('JOPA')
             current_attachment.file.save(current_attachment.name + '.' + current_attachment.ext,
                                           content=_file
                                           )
-            logger.info('SAVED')
+            # logger.info('SAVED')
 
         current_attachment.received_bytes += len(received_bytes)
 
         if current_attachment.total_bytes <= current_attachment.received_bytes:
-            logger.info("DONE")
+            # logger.info("DONE")
 
             current_attachment.uploaded = True
 
