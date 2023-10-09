@@ -65,11 +65,13 @@ class UploadConsumer(WebsocketConsumer):
         received_bytes = base64.b64decode(received_bytes.encode('UTF-8'))
         current_attachment.received_bytes += len(received_bytes)
         logger.info(current_attachment)
-        if current_attachment.content:
-            current_attachment.content += memoryview(received_bytes)
-        else:
-            current_attachment.content = memoryview(received_bytes)
+        # if current_attachment.content:
+        #     current_attachment.file.write(received_bytes)
+        #     # current_attachment.content += memoryview(received_bytes)
+        # else:
+        #     current_attachment.content = memoryview(received_bytes)
 
+        current_attachment.file.write(received_bytes)
 
 
         if current_attachment.total_bytes <= current_attachment.received_bytes:
