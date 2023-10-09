@@ -47,14 +47,16 @@ class UploadConsumer(WebsocketConsumer):
         current_connection.save()
         async_to_sync(self.channel_layer.group_discard)('active_connections', self.channel_name)
 
-    @transaction.atomic()
+    # @transaction.atomic()
     def upload_attachment(self, data):
+
         logger.info(data['upload_data']['id'])
         from backend.models import TicketMessage, Attachment
         from backend.serializers import TicketMessageSerializer
         upload_data = data['upload_data']
 
-        current_attachment = Attachment.objects.select_for_update().get(id=upload_data['id'], uploaded=False)
+        # current_attachment = Attachment.objects.select_for_update().get(id=upload_data['id'], uploaded=False)
+        current_attachment = Attachment.objects.get(id=upload_data['id'], uploaded=False)
         # current_attachment = Attachment.objects.select_for_update().get(id=upload_data['id'], uploaded=False)
         received_bytes = upload_data['content']
         current_attachment.received_bytes += len(base64.b64decode(received_bytes.encode('UTF-8')))
@@ -81,7 +83,8 @@ class UploadConsumer(WebsocketConsumer):
             current_attachment.save()
 
             if not Attachment.objects.filter(message=current_attachment.message, uploaded=False).exists():
-                current_message = TicketMessage.objects.select_for_update().get(id=current_attachment.message.id)
+                # current_message = TicketMessage.objects.select_for_update().get(id=current_attachment.message.id)
+                current_message = TicketMessage.objects.get(id=current_attachment.message.id)
                 current_message.sending_state = 'sent'
                 current_message.save()
                 output_data_clients = {
