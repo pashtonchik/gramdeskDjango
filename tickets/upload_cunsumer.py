@@ -72,12 +72,11 @@ class UploadConsumer(WebsocketConsumer):
             # logger.info('PIZDA')
             logger.info(f'ДЛИНА {len(received_bytes)}')
             with current_attachment.file.open(mode='wb') as f:
+                f.seek(0)
                 f.write(_file.read())
             logger.info(f'ЗАПИСАЛИ {current_attachment.file.size}')
 
-        #     # current_attachment.content += memoryview(received_bytes)
         else:
-            # logger.info('JOPA')
             current_attachment.file.save(current_attachment.name + '.' + current_attachment.ext,
                                           content=_file
                                           )
