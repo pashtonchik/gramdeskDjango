@@ -55,7 +55,7 @@ class TicketSerializer(serializers.ModelSerializer):
 
 class AttachmentSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('id', 'name', 'total_bytes', 'ext', 'buf_size')
+        fields = ('id', 'name', 'total_bytes', 'received_bytes', 'ext', 'buf_size')
         model = Attachment
 
 
