@@ -63,7 +63,6 @@ class UploadConsumer(WebsocketConsumer):
             total_content = base64.b64decode(received_bytes.encode('UTF-8'))
 
         current_attachment.content = base64.b64encode(total_content).decode('UTF-8')
-        print('file')
 
         if current_attachment.total_bytes <= current_attachment.received_bytes:
             current_attachment.file.save(name=current_attachment.name + '.' + current_attachment.ext,
