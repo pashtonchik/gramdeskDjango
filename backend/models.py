@@ -119,10 +119,10 @@ class TicketMessage(models.Model):
 
     @transaction.atomic()
     def get_files(self):
-        from backend.serializers import AttachmentSerializer
-        attachments = Attachment.objects.select_for_update().filter(message=self).order_by('id')
-        if attachments.exists():
-            return AttachmentSerializer(attachments, many=True).data
+        # from backend.serializers import AttachmentSerializer
+        # attachments = Attachment.objects.select_for_update().filter(message=self).order_by('id')
+        # if attachments.exists():
+        #     return AttachmentSerializer(attachments, many=True).data
         return None
 
     def get_date(self):
