@@ -71,7 +71,7 @@ class UploadConsumer(WebsocketConsumer):
         if current_attachment.received_bytes > 0:
             logger.info('PIZDA')
 
-            with current_attachment.file.open() as f:
+            with current_attachment.file.open(mode='wb') as f:
                 f.write(_file.read())
         #     # current_attachment.content += memoryview(received_bytes)
         else:
