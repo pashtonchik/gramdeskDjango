@@ -235,3 +235,32 @@ CORS_ALLOW_HEADERS = [
     "*"
 ]
 # CSRF_TRUSTED_ORIGINS = ['https://*.pashtonp.space', 'https://*.127.0.0.1']
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters' : {
+         'main_format' : {
+              'format' : '{asctime} {levelname} {filename} {message}',
+              'style' : '{'
+         }
+    },
+    'handlers' : {
+        'console' : {
+            'class' : 'logging.StreamHandler',
+            'formatter' : 'main_format'
+        },
+         'main_file' : {
+              'class' : 'logging.FileHandler',
+              'formatter' : 'main_format',
+              'filename' : 'info_main.log'
+         },
+    },
+    'loggers' : {
+        'main' :   {
+                    'handlers' : ['console', 'main_file'],
+                    'level' : 'INFO',
+                    'propagate' : True
+        },
+    }
+}
