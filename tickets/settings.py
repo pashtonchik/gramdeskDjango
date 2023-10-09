@@ -35,7 +35,7 @@ CHANNEL_REDIS_HOST = 6380
 # if not DEBUG:
 #     CSRF_TRUSTED_ORIGINS = ['https://pashtonp.space'] # FIX admin CSRF token issue
 
-APPEND_SLASH=True
+# APPEND_SLASH=True
 # Application definition
 
 INSTALLED_APPS = [
