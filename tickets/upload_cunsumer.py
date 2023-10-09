@@ -10,7 +10,8 @@ from django.db import transaction
 
 from backend.models import SocketConnection
 from backend.serializers import AttachmentSerializer
-
+import logging
+logger = logging.getLogger('main')
 
 class UploadConsumer(WebsocketConsumer):
 
@@ -48,6 +49,7 @@ class UploadConsumer(WebsocketConsumer):
 
     @transaction.atomic()
     def upload_attachment(self, data):
+        logger.info(data)
         from backend.models import TicketMessage, Attachment
         from backend.serializers import TicketMessageSerializer
         upload_data = data['upload_data']
@@ -56,16 +58,18 @@ class UploadConsumer(WebsocketConsumer):
         # current_attachment = Attachment.objects.select_for_update().get(id=upload_data['id'], uploaded=False)
         received_bytes = upload_data['content']
         current_attachment.received_bytes += len(base64.b64decode(received_bytes.encode('UTF-8')))
-
+        logger.info(current_attachment)
         if current_attachment.content:
             total_content = base64.b64decode(current_attachment.content.encode('UTF-8')) + base64.b64decode(received_bytes.encode('UTF-8'))
         else:
             total_content = base64.b64decode(received_bytes.encode('UTF-8'))
 
         current_attachment.content = base64.b64encode(total_content).decode('UTF-8')
-        print('file')
+
 
         if current_attachment.total_bytes <= current_attachment.received_bytes:
+            logger.info("DONE")
+
             current_attachment.file.save(name=current_attachment.name + '.' + current_attachment.ext,
                                          content=ContentFile(base64.b64decode(current_attachment.content)),
                                          # content=open('017-4852450_5920950975.pdf').read(),
@@ -100,6 +104,7 @@ class UploadConsumer(WebsocketConsumer):
                                                                                              output_data_clients)})
         else:
             current_attachment.save()
+        logger.info("RESPONSE")
 
         responce_data = {
             'event': "response_action",
