@@ -71,7 +71,7 @@ class UploadConsumer(WebsocketConsumer):
         #     # current_attachment.content += memoryview(received_bytes)
         else:
             logger.info('JOPA')
-            current_attachment.file.write(current_attachment.name + '.' + current_attachment.ext,
+            current_attachment.file.save(current_attachment.name + '.' + current_attachment.ext,
                                           content=received_bytes
                                           )
 
