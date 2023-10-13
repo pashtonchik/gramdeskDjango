@@ -51,7 +51,7 @@ class UploadConsumer(WebsocketConsumer):
         current_connection.save()
         async_to_sync(self.channel_layer.group_discard)('active_connections', self.channel_name)
 
-    @transaction.atomic()
+    # @transaction.atomic()
     def upload_attachment(self, data):
 
         logger.info(data['upload_data']['id'])

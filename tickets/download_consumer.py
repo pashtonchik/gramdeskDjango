@@ -7,6 +7,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
 from django.core.files.base import ContentFile
+from django.db import transaction
 
 from backend.models import SocketConnection
 from backend.serializers import AttachmentSerializer
@@ -45,7 +46,7 @@ class DownloadConsumer(WebsocketConsumer):
         current_connection.save()
         async_to_sync(self.channel_layer.group_discard)('active_connections', self.channel_name)
 
-
+    @transaction.atomic()
     def send_attachment(self, data):
         from backend.models import TicketMessage, Attachment
         from backend.serializers import TicketMessageSerializer
