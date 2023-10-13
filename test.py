@@ -8,6 +8,14 @@ import websocket
 
 
 def on_message(ws, message):
+    if message != '{"ok": true}':
+        data = json.loads(message)
+        received_bytes = data['content']
+        received_bytes = base64.b64decode(received_bytes.encode('UTF-8'))
+
+        with open('123.pdf', mode='ab+') as f:
+            f.write(received_bytes)
+
 
 def on_error(ws, error):
     print(2)
@@ -17,33 +25,24 @@ def on_open(ws):
     def run(*args):
 
         print(11111)
-        time.sleep(2)
-        received_size = 0
-        len1 = 0
-        buf_size = 1000000
-        full_size = os.path.getsize("cmake-3.27.6-windows-x86_64.msi")
-        print('full_size', full_size)
-        time.sleep(1)
-        data = ''
-        while received_size < full_size:
-            time.sleep(1)
+        # time.sleep(2)
+        # received_size = 0
+        # len1 = 0
+        # buf_size = 1000000
+        # full_size = os.path.getsize("cmake-3.27.6-windows-x86_64.msi")
+        # print('full_size', full_size)
+        # time.sleep(1)
+        # data = ''
+        received = 0
 
-            with open('cmake-3.27.6-windows-x86_64.msi', 'rb') as file:
-                print(1)
-                file.seek(0, 0)
-                # if received_size != 0:
-                file.seek(received_size, 0)
-                bytes = file.read(buf_size)
-                file = base64.b64encode(bytes).decode('UTF-8')
-            received_size += buf_size
-            len1 += len(file)
-            data += file
-            # file = base64.b64encode(open('017-4852450_5920950975.pdf', 'r', encoding='utf-8').read()).decode('UTF-8')
-            print(received_size)
-            ws.send(json.dumps({'event': "outgoing", 'action': "upload", 'upload_data': {"content": '123', "id": "433"}}))
+        while True:
+            time.sleep(2)
 
-        with open('127.pdf', 'ab+') as file:
-            file.write(base64.b64decode(data))
+            ws.send(json.dumps({'event': "outgoing", 'action': "get_attachment", 'attachment': {"received_bytes": received, "id": "659"}}))
+            received += 10000
+            print(111)
+
+
         print('отправили что ли все?')
         print(len1)
         ws.close()
@@ -54,7 +53,7 @@ def on_open(ws):
 
 if __name__ == "__main__":
     websocket.enableTrace(True)
-    ws = websocket.WebSocketApp("wss://sptech409.space/upload/",
+    ws = websocket.WebSocketApp("ws://185.138.164.171:8000/download/",
                               on_open=on_open,
                               on_message=on_message,
                               on_error=on_error,
