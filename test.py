@@ -8,7 +8,7 @@ import websocket
 
 
 def on_message(ws, message):
-    print(11)
+
 def on_error(ws, error):
     print(2)
 def on_close(ws, close_status_code, close_msg):

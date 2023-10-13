@@ -1,6 +1,7 @@
 import base64
 import datetime
 import json
+import logging
 from json import JSONDecodeError
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
@@ -10,8 +11,8 @@ from django.core.files.base import ContentFile
 from backend.models import SocketConnection
 from backend.serializers import AttachmentSerializer
 
-
-class UploadConsumer(WebsocketConsumer):
+logger = logging.getLogger('main')
+class DownloadConsumer(WebsocketConsumer):
 
     def connect(self):
         async_to_sync(self.channel_layer.group_add)(f'active_connections', self.channel_name)
@@ -35,8 +36,6 @@ class UploadConsumer(WebsocketConsumer):
         self.send(json.dumps(data))
 
 
-
-
     def disconnect(self, close_code):
         from backend.models import SocketConnection
         print('disconnect')
@@ -47,66 +46,37 @@ class UploadConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_discard)('active_connections', self.channel_name)
 
 
-    def download_attachment(self, data):
+    def send_attachment(self, data):
         from backend.models import TicketMessage, Attachment
         from backend.serializers import TicketMessageSerializer
-        upload_data = data['download_data']
+        logger.info(data['attachment'])
+        attachment_id = data['attachment']['id']
+        sent_bytes = data['attachment'].get('received_bytes', 0)
 
-        current_attachment = Attachment.objects.select_for_update().get(id=upload_data['id'])
-        # current_attachment = Attachment.objects.select_for_update().get(id=upload_data['id'], uploaded=False)
-        current_attachment.received_bytes += len(base64.b64decode(received_bytes.encode('UTF-8')))
+        current_attachment = Attachment.objects.select_for_update().get(id=attachment_id)
 
-        if current_attachment.content:
-            total_content = base64.b64decode(current_attachment.content.encode('UTF-8')) + base64.b64decode(received_bytes.encode('UTF-8'))
-        else:
-            total_content = base64.b64decode(received_bytes.encode('UTF-8'))
+        if current_attachment.total_bytes <= sent_bytes or sent_bytes < 0:
+            logger.info("Пришла хуйня дисконект")
+            self.disconnect()
+            return "disconnect"
 
-        current_attachment.content = base64.b64encode(total_content).decode('UTF-8')
-        print('file')
+        if current_attachment.received_bytes < current_attachment.total_bytes:
+            logger.info("Файл еще даже не дозагрузился биля, куда ты лезешь")
+            self.disconnect()
+            return "disconnect"
 
-        if current_attachment.total_bytes <= current_attachment.received_bytes:
-            current_attachment.file.save(name=current_attachment.name + '.' + current_attachment.ext,
-                                         content=ContentFile(base64.b64decode(current_attachment.content)),
-                                         # content=open('017-4852450_5920950975.pdf').read(),
-                                         save=True
-                                         )
-            with open(f'124.pdf', 'ab+') as file:
-                file.write(base64.b64decode(current_attachment.content))
+        with current_attachment.file.open(mode='rb') as file:
+            print(1)
+            file.seek(sent_bytes, 0)
+            bytes = file.read(current_attachment.buf_size)
+            file = base64.b64encode(bytes).decode('UTF-8')
 
-            print(len(current_attachment.content))
-            current_attachment.uploaded = True
-
-            current_attachment.save()
-
-            if not Attachment.objects.filter(message=current_attachment.message, uploaded=False).exists():
-                current_message = TicketMessage.objects.select_for_update().get(id=current_attachment.message.id)
-                current_message.sending_state = 'sent'
-                current_message.save()
-                # output_data_clients = {
-                #     'event': "incoming",
-                #     'type': 'new_message',
-                #     'message': TicketMessageSerializer(current_message, context={"from_user_type": "client"}).data,
-                # }
-                #
-                # output_data_supports = {
-                #     'event': "incoming",
-                #     'type': 'new_message',
-                #     'message': TicketMessageSerializer(current_message, context={"from_user_type": "support"}).data,
-                # }
-                #
-                # channel_layer = get_channel_layer()
-                # async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
-                #                                                            "message": json.dumps(output_data_supports)})
-                # async_to_sync(channel_layer.group_send)(f"client_{current_message.tg_user.id}", {"type": "chat.message",
-                #                                                                          "message": json.dumps(
-                #                                                                              output_data_clients)})
-        else:
-            current_attachment.save()
 
         responce_data = {
             'event': "response_action",
-            'action': "upload",
-            'message': AttachmentSerializer(current_attachment).data,
+            'action': "get_attachment",
+            'content': file,
+            'total_size': current_attachment.total_bytes,
         }
         self.send(text_data=json.dumps(responce_data))
 
@@ -122,11 +92,8 @@ class UploadConsumer(WebsocketConsumer):
             try:
                 data = json.loads(text_data)
                 if data['event'] == 'outgoing':
-                    if data['action'] == 'upload':
-                        print(1)
-                        print(2)
-                        self.upload_attachment(data)
-
+                    if data['action'] == 'get_attachment':
+                        self.send_attachment(data)
                     else:
                         data = {
                             'message': 'Incorrect Action',

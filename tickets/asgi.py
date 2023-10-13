@@ -2,6 +2,8 @@ import os
 import django
 from django.conf import settings
 
+from tickets.download_consumer import DownloadConsumer
+
 # settings.configure()
 DJANGO_SETTINGS_MODULE = os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tickets.settings')
 django.setup()
@@ -27,6 +29,7 @@ application = ProtocolTypeRouter({
                     re_path("support/", LiveScoreConsumer.as_asgi()),
                     re_path("client/", ClientConsumer.as_asgi()),
                     re_path("upload/", UploadConsumer.as_asgi()),
+                    re_path("download/", DownloadConsumer.as_asgi()),
                 ]
             )
         )
