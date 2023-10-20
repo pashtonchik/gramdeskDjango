@@ -2,7 +2,6 @@ import os
 import django
 from django.conf import settings
 
-from tickets.download_consumer import DownloadConsumer
 
 settings.configure()
 DJANGO_SETTINGS_MODULE = os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tickets.settings')
@@ -11,6 +10,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 from django.urls import re_path
 from tickets.client_consumer import ClientConsumer
+from tickets.download_consumer import DownloadConsumer
 from tickets.consumer import LiveScoreConsumer
 from backend.socket_auth import TokenAuthMiddleware
 from django.core.asgi import get_asgi_application
