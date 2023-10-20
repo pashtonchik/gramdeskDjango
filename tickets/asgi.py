@@ -4,7 +4,7 @@ from django.conf import settings
 
 from tickets.download_consumer import DownloadConsumer
 
-# settings.configure()
+settings.configure()
 DJANGO_SETTINGS_MODULE = os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tickets.settings')
 django.setup()
 from channels.routing import ProtocolTypeRouter, URLRouter
