@@ -149,7 +149,7 @@ class JWTToken(models.Model):
     user = models.ForeignKey(to=User, blank=True, null=True, on_delete=models.PROTECT)
     jwt = models.TextField(blank=True, null=True, unique=True)
     active = models.BooleanField(default=True)
-    # refresh = models.ForeignKey(to=OutstandingToken, blank=True, null=True, on_delete=models.CASCADE)
+    refresh = models.ForeignKey(to=OutstandingToken, blank=True, null=True, on_delete=models.CASCADE)
     date_created = models.IntegerField(blank=True, null=True)
 
 
