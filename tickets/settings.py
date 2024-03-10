@@ -144,16 +144,14 @@ AUTH_PASSWORD_VALIDATORS = [
 #     PEERXBOT_PUBKEY = content_file.read()
 #
 #
-# with open('privateKey_jwt.pem', 'r') as content_file:
-#     private_key_jwt = content_file.read()
-#
-# with open('publicKey_jwt.pem', 'r') as content_file:
-#     pub_key_jwt = content_file.read()
+with open('privateKey_jwt.pem', 'r') as content_file:
+    private_key_jwt = content_file.read()
 
-private_key_jwt = '123'
+with open('publicKey_jwt.pem', 'r') as content_file:
+    pub_key_jwt = content_file.read()
+
 PROFIAT_PUBKEY = '123'
 PEERXBOT_PUBKEY = '123'
-pub_key_jwt = '123'
 
 #
 # private_key_jwt = '123'
