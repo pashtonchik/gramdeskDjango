@@ -109,7 +109,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'gramdesk',
-        'USER': 'root',
+        'USER': 'root_gramdesk',
         'PASSWORD': 'KuJh~qExPY',
         'HOST': 'localhost',
         'PORT': '',
