@@ -144,11 +144,15 @@ AUTH_PASSWORD_VALIDATORS = [
 #     PEERXBOT_PUBKEY = content_file.read()
 #
 #
+from OpenSSL import crypto
+import rsa
+
 with open('privateKey_jwt.pem', 'r') as content_file:
-    private_key_jwt = content_file.read()
+    priv = content_file.read()
+    private_key_jwt = crypto.load_privatekey(crypto.FILETYPE_PEM, priv)
 
 with open('publicKey_jwt.pem', 'r') as content_file:
-    pub_key_jwt = content_file.read()
+    pub_key_jwt = rsa.PublicKey.load_pkcs1_openssl_pem(content_file.read())
 
 PROFIAT_PUBKEY = '123'
 PEERXBOT_PUBKEY = '123'
