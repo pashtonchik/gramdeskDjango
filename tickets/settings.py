@@ -39,7 +39,6 @@ CHANNEL_REDIS_HOST = 6380
 # Application definition
 
 INSTALLED_APPS = [
-    'sslserver',
     'channels',
     'daphne',
     'django.contrib.admin',
