@@ -33,8 +33,8 @@ class User(AbstractUser):
 class Ticket(models.Model):
 
     uuid = models.UUIDField(primary_key=True, max_length=40, default=uuid.uuid4, editable=False, unique=True)
-    support_user = models.ForeignKey(to=User, on_delete=models.PROTECT, blank=True, null=True)
-    tg_user = models.ForeignKey(to=User, on_delete=models.PROTECT)
+    support_user = models.ForeignKey(to=User, on_delete=models.PROTECT, blank=True, null=True, related_name="support")
+    tg_user = models.ForeignKey(to=User, on_delete=models.PROTECT, related_name="tg_user")
     status = models.CharField(max_length=50)
     date_created = models.DateTimeField(auto_now_add=True)
     date_closed = models.DateTimeField(blank=True, null=True)
