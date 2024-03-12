@@ -75,12 +75,16 @@ def telegram(request, token):
     #
     #
     channel_layer = get_channel_layer()
-    data = {'type': 'new_message', 'message': TicketMessageSerializer(new_message, context={"from_user_type": "client"}).data}
-    async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
+    data = {
+        'event': "incoming",
+        'type': 'new_message',
+        'message': TicketMessageSerializer(new_message, context={"from_user_type": "support"}).data
+    }
+    async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
                                                   "message": json.dumps(data)})
-    json.dumps({
-        'file': None,
-        'text': data['message'],
-        'date': int(new_message.date_created.timestamp())
-    })
+    # json.dumps({
+    #     'file': None,
+    #     'text': data['message'],
+    #     'date': int(new_message.date_created.timestamp())
+    # })
     return Response(status=status.HTTP_200_OK, data=data)
