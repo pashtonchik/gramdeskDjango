@@ -19,7 +19,7 @@ def telegram(request, token):
     bot = TelegramBots.objects.get(bot_apikey=token)
 
 
-    users = User.objects.filter(tg_id=data['tg_id'], type='client')
+    users = User.objects.filter(tg_id=data.get('message', {}).get('chat', {}).get('id', "0"), type='client')
 
     if users.exists():
         cur_user = users.first()
