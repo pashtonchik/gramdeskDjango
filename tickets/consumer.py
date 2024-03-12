@@ -6,7 +6,7 @@ from channels.layers import get_channel_layer
 from django.db import transaction
 
 from backend.models import SocketConnection
-from tickets.celery_tasks import send_message_to_client
+from tickets.celery_tasks.send_message_to_client import send_message_to_client
 
 
 class LiveScoreConsumer(WebsocketConsumer):
