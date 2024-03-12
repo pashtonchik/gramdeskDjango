@@ -3,7 +3,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from backend.api.files.get_file import get_attachment
-from backend.api.message_from_telegram.message_from_user import new_message, telegram
+from backend.api.message_from_telegram.message_from_user import telegram
 from backend.api.profiat_accounts.auth import profiat_auth_client
 from backend.api.profiat_accounts.close_access import close_access
 from backend.api.profiat_accounts.refresh import refresh as refresh_profiat
