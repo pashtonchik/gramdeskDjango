@@ -6,6 +6,7 @@ from channels.layers import get_channel_layer
 from django.db import transaction
 
 from backend.models import SocketConnection
+from tickets.celery_tasks import send_message_to_client
 
 
 class LiveScoreConsumer(WebsocketConsumer):
@@ -157,7 +158,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
                                                                "message": json.dumps(output_data_supports)})
             if message.ticket.tg_user.source == 'telegram':
-                pass
+                send_message_to_client.delay(message_id=message.id)
             else:
                 async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
                                                                "message": json.dumps(output_data_clients)})
