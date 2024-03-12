@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-@4sam!l!rt52jm_45govd0+rws#ieetc-0!fa$sy&&d5c8no_o
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-CHANNEL_REDIS_HOST = 6380
+CHANNEL_REDIS_HOST = 6381
 # if not DEBUG:
 #     CSRF_TRUSTED_ORIGINS = ['https://pashtonp.space'] # FIX admin CSRF token issue
 
