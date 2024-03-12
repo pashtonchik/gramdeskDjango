@@ -38,7 +38,7 @@ class SocketConnectionAdmin(admin.ModelAdmin):
     list_display = ('user', 'active', 'date_created', 'date_closed')
 
 
-@admin.register(TelegramBots)
+@admin.register(TelegramBot)
 class SocketConnectionAdmin(admin.ModelAdmin):
     list_display = ('user', 'bot_apikey')
 

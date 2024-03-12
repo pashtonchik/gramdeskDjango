@@ -16,7 +16,7 @@ from tickets.celery_tasks import send_message_to_client
 def telegram(request, token):
     data = json.loads(request.body.decode("utf-8"))
     print(data)
-    bot = TelegramBots.objects.get(bot_apikey=token)
+    bot = TelegramBot.objects.get(bot_apikey=token)
 
 
     users = User.objects.filter(tg_id=data.get('message', {}).get('chat', {}).get('id', "0"), type='client')

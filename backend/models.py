@@ -175,7 +175,7 @@ class SocketConnection(models.Model):
     date_closed = models.IntegerField(default=0)
 
 
-class TelegramBots(models.Model):
+class TelegramBot(models.Model):
     class Meta:
         verbose_name = 'Telegram Bot'
         verbose_name_plural = 'Telegram Bots'

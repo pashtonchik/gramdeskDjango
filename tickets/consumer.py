@@ -156,8 +156,10 @@ class LiveScoreConsumer(WebsocketConsumer):
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
                                                                "message": json.dumps(output_data_supports)})
-            if message.ticket.tg_user:
-            async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
+            if message.ticket.tg_user.source == 'telegram':
+                pass
+            else:
+                async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
                                                                "message": json.dumps(output_data_clients)})
 
         ticket.save()
