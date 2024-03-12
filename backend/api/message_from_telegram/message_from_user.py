@@ -52,7 +52,7 @@ def telegram(request, token):
             sender='client',
             content_type='text',
             sending_state='sent',
-            message_text=data['message'],
+            message_text=data['message']['text'],
             ticket=cur_ticket,
         )
         new_message.save()
