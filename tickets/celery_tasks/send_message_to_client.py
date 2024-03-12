@@ -22,7 +22,7 @@ def send_message_to_client(message_id):
     }
 
     send_message = requests.get(
-        f"https://api.telegram.org/bot{TelegramBot.objects.get(user=msg.ticket.support_user)}/sendMessage", json=data)
+        f"https://api.telegram.org/bot{TelegramBot.objects.get(user=msg.ticket.support_user).bot_apikey}/sendMessage", json=data)
     print(send_message.status_code, send_message.text)
     if send_message.status_code != 200:
         send_message = requests.get(
