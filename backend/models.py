@@ -16,7 +16,13 @@ class User(AbstractUser):
         ('support', 'Поддержка')
     )
 
-    type = models.CharField(max_length=5000, blank=True, choices=user_type_selector)
+    source_selector = (
+        ('telegram', 'Телеграм'),
+        ('widget', 'Виджет')
+    )
+
+    type = models.CharField(max_length=100, blank=True, choices=user_type_selector)
+    source = models.CharField(max_length=100, blank=True, choices=source_selector)
     my_email = models.CharField(max_length=5000, unique=True, null=True, blank=True)
     username = models.CharField(max_length=50, unique=True)
     phone = models.CharField(max_length=50, blank=True, null=True)
