@@ -27,7 +27,7 @@ urlpatterns = [
 
     path('api/file/download/<int:attachment>/', get_attachment),
 
-    path('tg_bots/<str:token>/', telegram)
+    path('tg_bots/<str:token>', telegram)
 
 
 ] + router.urls
