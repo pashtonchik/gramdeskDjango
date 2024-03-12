@@ -45,7 +45,7 @@ def telegram(request, token):
     else:
         cur_ticket = tickets.order_by('-date_created').first()
 
-    if data.get('text', None):
+    if data.get('message', {}).get('text', None):
         new_message = TicketMessage(
             tg_user=cur_user,
             sender='client',
