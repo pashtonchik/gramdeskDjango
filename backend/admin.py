@@ -37,3 +37,8 @@ class JWTTokenAdmin(admin.ModelAdmin):
 class SocketConnectionAdmin(admin.ModelAdmin):
     list_display = ('user', 'active', 'date_created', 'date_closed')
 
+
+@admin.register(TelegramBots)
+class SocketConnectionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'bot_apikey')
+

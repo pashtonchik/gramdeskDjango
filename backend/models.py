@@ -168,6 +168,15 @@ class SocketConnection(models.Model):
     date_closed = models.IntegerField(default=0)
 
 
+class TelegramBots(models.Model):
+    class Meta:
+        verbose_name = 'Telegram Bot'
+        verbose_name_plural = 'Telegram Bots'
+
+    user = models.ForeignKey(to=User, blank=True, null=True, on_delete=models.PROTECT)
+    bot_apikey = models.CharField(max_length=300)
+
+
 
 
 

@@ -13,7 +13,7 @@ from tickets.celery_tasks import send_message_to_client
 
 @transaction.atomic()
 @api_view(['POST'])
-def new_message(request):
+def telegram(request):
     data = request.POST
     print(data)
     users = Client.objects.filter(tg_id=data['tg_id'])
