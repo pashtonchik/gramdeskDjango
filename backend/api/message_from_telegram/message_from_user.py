@@ -25,6 +25,7 @@ def telegram(request, token):
         cur_user = users.first()
     else:
         cur_user = User(
+            username=data.get('message', {}).get('chat', {}).get('username', f"Telegram User {User.objects.all().count() + 1}"),
             type='client',
             tg_id=data.get('message', {}).get('chat', {}).get('id', "Не известно"),
             tg_username=data.get('message', {}).get('chat', {}).get('username', "Не известно"),
