@@ -14,7 +14,7 @@ from tickets.celery_tasks import send_message_to_client
 @transaction.atomic()
 @api_view(['POST'])
 def telegram(request, token):
-    data = request.POST
+    data = json.loads(request.body.decode("utf-8"))
     print(data)
     bot = TelegramBots.objects.get(bot_apikey=token)
 
