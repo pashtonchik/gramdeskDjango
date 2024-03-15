@@ -12,7 +12,7 @@ from tickets.settings import MEDIA_ROOT
 class Platform(models.Model):
 
     uuid = models.UUIDField(primary_key=True, max_length=40, default=uuid.uuid4, editable=False, unique=True)
-    admin = models.ForeignKey(to='User', on_delete=models.PROTECT)
+    admin = models.ForeignKey(to='User', on_delete=models.PROTECT, related_name="admin_platform")
     name = models.CharField(max_length=1000)
     description = models.TextField()
 
@@ -31,7 +31,7 @@ class User(AbstractUser):
 
     type = models.CharField(max_length=100, blank=True, choices=user_type_selector)
     source = models.CharField(max_length=100, blank=True, choices=source_selector)
-    platform = models.ForeignKey(to=Platform, on_delete=models.PROTECT)
+    platform = models.ForeignKey(to=Platform, on_delete=models.PROTECT, related_name="platform")
     my_email = models.CharField(max_length=5000, unique=True, null=True, blank=True)
     username = models.CharField(max_length=50, unique=True)
     phone = models.CharField(max_length=50, blank=True, null=True)
