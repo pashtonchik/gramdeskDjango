@@ -8,11 +8,11 @@ import re
 from django.db.utils import IntegrityError
 from datetime import datetime
 from django.contrib.auth.hashers import make_password
-from profiat.send_email_code import send_email_code_for_registration
 from django.contrib.auth.models import Group
 from rest_framework.decorators import api_view
 from django.db.models import F
 from rest_framework_simplejwt.tokens import RefreshToken
+from tickets.background.auth.registration import send_email_code_for_registration
 
 
 @api_view(["POST"])
