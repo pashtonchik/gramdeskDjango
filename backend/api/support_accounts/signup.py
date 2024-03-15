@@ -173,7 +173,7 @@ def registration_verify_email(request):
             'username': user.username,
             'id': user.id,
             'otp_key': user.otp_secret_key,
-            'url': f'''otpauth://totp/ProFiat: {user.my_email}?secret={user.otp_secret_key}'''
+            'url': f'''otpauth://totp/Gramdesk: {user.my_email}?secret={user.otp_secret_key}'''
         })
 
     dfr.update(attempt=F('attempt') - 1)
@@ -220,7 +220,7 @@ def registration_enable_otp(request):
 
     timestamp = int(datetime.now().timestamp())
 
-    dfr = DualFactorRequest.objects.filter(timestamp__gte=timestamp - 600, user=user, action__in=['registrate'],
+    dfr = DualFactorRequest.objects.filter(timestamp__gte=timestamp - 600, user=user, action='registrate',
                                            factor_type='otp_auth', verified=False)
 
     if not dfr.exists():
