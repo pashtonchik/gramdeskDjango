@@ -10,6 +10,7 @@ from backend.api.profiat_accounts.refresh import refresh as refresh_profiat
 from backend.api.support_accounts.refresh import refresh as refresh_support
 from backend.api.support_accounts.auth import auth, abc123
 from backend.api.support_accounts.auth_verify import verify_token
+from backend.api.support_accounts.signup import *
 from backend.permissions import ProfiatIntegration
 
 router = routers.DefaultRouter()
@@ -30,9 +31,9 @@ urlpatterns = [
     path('tg_bots/<str:token>', telegram),
 
     # Auth
-    path('api/v3/support/signup/', auth),
-    path('api/v3/support/signup/verify/email/', verify_token),
-    path('api/v3/support/signup/connect/otp/', refresh_support),
+    path('api/v3/support/signup/', registrate),
+    path('api/v3/support/signup/verify/email/', registration_verify_email),
+    path('api/v3/support/signup/connect/otp/', registration_enable_otp),
 
 
 ] + router.urls
