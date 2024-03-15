@@ -239,7 +239,6 @@ def registration_enable_otp(request):
         Platform(
             admin=user,
             name=platform_name,
-
         ).save()
 
 
