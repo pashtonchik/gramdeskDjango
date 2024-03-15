@@ -9,6 +9,11 @@ class TransactionAdmin(admin.ModelAdmin):
     ordering = ('-date_added', )
 
 
+@admin.register(Platform)
+class PlatformAdmin(admin.ModelAdmin):
+    list_display = ('name', 'admin')
+
+
 @admin.register(Ticket)
 class PayMethodAdmin(admin.ModelAdmin):
     list_display = ('tg_user', 'status', 'date_created', 'date_closed')
