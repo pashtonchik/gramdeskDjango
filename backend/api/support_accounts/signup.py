@@ -158,7 +158,7 @@ def registration_verify_email(request):
             factor_type='otp_auth',
             user=user,
             timestamp=timestamp,
-            action='registrate'
+            action='registration'
         )
         dualReq.save()
 
@@ -220,7 +220,7 @@ def registration_enable_otp(request):
 
     timestamp = int(datetime.now().timestamp())
 
-    dfr = DualFactorRequest.objects.filter(timestamp__gte=timestamp - 600, user=user, action='registrate',
+    dfr = DualFactorRequest.objects.filter(timestamp__gte=timestamp - 600, user=user, action='registration',
                                            factor_type='otp_auth', verified=False)
 
     if not dfr.exists():
