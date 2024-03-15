@@ -171,9 +171,9 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': True,
 
-    'ALGORITHM': 'RS512',
-    'SIGNING_KEY': private_key_jwt,
-    'VERIFYING_KEY': pub_key_jwt,
+    'ALGORITHM': 'HS512',
+    # 'SIGNING_KEY': private_key_jwt,
+    # 'VERIFYING_KEY': pub_key_jwt,
     'AUDIENCE': None,
     'ISSUER': None,
     'JWK_URL': None,
