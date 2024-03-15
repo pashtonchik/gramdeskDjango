@@ -44,7 +44,7 @@ class User(AbstractUser):
     tg_username = models.CharField(max_length=500, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
-    otp_key = models.CharField(max_length=300)
+    otp_key = models.CharField(max_length=300, blank=True, null=True)
     enable_otp = models.BooleanField(default=False)
 
 
