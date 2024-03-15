@@ -158,7 +158,7 @@ def registration_verify_email(request):
             factor_type='otp_auth',
             user=user,
             timestamp=timestamp,
-            action='enable_2fa'
+            action='registrate'
         )
         dualReq.save()
 
