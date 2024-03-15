@@ -159,9 +159,11 @@ class LiveScoreConsumer(WebsocketConsumer):
                                                                "message": json.dumps(output_data_supports)})
             if message.ticket.tg_user.source == 'telegram':
                 send_message_to_client.delay(message_id=message.id)
+                print(1)
             else:
                 async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
                                                                "message": json.dumps(output_data_clients)})
+                print(2)
 
         ticket.save()
 
