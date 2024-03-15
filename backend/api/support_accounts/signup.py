@@ -220,17 +220,18 @@ def registration_enable_otp(request):
 
     timestamp = int(datetime.now().timestamp())
 
-    dfr = DualFactorRequest.objects.filter()
+    dfr = DualFactorRequest.objects.filter(timestamp__gte=timestamp - 600, user=user, action='registrate',
+                                           factor_type='otp_auth', verified=False)
 
     if not dfr.exists():
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False,
-                                                                  'message': f'Запроса на подключения двухфакторной аутентификации не найдено, попробуйте создать его заново. {timestamp}'})
+                                                                  'message': f'Запроса на подключения двухфакторной аутентификации не найдено, попробуйте создать его заново. {user.username}'})
 
     if dfr.filter(attempt__lte=0).exists():
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False,
                                                                   'message': 'Вы израсходовали все попытки для ввода кода. Попробуйте снова через некоторое время.'})
 
-    if pyotp.TOTP(user.otp_secret_key).verify(code, valid_window=1):
+    if pyotp.TOTP(user.otp_key).verify(code, valid_window=1):
 
         user.enable_otp = True
         user.save()
