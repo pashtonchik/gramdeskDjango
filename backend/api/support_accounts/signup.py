@@ -62,6 +62,7 @@ def registrate(request):
 
             if not create:
                 if not user.verify_email:
+                    transaction.on_commit(lambda: send_email_code_for_registration.delay(email))
                     return Response(status=status.HTTP_400_BAD_REQUEST,
                                 data={"ok": True, "message": "На вашу почту выслан код для регистрации."})
                 else:
