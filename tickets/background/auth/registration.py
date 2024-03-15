@@ -9,7 +9,7 @@ import pyotp
 from datetime import datetime
 
 
-@shared_task(queue='email_task')
+@shared_task()
 def send_email_code_for_registration(email):
     from backend.models import User, DualFactorRequest
 
