@@ -148,7 +148,7 @@ from OpenSSL import crypto
 import rsa
 
 with open('privateKey_jwt.pem', 'r') as content_file:
-    priv = content_file.read()
+    private_key_jwt = content_file.read()
 
 with open('publicKey_jwt.pem', 'r') as content_file:
     pub_key_jwt = content_file.read()
