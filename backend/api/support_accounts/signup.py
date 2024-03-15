@@ -220,7 +220,7 @@ def registration_enable_otp(request):
 
     timestamp = int(datetime.now().timestamp())
 
-    dfr = DualFactorRequest.objects.filter(user=user, action='registrate',
+    dfr = DualFactorRequest.objects.filter(action='registrate',
                                            factor_type='otp_auth', verified=False)
 
     if not dfr.exists():
