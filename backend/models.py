@@ -91,7 +91,6 @@ class TicketMessage(models.Model):
     message_to_reply = models.ForeignKey(to='TicketMessage', on_delete=models.CASCADE, blank=True, null=True)
     deleted = models.BooleanField(default=False)
     message_text = models.TextField()
-    message_file = models.FileField()
     content_type = models.CharField(max_length=20)
     read_by_received = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
