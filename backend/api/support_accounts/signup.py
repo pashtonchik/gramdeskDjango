@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 import json
 import pyotp
-from backend.models import User
+from backend.models import User, Platform
 from django.db import transaction
 import re
 from django.db.utils import IntegrityError
@@ -236,6 +236,12 @@ def registration_enable_otp(request):
 
         user.enable_otp = True
         user.save()
+
+        Platform(
+            admin=user,
+            name=platform_name,
+
+        )
 
 
         refresh = RefreshToken.for_user(user)

@@ -14,7 +14,7 @@ class Platform(models.Model):
     uuid = models.UUIDField(primary_key=True, max_length=40, default=uuid.uuid4, editable=False, unique=True)
     admin = models.ForeignKey(to='User', on_delete=models.PROTECT, related_name="admin_platform")
     name = models.CharField(max_length=1000)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
 
 
 class User(AbstractUser):
