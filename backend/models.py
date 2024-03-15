@@ -33,6 +33,7 @@ class User(AbstractUser):
     source = models.CharField(max_length=100, blank=True, choices=source_selector)
     platform = models.ForeignKey(to=Platform, on_delete=models.PROTECT, related_name="platform", blank=True, null=True)
     my_email = models.CharField(max_length=5000, unique=True, null=True, blank=True)
+    verify_email = models.BooleanField(default=False)
     username = models.CharField(max_length=50, unique=True)
     phone = models.CharField(max_length=50, blank=True, null=True)
     is_blocked = models.BooleanField(default=False)
@@ -43,6 +44,8 @@ class User(AbstractUser):
     tg_username = models.CharField(max_length=500, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
+    otp_key = models.CharField(max_length=300)
+    enable_otp = models.BooleanField(default=False)
 
 
 class Ticket(models.Model):
@@ -190,6 +193,34 @@ class TelegramBot(models.Model):
 
     user = models.ForeignKey(to=User, blank=True, null=True, on_delete=models.PROTECT)
     bot_apikey = models.CharField(max_length=300)
+
+
+class DualFactorRequest(models.Model):
+    class Meta:
+        verbose_name = '2FA Request'
+        verbose_name_plural = '2FA Request'
+
+    action_selector = (
+        ('registration', 'Регистрация'),
+        ('login', 'Вход'),
+        ('edit_password', 'Смена пароля'),
+        ('edit_profile', 'Смена данных профиля'),
+        ('enable_2fa', 'Активация 2FA'),
+    )
+
+    factor_type_selector = (
+        ('otp_auth', 'OTP Auth'),
+        ('email_auth', 'E-mail Auth')
+    )
+
+
+    factor_type = models.CharField(max_length=100, verbose_name='Вид Factor', choices=factor_type_selector, default='sms_auth', blank=True, null=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, blank=True, null=True, verbose_name='Пользователь')
+    action = models.CharField(max_length=100, verbose_name='Действие', choices=action_selector, blank=True, null=True)
+    timestamp = models.IntegerField(default=0, verbose_name='Timestamp')
+    otp = models.CharField(default=0, verbose_name='2FA Code')
+    verified = models.BooleanField(verbose_name='Verified', default=False)
+    attempt = models.IntegerField(verbose_name='Кол-во попыток', default=3)
 
 
 
