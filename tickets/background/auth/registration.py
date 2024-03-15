@@ -43,7 +43,7 @@ def send_email_code_for_registration(email):
     server.ehlo('Gmail')
     server.starttls()
     # Login Credentials for sending the mail
-    server.login("otp.code.manager@gmail.com", password)
+    server.login("pashkakakashka9111@gmail.com", password)
     # send the message via the server.
     server.sendmail(msg['From'], msg['To'], msg.as_string())
     server.quit()
