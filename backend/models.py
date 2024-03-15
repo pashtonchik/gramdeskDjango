@@ -31,7 +31,7 @@ class User(AbstractUser):
 
     type = models.CharField(max_length=100, blank=True, choices=user_type_selector)
     source = models.CharField(max_length=100, blank=True, choices=source_selector)
-    platform = models.ForeignKey(to=Platform, on_delete=models.PROTECT, related_name="platform")
+    platform = models.ForeignKey(to=Platform, on_delete=models.PROTECT, related_name="platform", blank=True, null=True)
     my_email = models.CharField(max_length=5000, unique=True, null=True, blank=True)
     username = models.CharField(max_length=50, unique=True)
     phone = models.CharField(max_length=50, blank=True, null=True)
