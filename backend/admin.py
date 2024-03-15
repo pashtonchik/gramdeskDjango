@@ -14,6 +14,11 @@ class PlatformAdmin(admin.ModelAdmin):
     list_display = ('name', 'admin')
 
 
+@admin.register(DualFactorRequest)
+class PlatformAdmin(admin.ModelAdmin):
+    list_display = ('factor_type', 'user', 'action', 'timestamp', 'otp', 'verified')
+
+
 @admin.register(Ticket)
 class PayMethodAdmin(admin.ModelAdmin):
     list_display = ('tg_user', 'status', 'date_created', 'date_closed')
