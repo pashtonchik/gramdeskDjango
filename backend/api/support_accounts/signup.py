@@ -225,7 +225,7 @@ def registration_enable_otp(request):
 
     if not dfr.exists():
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False,
-                                                                  'message': f'Запроса на подключения двухфакторной аутентификации не найдено, попробуйте создать его заново. {user.username}'})
+                                                                  'message': f'Запроса на подключения двухфакторной аутентификации не найдено, попробуйте создать его заново.'})
 
     if dfr.filter(attempt__lte=0).exists():
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False,
