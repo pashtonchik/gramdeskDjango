@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 import json
 import pyotp
-from backend.models import User, Platform
+from backend.models import User, Platform, DualFactorRequest
 from django.db import transaction
 import re
 from django.db.utils import IntegrityError
@@ -19,7 +19,6 @@ from tickets.background.auth.registration import send_email_code_for_registratio
 def registrate(request):
     try:
         data = json.loads(request.body.decode("utf-8"))
-        logger_main.info(data)
         platform_name = data.get('platform_name', None)
         email = data.get('email', None)
         username = data.get('username', None)
@@ -102,7 +101,6 @@ def registrate(request):
 @api_view(['POST'])
 def registration_verify_email(request):
     data = json.loads(request.body.decode("utf-8"))
-    logger_main.info(data)
     platform_name = data.get('platform_name', None)
     email = data.get('email', None)
     username = data.get('username', None)
