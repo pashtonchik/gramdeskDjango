@@ -9,6 +9,14 @@ from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 from tickets.settings import MEDIA_ROOT
 
 
+class Platform(models.Model):
+
+    uuid = models.UUIDField(primary_key=True, max_length=40, default=uuid.uuid4, editable=False, unique=True)
+    admin = models.ForeignKey(to='User', on_delete=models.PROTECT)
+    name = models.CharField(max_lenght=1000)
+    description = models.TextField()
+
+
 class User(AbstractUser):
 
     user_type_selector = (
