@@ -241,7 +241,7 @@ def registration_enable_otp(request):
             admin=user,
             name=platform_name,
 
-        )
+        ).save()
 
 
         refresh = RefreshToken.for_user(user)
