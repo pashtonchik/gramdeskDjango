@@ -68,13 +68,30 @@ def registrate(request):
                     transaction.on_commit(lambda: send_email_code_for_registration.delay(email))
                     return Response(status=status.HTTP_200_OK,
                                 data={"ok": True, "message": "Вы уже начинали регистрацию, на вашу почту заново выслан код для регистрации."})
-                else:
+                elif not user.enable_otp:
                     user.username = username
                     user.set_password(password)
+
+                    user.otp_secret_key = pyotp.random_base32()
                     user.save()
-                    return Response(status=status.HTTP_202_ACCEPTED,
+
+                    timestamp = int(datetime.timestamp(datetime.now()))
+                    dualReq = DualFactorRequest(
+                        factor_type='otp_auth',
+                        user=user,
+                        timestamp=timestamp,
+                        action='registration'
+                    )
+                    dualReq.save()
+
+                    return Response(status=status.HTTP_202,
                                     data={"ok": True,
-                                          "message": "Вы уже начинали регистрацию, вам необходимо привязать OTP аутентификацию."})
+                                          "message": "Вы уже начинали регистрацию, вам необходимо привязать OTP аутентификацию.",
+                                          'username': user.username,
+                                          'id': user.id,
+                                          'otp_key': user.otp_secret_key,
+                                          'url': f'''otpauth://totp/Gramdesk: {user.my_email}?secret={user.otp_secret_key}'''
+                                          })
                 else:
                     return Response(status=status.HTTP_400_BAD_REQUEST,
                                 data={"ok": False, "message": "Этот e-mail уже занят."})
