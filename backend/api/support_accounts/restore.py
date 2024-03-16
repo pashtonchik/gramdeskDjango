@@ -43,7 +43,12 @@ def restore(request):
         )
         dualReq.save()
 
-        code = data.get('code', None)
+        return Response(status=status.HTTP_200_OK, data={
+            "ok": True,
+            'message': 'Укажите новый пароль и OTP пароль для подтверждения личности.'
+        })
+
+
 
     else:
         try:
