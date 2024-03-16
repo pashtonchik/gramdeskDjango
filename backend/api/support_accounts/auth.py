@@ -9,6 +9,7 @@ from django.db import transaction
 import logging
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 from rest_framework.decorators import api_view
+import pyotp
 
 
 @api_view(["POST"])
@@ -23,6 +24,11 @@ def auth(request):
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok" : False, "message" : "Field Username is required"})
 
     try:
+        code = data['otp']
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok" : False, "message" : "Field Otp is required"})
+
+    try:
         password = data['password']
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok" : False,  "message" : "Field Password is required"})
@@ -33,6 +39,9 @@ def auth(request):
         print(user.password.split('$'))
         if make_password(password, salt=user.password.split('$')[2]) != user.password:
             return Response(status=status.HTTP_404_NOT_FOUND, data={"ok" : False,  "message" : "Неверный логин или пароль"})
+        if not pyotp.TOTP(user.otp_key).verify(code, valid_window=1):
+            return Response(status=status.HTTP_400_BAD_REQUEST,
+                            data={"ok": False, "message": "Неверный одноразовый пароль (OTP)."})
     except ObjectDoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND, data={"ok": False, "message": "Неверный логин или пароль"})
     # except:
