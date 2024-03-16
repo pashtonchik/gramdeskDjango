@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 import json
-from backend.models import User, DualFactorRequest, DefaultFee, FeeItem
+from backend.models import User, DualFactorRequest
 from django.db import transaction
 import re
 from datetime import datetime
