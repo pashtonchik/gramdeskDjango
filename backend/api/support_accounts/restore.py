@@ -121,9 +121,17 @@ def restore(request):
 
         dfr.update(attempt=F('attempt') - 1)
 
+        attempts = dfr.order_by('-timestamp').first().attempt
+
+        if attempts == 0:
+            message = "Попыток не осталось, можете попробовать изменить пароль позже."
+        else:
+            message = f"Введён неверный код авторизации. Осталось {attempts} попыток(ки)",
+
+
         return Response(status=status.HTTP_404_NOT_FOUND, data={
             "ok": False,
-            'message': f"Введён неверный код авторизации. Осталось {dfr.order_by('-timestamp').first().attempt} попыток(ки)",
-            "attempts": dfr.order_by('-timestamp').first().attempt
+            'message': message,
+            "attempts": attempts
         })
 
