@@ -192,7 +192,7 @@ def registration_enable_otp(request):
 
     if not platform_name:
         return Response(status=status.HTTP_400_BAD_REQUEST,
-                        data={"ok": False, "message": "Field email, email is required"})
+                        data={"ok": False, "message": "Field platform_name, platform_name is required"})
     if not email:
         return Response(status=status.HTTP_400_BAD_REQUEST,
                         data={"ok": False, "message": "Field email, email is required"})
