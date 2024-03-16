@@ -123,7 +123,7 @@ def restore(request):
 
         return Response(status=status.HTTP_404_NOT_FOUND, data={
             "ok": False,
-            'message': 'Введён неверный код авторизации.',
+            'message': f"Введён неверный код авторизации. Осталось {dfr.order_by('-timestamp').first().attempt} попыток(ки)",
             "attempts": dfr.order_by('-timestamp').first().attempt
         })
 
