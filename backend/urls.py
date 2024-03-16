@@ -10,6 +10,7 @@ from backend.api.profiat_accounts.refresh import refresh as refresh_profiat
 from backend.api.support_accounts.refresh import refresh as refresh_support
 from backend.api.support_accounts.auth import auth, abc123
 from backend.api.support_accounts.auth_verify import verify_token
+from backend.api.support_accounts.restore import restore
 from backend.api.support_accounts.signup import *
 from backend.api.support_accounts.signup_new_code import registrate_req_new_code
 from backend.permissions import ProfiatIntegration
@@ -36,6 +37,8 @@ urlpatterns = [
     path('api/v3/support/signup/verify/email/', registration_verify_email),
     path('api/v3/support/signup/connect/otp/', registration_enable_otp),
     path('api/v3/support/signup/reverify/email/', registrate_req_new_code),
+
+    path('api/v3/support/restore/', restore),
 
 
 ] + router.urls
