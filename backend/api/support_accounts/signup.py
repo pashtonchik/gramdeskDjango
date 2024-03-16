@@ -72,7 +72,7 @@ def registrate(request):
                     user.username = username
                     user.set_password(password)
 
-                    user.otp_secret_key = pyotp.random_base32()
+                    user.otp_key = pyotp.random_base32()
                     user.save()
 
                     timestamp = int(datetime.timestamp(datetime.now()))
@@ -89,8 +89,8 @@ def registrate(request):
                                           "message": "Вы уже начинали регистрацию, вам необходимо привязать OTP аутентификацию.",
                                           'username': user.username,
                                           'id': user.id,
-                                          'otp_key': user.otp_secret_key,
-                                          'url': f'''otpauth://totp/Gramdesk: {user.my_email}?secret={user.otp_secret_key}'''
+                                          'otp_key': user.otp_key,
+                                          'url': f'''otpauth://totp/Gramdesk: {user.my_email}?secret={user.otp_key}'''
                                           })
                 else:
                     return Response(status=status.HTTP_400_BAD_REQUEST,
