@@ -122,7 +122,7 @@ def registration_verify_email(request):
                         data={"ok": False, "message": "Field password, password is required"})
     if not code:
         return Response(status=status.HTTP_400_BAD_REQUEST,
-                        data={"ok": False, "message": "Field code, code is required"})
+                        data={"ok": False, "message": "Field email_code, email_code is required"})
 
     try:
         user = User.objects.select_for_update().get(my_email=email)
@@ -204,7 +204,7 @@ def registration_enable_otp(request):
                         data={"ok": False, "message": "Field password, password is required"})
     if not code:
         return Response(status=status.HTTP_400_BAD_REQUEST,
-                        data={"ok": False, "message": "Field code, code is required"})
+                        data={"ok": False, "message": "Field otp_code, otp_code is required"})
 
 
 
