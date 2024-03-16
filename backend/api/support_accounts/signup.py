@@ -106,7 +106,7 @@ def registration_verify_email(request):
     email = data.get('email', None)
     username = data.get('username', None)
     password = data.get('password', None)
-    code = data.get('code', None)
+    code = data.get('email_code', None)
 
     if not platform_name:
         return Response(status=status.HTTP_400_BAD_REQUEST,
@@ -188,7 +188,7 @@ def registration_enable_otp(request):
     email = data.get('email', None)
     username = data.get('username', None)
     password = data.get('password', None)
-    code = data.get('code', None)
+    code = data.get('otp_code', None)
 
     if not platform_name:
         return Response(status=status.HTTP_400_BAD_REQUEST,
