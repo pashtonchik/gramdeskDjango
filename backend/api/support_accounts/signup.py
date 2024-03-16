@@ -63,8 +63,8 @@ def registrate(request):
             if not create:
                 if not user.verify_email:
                     transaction.on_commit(lambda: send_email_code_for_registration.delay(email))
-                    return Response(status=status.HTTP_400_BAD_REQUEST,
-                                data={"ok": True, "message": "На вашу почту выслан код для регистрации."})
+                    return Response(status=status.HTTP_200_OK,
+                                data={"ok": True, "message": "Вы уже начинали регистрацию, на вашу почту заново выслан код для регистрации."})
                 else:
                     return Response(status=status.HTTP_400_BAD_REQUEST,
                                 data={"ok": False, "message": "Этот e-mail уже занят."})
@@ -161,7 +161,6 @@ def registration_verify_email(request):
             action='registration'
         )
         dualReq.save()
-
 
 
         # refresh = RefreshToken.for_user(user)
