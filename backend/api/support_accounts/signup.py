@@ -62,6 +62,9 @@ def registrate(request):
 
             if not create:
                 if not user.verify_email:
+                    user.username = username
+                    user.set_password(password)
+                    user.save()
                     transaction.on_commit(lambda: send_email_code_for_registration.delay(email))
                     return Response(status=status.HTTP_200_OK,
                                 data={"ok": True, "message": "Вы уже начинали регистрацию, на вашу почту заново выслан код для регистрации."})
