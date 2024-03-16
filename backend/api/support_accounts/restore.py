@@ -19,7 +19,7 @@ def restore(request):
 
     password = data.get('new_password', None)
     re_password = data.get('re_new_password', None)
-    code = data.get('email_code', None)
+    code = data.get('code', None)
     email = data.get('email', None)
 
     if not (password and re_password and code):
