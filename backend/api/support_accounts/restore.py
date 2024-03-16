@@ -35,6 +35,16 @@ def restore(request):
         except:
             return Response(status=status.HTTP_404_NOT_FOUND, data={"ok": False, "message": "Пользователь не найден."})
         timestamp = int(datetime.timestamp(datetime.now()))
+
+        dfr = DualFactorRequest.objects.filter(timestamp__gte=timestamp - 300, user=user, action__in=['restore'],
+                                               factor_type='otp_auth', verified=False)
+
+        if dfr.filter(attempt__lte=0).exists():
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False,
+                                                                      'message': 'Вы недавно уже восстанавливали пароль, попробуйте через несколько минут.'})
+
+
+
         dualReq = DualFactorRequest(
             factor_type='otp_auth',
             user=user,
@@ -85,7 +95,7 @@ def restore(request):
 
         timestamp = int(datetime.now().timestamp())
 
-        dfr = DualFactorRequest.objects.filter(timestamp__gte=timestamp - 600, user=user, action__in=['restore'],
+        dfr = DualFactorRequest.objects.filter(timestamp__gte=timestamp - 300, user=user, action__in=['restore'],
                                                factor_type='otp_auth', verified=False)
 
         if dfr.filter(attempt__lte=0).exists():
@@ -114,6 +124,6 @@ def restore(request):
         return Response(status=status.HTTP_404_NOT_FOUND, data={
             "ok": False,
             'message': 'Введён неверный код авторизации.',
-            "attempts": dfr.order_by('-timestamp').first().attempt
+            "attempts": dfr.order_by('-timestamp').first().attempt - 1
         })
 
