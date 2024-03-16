@@ -84,7 +84,7 @@ def registrate(request):
                     )
                     dualReq.save()
 
-                    return Response(status=status.HTTP_202,
+                    return Response(status=status.HTTP_202_ACCEPTED,
                                     data={"ok": True,
                                           "message": "Вы уже начинали регистрацию, вам необходимо привязать OTP аутентификацию.",
                                           'username': user.username,
