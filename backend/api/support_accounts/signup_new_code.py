@@ -64,6 +64,18 @@ def registrate_req_new_code(request):
             if username != user.username:
                 return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": f"Имя пользователя не совпадает"})
 
+            timestamp = int(datetime.now().timestamp())
+            dfr = DualFactorRequest.objects.filter(timestamp__gte=timestamp - 600, user=user, action__in=['registrate'],
+                                                   factor_type='email_auth', verified=False)
+
+            last_dfr = dfr.order_by('-timestamp').first()
+
+            if not last_dfr.timestamp + 120 <= timestamp:
+                return Response(status=status.HTTP_400_BAD_REQUEST, data={
+                    "ok": False,
+                    "message": "Еще не истекло время, через которое можно запросить код повторно."
+                })
+
             transaction.on_commit(lambda: send_email_code_for_registration.delay(email))
 
         return Response(status=status.HTTP_200_OK,
