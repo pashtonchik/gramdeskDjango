@@ -68,4 +68,10 @@ def refresh(request):
         "ok": True,
         'refresh': str(new_refresh),
         'access': new_access,
+        'email': user.my_email,
+        'username': user.username,
+        'id': user.id,
+        'platform_name': user.platform.name,
+        'platform_description': user.platform.description,
+        'supervisor': user == user.platform.admin,
     })

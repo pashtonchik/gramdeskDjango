@@ -61,8 +61,12 @@ def auth(request):
         'refresh': str(refresh),
         'access': access,
         'message': 'Успешный вход',
+        'email': user.my_email,
         'username': user.username,
-        'id': user.id
+        'id': user.id,
+        'platform_name': user.platform.name,
+        'platform_description': user.platform.description,
+        'supervisor': user == user.platform.admin,
     })
 
 
