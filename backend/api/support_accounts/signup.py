@@ -69,6 +69,13 @@ def registrate(request):
                     return Response(status=status.HTTP_200_OK,
                                 data={"ok": True, "message": "Вы уже начинали регистрацию, на вашу почту заново выслан код для регистрации."})
                 else:
+                    user.username = username
+                    user.set_password(password)
+                    user.save()
+                    return Response(status=status.HTTP_202_ACCEPTED,
+                                    data={"ok": True,
+                                          "message": "Вы уже начинали регистрацию, вам необходимо привязать OTP аутентификацию."})
+                else:
                     return Response(status=status.HTTP_400_BAD_REQUEST,
                                 data={"ok": False, "message": "Этот e-mail уже занят."})
 
