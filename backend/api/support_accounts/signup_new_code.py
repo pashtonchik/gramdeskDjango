@@ -65,7 +65,7 @@ def registrate_req_new_code(request):
                 return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": f"Имя пользователя не совпадает"})
 
             timestamp = int(datetime.now().timestamp())
-            dfr = DualFactorRequest.objects.filter(timestamp__gte=timestamp - 600, user=user, action__in=['registrate'],
+            dfr = DualFactorRequest.objects.filter(timestamp__gte=timestamp - 600, user=user, action__in=['registration'],
                                                    factor_type='email_auth', verified=False)
 
             last_dfr = dfr.order_by('-timestamp').first()
@@ -82,5 +82,7 @@ def registrate_req_new_code(request):
                         data={"ok": True, "message": "На вашу почту выслан код для регистрации."})
 
     except IntegrityError:
-        return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False,
-                                                                      "message": "При регистрации произошла какая-то ошибка. Попробуйте зарегистрироваться через некоторое время."})
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={
+            "ok": False,
+            "message": "При регистрации произошла какая-то ошибка. Попробуйте зарегистрироваться через некоторое время."
+        })
