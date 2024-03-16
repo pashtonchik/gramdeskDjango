@@ -206,6 +206,7 @@ class DualFactorRequest(models.Model):
         ('edit_password', 'Смена пароля'),
         ('edit_profile', 'Смена данных профиля'),
         ('enable_2fa', 'Активация 2FA'),
+        ('restore', 'Смена пароля'),
     )
 
     factor_type_selector = (
