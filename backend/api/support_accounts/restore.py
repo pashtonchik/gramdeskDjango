@@ -39,7 +39,7 @@ def restore(request):
         dfr = DualFactorRequest.objects.filter(timestamp__gte=timestamp - 600, user=user, action__in=['restore'],
                                                factor_type='otp_auth')
 
-        if dfr.filter(attempt__lte=0).exists():
+        if dfr.exists():
             return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False,
                                                                       'message': 'Вы недавно уже восстанавливали пароль, попробуйте через несколько минут.'})
 
