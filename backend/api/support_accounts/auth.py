@@ -54,7 +54,7 @@ def auth(request):
     refresh = RefreshToken.for_user(user)
     access = refresh.access_token
 
-    decodeJTW = jwt.decode(str(access), config('SECRET_KEY'), algorithms=["HS256"]);
+    decodeJTW = jwt.decode(str(access), private_key_jwt, algorithms=["RS512"]);
 
     # add payload here!!
     decodeJTW['username'] = 'tiago'
