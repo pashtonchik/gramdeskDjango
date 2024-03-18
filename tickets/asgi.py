@@ -27,7 +27,7 @@ application = ProtocolTypeRouter({
                 [
                     path("support/<str:jwt>/", LiveScoreConsumer.as_asgi()),
                     path("client/", ClientConsumer.as_asgi()),
-                    path("upload/", UploadConsumer.as_asgi()),
+                    path("upload/<str:jwt>/", UploadConsumer.as_asgi()),
                     path("download/", DownloadConsumer.as_asgi()),
                 ]
             )
