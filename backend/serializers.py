@@ -94,7 +94,7 @@ class TicketSerializer(serializers.ModelSerializer):
     user_name = serializers.ReadOnlyField(source='get_user_name')
 
     class Meta:
-        exclude = ('tg_user', 'date_created', 'date_closed')
+        exclude = ('tg_user', 'date_created', 'date_closed', 'platform')
         model = Ticket
 
     def get_last_message(self, obj):
