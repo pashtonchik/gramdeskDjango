@@ -50,8 +50,14 @@ class User(AbstractUser):
 
 class Ticket(models.Model):
 
+    source_selector = (
+        ('telegram', 'Телеграм'),
+        ('widget', 'Виджет')
+    )
+
     uuid = models.UUIDField(primary_key=True, max_length=40, default=uuid.uuid4, editable=False, unique=True)
-    support_user = models.ForeignKey(to=User, on_delete=models.PROTECT, blank=True, null=True, related_name="support")
+    platform = models.ForeignKey(to=Platform, on_delete=models.PROTECT, blank=True, null=True)
+    source = models.CharField(max_length=50, choices=source_selector)
     tg_user = models.ForeignKey(to=User, on_delete=models.PROTECT, related_name="tg_user")
     status = models.CharField(max_length=50)
     date_created = models.DateTimeField(auto_now_add=True)
