@@ -3,6 +3,53 @@ from rest_framework import serializers
 from backend.models import Ticket, TicketMessage, Attachment
 
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
+import logging
+
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
+
+from backend.models import JWTToken
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        logger = logging.getLogger("mylogger")
+        logger.info("Whatever to log")
+        token['username'] = user.username
+        token['password'] = user.password
+        return token
+
+
+
+class MyTokenRefreshSerializer(TokenRefreshSerializer):
+    @classmethod
+    def validate(self, attrs):
+
+        refresh = self.token_class(attrs["refresh"])
+        data = {"access": str(refresh.access_token)}
+
+        refresh_token = OutstandingToken.objects.get(token=str(refresh))
+
+        outstanding = JWTToken.objects.select_for_update().filter(user=refresh_token.user, active=True)
+        outstanding.update(active=False)
+
+        JWTToken.objects.create(
+            user=refresh_token.user,
+            jwt=refresh.access_token,
+            refresh=OutstandingToken.objects.get(token=str(refresh))
+        ).save()
+
+        refresh.set_jti()
+        refresh.set_exp()
+        refresh.set_iat()
+
+        data["refresh"] = str(refresh)
+
+        return data
+
+
 class ReplyToMessageSerializer(serializers.ModelSerializer):
     chat_id = serializers.CharField(source='get_ticket_id', read_only=True)
     sender_id = serializers.CharField(source='get_sender_id', read_only=True)

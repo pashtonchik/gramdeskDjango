@@ -10,6 +10,8 @@ import logging
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 from rest_framework.decorators import api_view
 import pyotp
+from decouple import config
+import jwt
 
 
 @api_view(["POST"])
@@ -48,11 +50,22 @@ def auth(request):
     #     return Response(status=status.HTTP_404_NOT_FOUND, data={"ok" : False, "message" : "Неверный логин или пароль"})
 
     refresh = RefreshToken.for_user(user)
-    access = str(refresh.access_token)
+    access = refresh.access_token
+
+    decodeJTW = jwt.decode(str(access), config('SECRET_KEY'), algorithms=["HS256"]);
+
+    # add payload here!!
+    decodeJTW['username'] = 'tiago'
+    decodeJTW['date'] = '2020-05-31'
+    decodeJTW['platform_name'] = 'tiago'
+    decodeJTW['id'] = 1
+
+    # encode
+    encoded = jwt.encode(decodeJTW, config('SECRET_KEY'), algorithm="HS256")
 
     JWTToken.objects.create(
         user=user,
-        jwt=access,
+        jwt=str(encoded),
         refresh=OutstandingToken.objects.get(token=str(refresh))
     ).save()
 
