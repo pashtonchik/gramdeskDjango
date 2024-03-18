@@ -67,7 +67,7 @@ def auth(request):
         'platform_name': user.platform.name,
         'platform_description': user.platform.description,
         'supervisor': user == user.platform.admin,
-        'tg_bot': TelegramBot.objects.filter(platform=user.platform).extsts()
+        'tg_bot': TelegramBot.objects.filter(platform=user.platform).exists()
     })
 
 
