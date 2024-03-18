@@ -12,7 +12,7 @@ from tickets.celery_tasks.send_message_to_client import send_message_to_client
 class LiveScoreConsumer(WebsocketConsumer):
 
 
-    def connect(self, jwt):
+    def connect(self):
         from backend.models import Ticket, TicketMessage, User
         from backend.serializers import TicketSerializer, TicketMessageSerializer
         async_to_sync(self.channel_layer.group_add)("active_support", self.channel_name)
