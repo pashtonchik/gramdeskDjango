@@ -38,9 +38,10 @@ def telegram(request, token):
 
     if not tickets.exists():
         cur_ticket = Ticket(
+            source='telegram',
+            platform=bot.platform,
             tg_user=cur_user,
             status='created',
-            support_user=support,
         )
         cur_ticket.save()
     else:

@@ -197,7 +197,7 @@ class TelegramBot(models.Model):
         verbose_name = 'Telegram Bot'
         verbose_name_plural = 'Telegram Bots'
 
-    user = models.ForeignKey(to=User, blank=True, null=True, on_delete=models.PROTECT)
+    platform = models.ForeignKey(to=Platform, blank=True, null=True, on_delete=models.PROTECT)
     bot_apikey = models.CharField(max_length=300)
 
 
