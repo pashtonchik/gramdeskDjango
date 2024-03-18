@@ -50,5 +50,5 @@ class SocketConnectionAdmin(admin.ModelAdmin):
 
 @admin.register(TelegramBot)
 class SocketConnectionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'bot_apikey')
+    list_display = ('platform', 'bot_apikey')
 
