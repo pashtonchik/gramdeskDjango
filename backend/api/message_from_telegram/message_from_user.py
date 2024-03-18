@@ -33,7 +33,7 @@ def telegram(request, token):
         cur_user.save()
 
 
-    tickets = Ticket.objects.select_for_update().filter(tg_user=cur_user, status__in=['created', 'in_progress'], support_user=bot.platform)
+    tickets = Ticket.objects.select_for_update().filter(tg_user=cur_user, status__in=['created', 'in_progress'], platform=bot.platform)
 
     if not tickets.exists():
         cur_ticket = Ticket(
