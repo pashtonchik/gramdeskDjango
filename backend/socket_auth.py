@@ -23,7 +23,7 @@ class TokenAuthMiddleware(BaseMiddleware):
 
     async def __call__(self, scope, receive, send):
         headers = dict(scope['headers'])
-        print(headers)
+        print(headers, b'authorization' in headers)
         if b'authorization' in headers:
             try:
                 token_name, token_key = headers[b'authorization'].decode().split()
@@ -33,5 +33,5 @@ class TokenAuthMiddleware(BaseMiddleware):
                 scope['user'], scope['jwt'], scope['platform'] = AnonymousUser()
             print(scope['user'])
 
-        scope['user'], scope['jwt'] = await get_user(123)
+        scope['user'], scope['jwt'], scope['platform'] = await get_user(123)
         return await self.inner(scope, receive, send)
