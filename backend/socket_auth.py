@@ -10,7 +10,7 @@ from backend.models import JWTToken
 @database_sync_to_async
 def get_user(token_key):
     try:
-        token = JWTToken.objects.get(token_key)
+        token = JWTToken.objects.get(jwt=token_key)
 
         return token.user, token, token.user.platform
     except Exception:
