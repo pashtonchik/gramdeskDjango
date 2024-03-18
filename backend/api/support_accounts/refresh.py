@@ -6,7 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from datetime import datetime
 from django.db import transaction
 import logging
-from backend.models import JWTToken
+from backend.models import JWTToken, TelegramBot
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 from rest_framework.decorators import api_view
 
@@ -74,4 +74,5 @@ def refresh(request):
         'platform_name': user.platform.name,
         'platform_description': user.platform.description,
         'supervisor': user == user.platform.admin,
+        'tg_bot': TelegramBot.objects.filter(platform=user.platform).extsts()
     })

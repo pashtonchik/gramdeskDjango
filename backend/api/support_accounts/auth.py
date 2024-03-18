@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 import json
 from rest_framework_simplejwt.tokens import RefreshToken
-from backend.models import User, JWTToken
+from backend.models import User, JWTToken, TelegramBot
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
 import logging
@@ -67,6 +67,7 @@ def auth(request):
         'platform_name': user.platform.name,
         'platform_description': user.platform.description,
         'supervisor': user == user.platform.admin,
+        'tg_bot': TelegramBot.objects.filter(platform=user.platform).extsts()
     })
 
 
