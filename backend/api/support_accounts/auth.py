@@ -13,7 +13,7 @@ import pyotp
 from decouple import config
 import jwt
 
-from tickets.settings import private_key_jwt
+from tickets.settings import private_key_jwt, pub_key_jwt
 
 
 @api_view(["POST"])
@@ -54,7 +54,7 @@ def auth(request):
     refresh = RefreshToken.for_user(user)
     access = refresh.access_token
 
-    decodeJTW = jwt.decode(str(access), private_key_jwt, algorithms=["RS512"]);
+    decodeJTW = jwt.decode(str(access), pub_key_jwt, algorithms=["RS512"]);
 
     # add payload here!!
     decodeJTW['username'] = 'tiago'
