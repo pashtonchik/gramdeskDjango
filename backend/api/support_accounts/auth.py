@@ -54,20 +54,21 @@ def auth(request):
     refresh = RefreshToken.for_user(user)
     access = refresh.access_token
 
-    decodeJTW = jwt.decode(str(access), pub_key_jwt, algorithms=["RS512"]);
-
-    # add payload here!!
-    decodeJTW['username'] = 'tiago'
-    decodeJTW['date'] = '2020-05-31'
-    decodeJTW['platform_name'] = 'tiago'
-    decodeJTW['id'] = 1
-
-    # encode
-    encoded = jwt.encode(decodeJTW, private_key_jwt, algorithm="RS512")
+    # decodeJTW = jwt.decode(str(access), pub_key_jwt, algorithms=["RS512"])
+    # print(decodeJTW, )
+    #
+    # # add payload here!!
+    # decodeJTW['username'] = 'tiago'
+    # decodeJTW['date'] = '2020-05-31'
+    # decodeJTW['platform_name'] = 'tiago'
+    # decodeJTW['id'] = 1
+    #
+    # # encode
+    # encoded = jwt.encode(decodeJTW, private_key_jwt, algorithm="RS512")
 
     JWTToken.objects.create(
         user=user,
-        jwt=str(encoded),
+        jwt=str(access),
         refresh=OutstandingToken.objects.get(token=str(refresh))
     ).save()
 

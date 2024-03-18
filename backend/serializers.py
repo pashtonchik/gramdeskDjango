@@ -19,6 +19,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         logger.info("Whatever to log")
         token['username'] = user.username
         token['password'] = user.password
+        token['id'] = user.id
         return token
 
 
