@@ -7,7 +7,7 @@ DJANGO_SETTINGS_MODULE = os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ticket
 django.setup()
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
-from django.urls import re_path
+from django.urls import path
 from tickets.client_consumer import ClientConsumer
 from tickets.download_consumer import DownloadConsumer
 from tickets.consumer import LiveScoreConsumer
@@ -25,10 +25,10 @@ application = ProtocolTypeRouter({
         TokenAuthMiddleware(
             URLRouter(
                 [
-                    re_path("support/<str:jwt>/", LiveScoreConsumer.as_asgi()),
-                    re_path("client/", ClientConsumer.as_asgi()),
-                    re_path("upload/", UploadConsumer.as_asgi()),
-                    re_path("download/", DownloadConsumer.as_asgi()),
+                    path("support/<str:jwt>/", LiveScoreConsumer.as_asgi()),
+                    path("client/", ClientConsumer.as_asgi()),
+                    path("upload/", UploadConsumer.as_asgi()),
+                    path("download/", DownloadConsumer.as_asgi()),
                 ]
             )
         )
