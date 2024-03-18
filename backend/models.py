@@ -56,7 +56,7 @@ class Ticket(models.Model):
     )
 
     uuid = models.UUIDField(primary_key=True, max_length=40, default=uuid.uuid4, editable=False, unique=True)
-    platform = models.ForeignKey(to=Platform, on_delete=models.PROTECT, blank=True, null=True)
+    platform = models.ForeignKey(to=Platform, on_delete=models.PROTECT)
     source = models.CharField(max_length=50, choices=source_selector)
     tg_user = models.ForeignKey(to=User, on_delete=models.PROTECT, related_name="tg_user")
     status = models.CharField(max_length=50)
