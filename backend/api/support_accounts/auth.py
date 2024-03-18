@@ -13,6 +13,8 @@ import pyotp
 from decouple import config
 import jwt
 
+from tickets.settings import private_key_jwt
+
 
 @api_view(["POST"])
 @transaction.atomic()
@@ -61,7 +63,7 @@ def auth(request):
     decodeJTW['id'] = 1
 
     # encode
-    encoded = jwt.encode(decodeJTW, config('SECRET_KEY'), algorithm="HS256")
+    encoded = jwt.encode(decodeJTW, private_key_jwt, algorithm="RS512")
 
     JWTToken.objects.create(
         user=user,
