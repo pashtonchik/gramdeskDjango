@@ -2,6 +2,9 @@ from rest_framework import routers
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 
+from backend.api.client_info.block_client import block_client
+from backend.api.client_info.client_info import get_client
+from backend.api.client_info.update_client import update_client_info
 from backend.api.files.get_file import get_attachment
 from backend.api.message_from_telegram.message_from_user import telegram
 from backend.api.profiat_accounts.auth import profiat_auth_client
@@ -39,6 +42,11 @@ urlpatterns = [
     path('api/v3/support/signup/reverify/email/', registrate_req_new_code),
 
     path('api/v3/support/restore/', restore),
+
+    # Clients Management
+    path('api/v3/support/update/client/', update_client_info),
+    path('api/v3/support/block/client/', block_client),
+    path('api/v3/support/get/client/', get_client),
 
 
 ] + router.urls

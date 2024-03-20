@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from backend.models import Ticket, TicketMessage, Attachment
-
+from backend.models import Ticket, TicketMessage, Attachment, User
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 import logging
@@ -105,6 +104,13 @@ class AttachmentSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'name', 'total_bytes', 'received_bytes', 'ext', 'buf_size')
         model = Attachment
+
+
+class ClientSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = ('id', 'source', 'tg_username', 'tg_id', 'is_blocked', 'date_added')
+        model = User
 
 
 
