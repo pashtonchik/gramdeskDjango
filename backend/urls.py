@@ -1,13 +1,12 @@
 from rest_framework import routers
 from django.urls import path
-from rest_framework_simplejwt.views import TokenRefreshView
 
 from backend.api.client_info.block_client import block_client
 from backend.api.client_info.client_info import get_client
 from backend.api.client_info.update_client import update_client_info
 from backend.api.files.get_file import get_attachment
 from backend.api.message_from_telegram.message_from_user import telegram
-from backend.api.platform_management import update_platform
+from backend.api.platform_management.update_platform import update_platform_info
 from backend.api.profiat_accounts.auth import profiat_auth_client
 from backend.api.profiat_accounts.close_access import close_access
 from backend.api.profiat_accounts.refresh import refresh as refresh_profiat
@@ -50,7 +49,7 @@ urlpatterns = [
     path('api/v3/support/get/client/', get_client),
 
     # Platform Management
-    path('api/v3/support/update/platform/', update_platform),
+    path('api/v3/support/update/platform/', update_platform_info),
 
 
 ] + router.urls
