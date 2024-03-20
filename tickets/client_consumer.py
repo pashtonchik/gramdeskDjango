@@ -152,24 +152,25 @@ class ClientConsumer(WebsocketConsumer):
         }
         self.send(text_data=json.dumps(responce_data))
 
-        data_clients = {
-            'event': "incoming",
-            'type': 'new_message',
-            'message': TicketMessageSerializer(message, context={"from_user_type": "client"}).data,
-        }
+        if message.sending_state == 'sent':
+            data_clients = {
+                'event': "incoming",
+                'type': 'new_message',
+                'message': TicketMessageSerializer(message, context={"from_user_type": "client"}).data,
+            }
 
-        data_supports = {
-            'event': "incoming",
-            'type': 'new_message',
-            'message': TicketMessageSerializer(message, context={"from_user_type": "support"}).data,
-        }
+            data_supports = {
+                'event': "incoming",
+                'type': 'new_message',
+                'message': TicketMessageSerializer(message, context={"from_user_type": "support"}).data,
+            }
 
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
-                                                           "message": json.dumps(data_clients)})
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
+                                                               "message": json.dumps(data_clients)})
 
-        async_to_sync(channel_layer.group_send)(f"active_support", {"type": "chat.message",
-                                                           "message": json.dumps(data_supports)})
+            async_to_sync(channel_layer.group_send)(f"active_support", {"type": "chat.message",
+                                                               "message": json.dumps(data_supports)})
         ticket.save()
 
     def update_message_by_client(self, data):
