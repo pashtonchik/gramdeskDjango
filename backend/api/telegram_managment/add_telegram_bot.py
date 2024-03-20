@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from backend.models import Ticket, User, Platform, TelegramBot
 from backend.serializers import ClientSerializer, PlatformSerializer
 import pyotp
+from tickets.background.telegram_bots.activate_webhook import activate_webhook_telegram
 
 
 @transaction.atomic()
@@ -43,7 +44,7 @@ def create_telegram_bot(request, token):
         )
 
         new_bot.save()
-        # Вызов таска активации вебхука
+        transaction.on_commit(lambda: activate_webhook_telegram.delay(new_bot.id))
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST,
                     data={"ok": False, "message": "Произошла ошибка, попробуйте изменить данные."})
