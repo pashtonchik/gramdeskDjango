@@ -1,4 +1,6 @@
 import json
+
+import requests
 from django.db import transaction
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -66,7 +68,23 @@ def edit_telegram_bot(request):
         )
 
         new_bot.save()
-        transaction.on_commit(lambda: activate_webhook_telegram.delay(new_bot.id))
+        # transaction.on_commit(lambda: activate_webhook_telegram.delay(new_bot.id))
+
+        try:
+            req = requests.get(f"https://api.telegram.org/bot{new_bot.bot_apikey}/setwebhook?url=https://pashtonp.space/tg_bots/{new_bot.bot_apikey}")
+
+            data = req.json()
+            print(data)
+
+            if data['ok'] and data['result']:
+                new_bot.webhook_connected = True
+            else:
+                new_bot.message_error = data['description']
+        except:
+            new_bot.message_error = "Произошла ошибка, в токене ошибка."
+            print("Какая то ошибка")
+
+        new_bot.save()
 
         return Response(status=status.HTTP_200_OK,
                         data={"ok": False, "message": "Бот успешно изменен, ожидайте изменения статуса для полноценной работы через Telegram."})
