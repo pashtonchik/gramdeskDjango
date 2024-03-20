@@ -10,10 +10,9 @@ import pyotp
 
 @transaction.atomic()
 @api_view(['POST'])
-def create_telegram_bot(request, token):
+def delete_telegram_bot(request, token):
     data = json.loads(request.body.decode("utf-8"))
 
-    bot_token = data.get('bot_token')
     code = data.get('code')
 
     try:
@@ -23,31 +22,32 @@ def create_telegram_bot(request, token):
                         data={"ok": False, "message": "Произошла ошибка, обновите страницу."})
 
     if not code:
-        return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "Field Code, Code is required."})
+        return Response(status=status.HTTP_400_BAD_REQUEST,
+                        data={"ok": False, "message": "Field Code, Code is required."})
 
     if not pyotp.TOTP(request.user.otp_key).verify(code, valid_window=1):
         return Response(status=status.HTTP_400_BAD_REQUEST,
                         data={"ok": False, "message": "Одноразовый пароль неверен, повторите Вашу попытку."})
 
-    if not bot_token:
-        return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "Field BotToken, BotToken is required."})
 
-    if TelegramBot.objects.filter(platform=support_user.platform).exists():
+    if not TelegramBot.objects.filter(platform=support_user.platform).exists():
         return Response(status=status.HTTP_400_BAD_REQUEST,
-                        data={"ok": False, "message": "К данной платформе уже привязан телеграм бот, обновите страницу."})
+                        data={"ok": False,
+                              "message": "К данной платформе не привязан никакой бот, обновите страницу."})
+
+    current_bot = TelegramBot.objects.filter(platform=support_user.platform).first()
+
 
     try:
-        new_bot = TelegramBot(
-            platform=support_user.platform,
-            bot_apikey=bot_token
-        )
 
-        new_bot.save()
-        # Вызов таска активации вебхука
+        # delete webhook task
+        current_bot.delete()
+
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST,
-                    data={"ok": False, "message": "Произошла ошибка, попробуйте изменить данные."})
+                        data={"ok": False, "message": "Произошла ошибка, попробуйте изменить данные."})
 
 
     else:
-        return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "Такой платформы не найдено."})
+        return Response(status=status.HTTP_400_BAD_REQUEST,
+                        data={"ok": False, "message": "Такой платформы не найдено."})

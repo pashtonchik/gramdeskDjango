@@ -34,10 +34,10 @@ def edit_telegram_bot(request, token):
         return Response(status=status.HTTP_400_BAD_REQUEST,
                         data={"ok": False, "message": "Field BotToken, BotToken is required."})
 
-    if TelegramBot.objects.filter(platform=support_user.platform):
+    if not TelegramBot.objects.filter(platform=support_user.platform).exists():
         return Response(status=status.HTTP_400_BAD_REQUEST,
                         data={"ok": False,
-                              "message": "К данной платформе уже привязан телеграм бот, обновите страницу."})
+                              "message": "К данной платформе не привязан никакой бот, обновите страницу."})
 
     current_bot = TelegramBot.objects.filter(platform=support_user.platform).first()
     try:

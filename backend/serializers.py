@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from backend.models import Ticket, TicketMessage, Attachment, User, Platform
+from backend.models import Ticket, TicketMessage, Attachment, User, Platform, TelegramBot
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 import logging
@@ -118,6 +118,13 @@ class PlatformSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('uuid', 'name', 'description')
         model = Platform
+
+
+class TelegramBotSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = ('id', 'bot_apikey', 'webhook_connected', 'message_error')
+        model = TelegramBot
 
 
 
