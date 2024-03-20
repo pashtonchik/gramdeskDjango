@@ -40,9 +40,9 @@ def update_client_info(request, token):
 
             if new_description:
                 cur_user.username = new_description
+            cur_user.save()
 
             data = ClientSerializer(cur_user).data
-            cur_user.save()
 
             return Response(status=status.HTTP_200_OK, data=data)
         except:

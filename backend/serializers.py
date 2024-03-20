@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from backend.models import Ticket, TicketMessage, Attachment, User
+from backend.models import Ticket, TicketMessage, Attachment, User, Platform
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 import logging
@@ -111,6 +111,13 @@ class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'source', 'tg_username', 'tg_id', 'is_blocked', 'date_added')
         model = User
+
+
+class PlatformSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = ('uuid', 'name', 'description')
+        model = Platform
 
 
 
