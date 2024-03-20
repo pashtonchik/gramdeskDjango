@@ -41,6 +41,9 @@ def block_client(request):
 
         data = ClientSerializer(cur_user).data
 
+        data["ok"] = True
+        data["message"] = "Пользователь успешно заблокирован."
+
         return Response(status=status.HTTP_200_OK, data=data)
 
     else:

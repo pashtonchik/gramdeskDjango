@@ -48,6 +48,9 @@ def update_client_info(request):
 
             data = ClientSerializer(cur_user).data
 
+            data["ok"] = True
+            data["message"] = "Данные успешно изменены."
+
             return Response(status=status.HTTP_200_OK, data=data)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST,

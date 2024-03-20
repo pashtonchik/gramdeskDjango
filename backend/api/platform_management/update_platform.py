@@ -55,6 +55,9 @@ def update_platform_info(request):
 
             data = PlatformSerializer(cur_platform).data
 
+            data["ok"] = True
+            data["message"] = "Платформа успешно изменена."
+
             return Response(status=status.HTTP_200_OK, data=data)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST,
