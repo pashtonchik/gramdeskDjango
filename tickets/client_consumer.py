@@ -47,6 +47,8 @@ class ClientConsumer(WebsocketConsumer):
 
         data = {}
         data['type'] = 'ticket'
+        data['new_tickets'] = TicketSerializer(cur_ticket, many=True, context={"from_user_type": "client"}).data
+        data['in_progress_tickets'] = []
         data['ticket'] = TicketSerializer(cur_ticket, context={"from_user_type": "client"}).data
         data['ok'] = True
         data['chat_id'] = str(cur_ticket.uuid)
