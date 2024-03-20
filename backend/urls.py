@@ -47,7 +47,7 @@ urlpatterns = [
     # Clients Management
     path('api/v3/support/update/client/', update_client_info),
     path('api/v3/support/block/client/', block_client),
-    path('api/v3/support/block/client/', unblock_client),
+    path('api/v3/support/unblock/client/', unblock_client),
     path('api/v3/support/get/client/', get_client),
 
     # Platform Management
