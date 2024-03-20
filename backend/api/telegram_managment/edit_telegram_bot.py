@@ -70,8 +70,3 @@ def edit_telegram_bot(request):
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST,
                         data={"ok": False, "message": "Произошла ошибка, попробуйте изменить данные."})
-
-
-    else:
-        return Response(status=status.HTTP_400_BAD_REQUEST,
-                        data={"ok": False, "message": "Такой платформы не найдено."})
