@@ -45,4 +45,6 @@ def widget_client_auth(request):
         "ok": True,
         'access': access,
         'message': 'Успешная регистрация.',
+        'user_id': new_client.id,
+
     })
