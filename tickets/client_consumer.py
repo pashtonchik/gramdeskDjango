@@ -16,12 +16,12 @@ class ClientConsumer(WebsocketConsumer):
         from backend.serializers import TicketSerializer, TicketMessageSerializer
         print(self.channel_name)
         print(self.scope['user'])
-        cur_ticket = Ticket.objects.filter(
+        cur_tickets = Ticket.objects.filter(
             tg_user=self.scope["user"],
             status='created',
         )
 
-        if not cur_ticket.exists():
+        if not cur_tickets.exists():
             cur_ticket = Ticket(
                 tg_user=self.scope["user"],
                 status='created',
@@ -30,13 +30,16 @@ class ClientConsumer(WebsocketConsumer):
 
             )
             cur_ticket.save()
-        else:
-            cur_ticket = cur_ticket.first()
 
-        last_messages = TicketMessage.objects.filter(ticket=cur_ticket, deleted=False).order_by('-date_created')
+        cur_tickets = Ticket.objects.filter(
+            tg_user=self.scope["user"],
+            status='created',
+        )
 
-        last_messages.filter(read_by_received=False, sender='support').update(read_by_received=True,
-                                                                              sending_state='read')
+        # last_messages = TicketMessage.objects.filter(ticket=cur_tickets, deleted=False).order_by('-date_created')
+
+        # last_messages.filter(read_by_received=False, sender='support').update(read_by_received=True,
+        #                                                                       sending_state='read')
         #
         # отправка саппорту по каналу инфы, что последние сообщения прочитаны
         #
@@ -46,14 +49,10 @@ class ClientConsumer(WebsocketConsumer):
 
 
         data = {}
-        data['type'] = 'ticket'
-        data['new_tickets'] = TicketSerializer(cur_ticket, many=True, context={"from_user_type": "client"}).data
+        data['type'] = 'tickets'
+        data['new_tickets'] = TicketSerializer(cur_tickets, many=True, context={"from_user_type": "client"}).data
         data['in_progress_tickets'] = []
-        data['ticket'] = TicketSerializer(cur_ticket, context={"from_user_type": "client"}).data
         data['ok'] = True
-        data['chat_id'] = str(cur_ticket.uuid)
-        data['total_messages'] = last_messages.count()
-        data['messages'] = TicketMessageSerializer(last_messages[:20], many=True, context={"from_user_type": "client"}).data
 
         self.accept()
 
