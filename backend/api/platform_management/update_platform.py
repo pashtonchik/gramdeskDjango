@@ -27,15 +27,15 @@ def update_platform_info(request):
     if not code:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "Field Code, Code is required."})
 
-    if not pyotp.TOTP(request.user.otp_key).verify(code, valid_window=1):
-        return Response(status=status.HTTP_400_BAD_REQUEST,
-                        data={"ok": False, "message": "Одноразовый пароль неверен, повторите Вашу попытку."})
-
     if not platform_id:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "Field Platfrom_Id, Platfrom_Id is required."})
 
     if not new_description and not new_name:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "One of Fields (NewName ot NewDescription) is required."})
+
+    if not pyotp.TOTP(request.user.otp_key).verify(code, valid_window=1):
+        return Response(status=status.HTTP_400_BAD_REQUEST,
+                        data={"ok": False, "message": "Одноразовый пароль неверен, повторите Вашу попытку."})
 
 
     platforms = Platform.objects.filter(uuid=platform_id, admin=support_user)
