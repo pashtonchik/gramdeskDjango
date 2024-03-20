@@ -67,6 +67,10 @@ def edit_telegram_bot(request):
 
         new_bot.save()
         transaction.on_commit(lambda: activate_webhook_telegram.delay(new_bot.id))
+
+        return Response(status=status.HTTP_200_OK,
+                        data={"ok": False, "message": "Бот успешно изменен, ожидайте изменения статуса для полноценной работы через Telegram."})
+
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST,
                         data={"ok": False, "message": "Произошла ошибка, попробуйте изменить данные."})
