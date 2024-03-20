@@ -23,6 +23,9 @@ def telegram(request, token):
 
     if users.exists():
         cur_user = users.first()
+        if cur_user.is_blocked:
+            return Response(status=status.HTTP_200_OK, data={"ok": True})
+
     else:
         cur_user = User(
             username=data.get('message', {}).get('chat', {}).get('username', f"Telegram User {User.objects.all().count() + 1}"),
