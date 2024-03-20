@@ -25,7 +25,7 @@ class ClientConsumer(WebsocketConsumer):
             cur_ticket = Ticket(
                 tg_user=self.scope["user"],
                 status='created',
-                platfrom=self.scope["platform"],
+                platform=self.scope["platform"],
                 source="widget",
 
             )
