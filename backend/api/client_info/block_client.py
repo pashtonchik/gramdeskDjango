@@ -31,6 +31,10 @@ def block_client(request):
     if chats.exists():
         cur_user = User.objects.select_for_update().get(id=chats.first().tg_user.id)
 
+        if cur_user.is_blocked:
+            return Response(status=status.HTTP_400_BAD_REQUEST,
+                            data={"ok": False, "message": "Пользователя уже заблокирован."})
+
         cur_user.is_blocked = True
         cur_user.save()
 

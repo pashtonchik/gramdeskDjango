@@ -3,6 +3,7 @@ from django.urls import path
 
 from backend.api.client_info.block_client import block_client
 from backend.api.client_info.client_info import get_client
+from backend.api.client_info.unblock_client import unblock_client
 from backend.api.client_info.update_client import update_client_info
 from backend.api.files.get_file import get_attachment
 from backend.api.message_from_telegram.message_from_user import telegram
@@ -46,6 +47,7 @@ urlpatterns = [
     # Clients Management
     path('api/v3/support/update/client/', update_client_info),
     path('api/v3/support/block/client/', block_client),
+    path('api/v3/support/block/client/', unblock_client),
     path('api/v3/support/get/client/', get_client),
 
     # Platform Management
