@@ -34,9 +34,9 @@ def unblock_client(request):
 
         if not cur_user.is_blocked:
             return Response(status=status.HTTP_400_BAD_REQUEST,
-                            data={"ok": False, "message": "Пользователя не заблокирован."})
+                            data={"ok": False, "message": "Пользователь не заблокирован."})
 
-        cur_user.is_blocked = True
+        cur_user.is_blocked = False
         cur_user.save()
 
         data = ClientSerializer(cur_user).data
