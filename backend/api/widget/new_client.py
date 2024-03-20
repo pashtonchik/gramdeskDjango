@@ -53,7 +53,7 @@ def widget_client_auth(request):
     return Response(status=status.HTTP_200_OK, data={
         "ok": True,
         'access': access,
-        "chat_id": cur_ticket.uuid,
+        "chat_id": str(cur_ticket.uuid),
         'message': 'Успешная регистрация.',
         'user_id': new_client.id,
 
