@@ -10,7 +10,7 @@ import pyotp
 
 @transaction.atomic()
 @api_view(['POST'])
-def update_platform_info(request, token):
+def update_platform_info(request):
     data = json.loads(request.body.decode("utf-8"))
 
     platform_id = data.get('platform_id')

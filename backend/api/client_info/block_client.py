@@ -8,7 +8,7 @@ from backend.models import Ticket, User
 
 @transaction.atomic()
 @api_view(['POST'])
-def block_client(request, token):
+def block_client(request):
     data = json.loads(request.body.decode("utf-8"))
 
     chat_id = data.get('chat_id')
