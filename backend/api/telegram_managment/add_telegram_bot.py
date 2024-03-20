@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from backend.models import Ticket, User, Platform, TelegramBot
-from backend.serializers import ClientSerializer, PlatformSerializer
+from backend.serializers import ClientSerializer, PlatformSerializer, TelegramBotSerializer
 import pyotp
 from tickets.background.telegram_bots.activate_webhook import activate_webhook_telegram
 
@@ -64,10 +64,15 @@ def create_telegram_bot(request):
 
         new_bot.save()
 
+        data = TelegramBotSerializer(new_bot).data
+
+        data['ok'] = True
+        data['message'] = "Бот успешно изменен."
+
 
 
         return Response(status=status.HTTP_200_OK,
-                        data={"ok": False, "message": "Бот успешно добавлен, ожидайте изменения статуса для полноценной работы через Telegram."})
+                        data=data)
 
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST,
