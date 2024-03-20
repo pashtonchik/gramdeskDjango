@@ -11,7 +11,7 @@ from tickets.background.telegram_bots.delete_webhook import delete_webhook_teleg
 
 @transaction.atomic()
 @api_view(['POST'])
-def delete_telegram_bot(request, token):
+def delete_telegram_bot(request):
     data = json.loads(request.body.decode("utf-8"))
 
     code = data.get('code')

@@ -11,7 +11,7 @@ from tickets.background.telegram_bots.activate_webhook import activate_webhook_t
 
 @transaction.atomic()
 @api_view(['POST'])
-def create_telegram_bot(request, token):
+def create_telegram_bot(request):
     data = json.loads(request.body.decode("utf-8"))
 
     bot_token = data.get('bot_token')

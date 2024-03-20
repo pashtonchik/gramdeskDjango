@@ -17,6 +17,10 @@ from backend.api.support_accounts.auth_verify import verify_token
 from backend.api.support_accounts.restore import restore
 from backend.api.support_accounts.signup import *
 from backend.api.support_accounts.signup_new_code import registrate_req_new_code
+from backend.api.telegram_managment.add_telegram_bot import create_telegram_bot
+from backend.api.telegram_managment.delete_telegram_bot import delete_telegram_bot
+from backend.api.telegram_managment.edit_telegram_bot import edit_telegram_bot
+from backend.api.telegram_managment.get_telegram_bot import get_telegram_bot
 from backend.permissions import ProfiatIntegration
 
 router = routers.DefaultRouter()
@@ -52,6 +56,13 @@ urlpatterns = [
 
     # Platform Management
     path('api/v3/support/update/platform/', update_platform_info),
+
+
+    # Telegram Bots Managment
+    path('api/v3/support/edit/telegram/bot/', edit_telegram_bot),
+    path('api/v3/support/get/telegram/bot/', get_telegram_bot),
+    path('api/v3/support/delete/telegram/bot/', delete_telegram_bot),
+    path('api/v3/support/create/telegram/bot/', create_telegram_bot),
 
 
 ] + router.urls

@@ -9,7 +9,7 @@ from backend.serializers import TelegramBotSerializer
 
 @transaction.atomic()
 @api_view(['GET'])
-def get_client(request, token):
+def get_telegram_bot(request):
     try:
         support_user = request.user
     except:
