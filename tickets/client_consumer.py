@@ -147,7 +147,7 @@ class ClientConsumer(WebsocketConsumer):
 
         responce_data = {
             'event': "response_action",
-            'action': "read_message",
+            'action': "send_message",
             'message': TicketMessageSerializer(message, context={"from_user_type": "client"}).data,
         }
         self.send(text_data=json.dumps(responce_data))
