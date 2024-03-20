@@ -36,6 +36,7 @@ def delete_telegram_bot(request):
                         data={"ok": False,
                               "message": "К данной платформе не привязан никакой бот, обновите страницу."})
 
+
     current_bot = TelegramBot.objects.filter(platform=support_user.platform).first()
 
 
@@ -50,7 +51,3 @@ def delete_telegram_bot(request):
         return Response(status=status.HTTP_400_BAD_REQUEST,
                         data={"ok": False, "message": "Произошла ошибка, попробуйте изменить данные."})
 
-
-    else:
-        return Response(status=status.HTTP_400_BAD_REQUEST,
-                        data={"ok": False, "message": "Такой платформы не найдено."})
