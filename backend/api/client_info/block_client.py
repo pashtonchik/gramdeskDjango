@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from backend.models import Ticket, User
+from backend.serializers import ClientSerializer
 
 
 @transaction.atomic()
@@ -37,6 +38,8 @@ def block_client(request):
 
         cur_user.is_blocked = True
         cur_user.save()
+
+        data = ClientSerializer(cur_user).data
 
         return Response(status=status.HTTP_200_OK, data=data)
 
