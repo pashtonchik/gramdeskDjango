@@ -26,7 +26,7 @@ def widget_client_auth(request):
     new_client = User(
         type="client",
         source="widget",
-        platfrom=Platform.objects.get(uuid=platform),
+        platform=Platform.objects.get(uuid=platform),
         username=f"Пользователь сайта{User.objects.count() + 1}",
     )
 
