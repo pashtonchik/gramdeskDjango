@@ -20,8 +20,12 @@ def block_client(request):
     if not chat_id:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "Field Chat_Id, Chat_Id is required."})
 
+    try:
 
-    chats = Ticket.objects.filter(uuid=chat_id, platform=support_user.platform)
+        chats = Ticket.objects.filter(uuid=chat_id, platform=support_user.platform)
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST,
+                        data={"ok": False, "message": "Пользователя не найдено."})
 
 
     if chats.exists():

@@ -27,8 +27,12 @@ def update_client_info(request):
     if not new_description and not new_username:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "One of Fields (NewUsername ot NewDescription) is required."})
 
+    try:
 
-    chats = Ticket.objects.filter(uuid=chat_id, platform=support_user.platform)
+        chats = Ticket.objects.filter(uuid=chat_id, platform=support_user.platform)
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST,
+                        data={"ok": False, "message": "Пользователя не найдено."})
 
 
     if chats.exists():
