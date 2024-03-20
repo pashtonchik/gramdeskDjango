@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from backend.models import Ticket, User, Platform
 from backend.serializers import ClientSerializer, PlatformSerializer
+import pyotp
 
 
 @transaction.atomic()
@@ -15,12 +16,20 @@ def update_platform_info(request, token):
     platform_id = data.get('platform_id')
     new_name = data.get('new_name')
     new_description = data.get('new_description')
+    code = data.get('code')
 
     try:
         support_user = request.user
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST,
                         data={"ok": False, "message": "Произошла ошибка, обновите страницу."})
+
+    if not code:
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "Field Code, Code is required."})
+
+    if not pyotp.TOTP(request.user.otp_key).verify(code, valid_window=1):
+        return Response(status=status.HTTP_400_BAD_REQUEST,
+                        data={"ok": False, "message": "Одноразовый пароль неверен, повторите Вашу попытку."})
 
     if not platform_id:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "Field Platfrom_Id, Platfrom_Id is required."})

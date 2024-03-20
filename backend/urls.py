@@ -49,7 +49,7 @@ urlpatterns = [
     path('api/v3/support/block/client/', block_client),
     path('api/v3/support/get/client/', get_client),
 
-    # platform Management
+    # Platform Management
     path('api/v3/support/update/platform/', update_platform),
 
 

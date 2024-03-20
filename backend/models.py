@@ -199,6 +199,8 @@ class TelegramBot(models.Model):
 
     platform = models.ForeignKey(to=Platform, on_delete=models.PROTECT)
     bot_apikey = models.CharField(max_length=300)
+    webhook_connected = models.BooleanField(default=False)
+    message_error = models.TextField(blank=True, null=True)
 
 
 class DualFactorRequest(models.Model):
