@@ -109,7 +109,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
 class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = ('id', 'source', 'tg_username', 'tg_id', 'is_blocked', 'date_added')
+        fields = ('id', 'source', 'tg_username', 'tg_id', 'is_blocked', 'date_added', 'username')
         model = User
 
 
