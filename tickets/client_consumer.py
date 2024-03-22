@@ -100,7 +100,7 @@ class ClientConsumer(WebsocketConsumer):
         if message_to_output.filter(id__in=ids_messages_to_output, sender="support", sending_state="delivered").exists():
             message_to_output.filter(id__in=ids_messages_to_output, sender="support", sending_state="delivered").update(
                 sending_state="read")
-            send_message_read_messages.delay(ids_messages_to_output)
+            send_message_read_messages.delay(ids_messages_to_output, "support")
 
         output_data = {}
         output_data['event'] = 'response_action'
