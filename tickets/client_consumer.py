@@ -5,7 +5,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
 from django.db import transaction
-from tickets.background.consumers_tasks.read_messages import send_message_read_messages
+from tickets.background.telegram_bots.activate_webhook  import send_message_read_messages
 
 from backend.models import Attachment
 
