@@ -54,5 +54,5 @@ def send_message_read_messages(ids_array, sender):
             async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
                                                                                      "message": json.dumps(data)})
 
-    messages.update(sending_state="read")
+    messages.update(sending_state="read", read_by_received=True)
 
