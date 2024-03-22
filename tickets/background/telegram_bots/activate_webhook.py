@@ -34,8 +34,9 @@ def activate_webhook_telegram(bot_id):
 def send_message_read_messages(ids_array, sender):
     from backend.models import TicketMessage
     from backend.serializers import TicketMessageSerializer
+    print(ids_array)
     messages = TicketMessage.objects.filter(id__in=ids_array, sending_state="delivered", sender=sender)
-
+    print(messages)
     for message in messages:
 
         data = {
@@ -44,7 +45,7 @@ def send_message_read_messages(ids_array, sender):
             'ok': True,
             'message': TicketMessageSerializer(message, context={"from_user_type": message.sender}).data,
         }
-
+        print(message.sender)
         channel_layer = get_channel_layer()
         if message.sender == "support":
             async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
