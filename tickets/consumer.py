@@ -191,6 +191,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             'event': "response_action",
             'action': "update_message",
             'message': TicketMessageSerializer(cur_message, context={"from_user_type": "support"}).data,
+            'count_unread_messages': cur_message.ticket.get_count_unread_messages(),
         }
         self.send(text_data=json.dumps(responce_data))
 

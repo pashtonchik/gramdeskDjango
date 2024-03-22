@@ -197,6 +197,7 @@ class ClientConsumer(WebsocketConsumer):
         response_data = {
             'event': "response_action",
             'action': "update_message",
+            'count_unread_messages': cur_message.ticket.get_count_unread_messages(),
             'message': TicketMessageSerializer(cur_message, context={"from_user_type": "client"}).data,
         }
         self.send(text_data=json.dumps(response_data))
