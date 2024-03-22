@@ -5,6 +5,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
 from django.db import transaction
+from tickets.background.consumers_tasks.read_messages import send_message_read_messages
 
 from backend.models import Attachment
 
@@ -94,6 +95,10 @@ class ClientConsumer(WebsocketConsumer):
         else:
             message_to_output = last_messages.order_by('-date_created')
 
+        if message_to_output[:20].filter(sender="support", sending_state="delivered").exists():
+            message_to_output[:20].filter(sender="support", sending_state="delivered").update(sending_state="read")
+            send_message_read_messages.delay(message_to_output[:20].filter(sender="support", sending_state="delivered").values_list('id', flat=True))
+
         output_data = {}
         output_data['event'] = 'response_action'
         output_data['action'] = 'get_messages'
@@ -171,6 +176,8 @@ class ClientConsumer(WebsocketConsumer):
 
             async_to_sync(channel_layer.group_send)(f"active_support", {"type": "chat.message",
                                                                "message": json.dumps(data_supports)})
+            message.sending_state = "delivered"
+            message.save()
         ticket.save()
 
     def update_message_by_client(self, data):

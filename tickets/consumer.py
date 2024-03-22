@@ -4,6 +4,7 @@ from asgiref.sync import async_to_sync, sync_to_async
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
 from django.db import transaction
+from tickets.background.consumers_tasks.read_messages import send_message_read_messages
 
 from backend.models import SocketConnection
 from tickets.celery_tasks.send_message_to_client import send_message_to_client
@@ -86,6 +87,9 @@ class LiveScoreConsumer(WebsocketConsumer):
         else:
             message_to_output = last_messages.order_by('-date_created')
 
+        if message_to_output[:20].filter(sender="client", sending_state="delivered").exists():
+            message_to_output[:20].filter(sender="client", sending_state="delivered").update(sending_state="read")
+            send_message_read_messages.delay(message_to_output[:20].filter(sender="client", sending_state="delivered").values_list('id', flat=True))
 
         output_data = {}
         output_data['event'] = 'response_action'
@@ -163,6 +167,8 @@ class LiveScoreConsumer(WebsocketConsumer):
             else:
                 async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
                                                                "message": json.dumps(output_data_clients)})
+                message.sending_state = "delivered"
+                message.save()
                 print(2)
 
         ticket.save()
