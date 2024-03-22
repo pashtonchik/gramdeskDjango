@@ -189,7 +189,7 @@ class ClientConsumer(WebsocketConsumer):
         message = data['message']
         cur_message = TicketMessage.objects.get(id=message['id'])
 
-        if message['sending_state'] == 'read' and cur_message.sending_state == 'sent':
+        if message['sending_state'] == 'read' and cur_message.sending_state == 'delivered':
             cur_message.sending_state = 'read'
             cur_message.read_by_received = True
             cur_message.save()
