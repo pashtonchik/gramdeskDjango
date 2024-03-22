@@ -31,10 +31,10 @@ def activate_webhook_telegram(bot_id):
 
 
 @shared_task()
-def send_message_read_messages(ids_array):
+def send_message_read_messages(ids_array, sender):
     from backend.models import TicketMessage
     from backend.serializers import TicketMessageSerializer
-    messages = TicketMessage.objects.filter(id__in=ids_array)
+    messages = TicketMessage.objects.filter(id__in=ids_array, sending_state="delivered", sender=sender)
 
     for message in messages:
 
