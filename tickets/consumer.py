@@ -7,7 +7,7 @@ from django.db import transaction
 from tickets.background.telegram_bots.activate_webhook import send_message_read_messages
 
 from backend.models import SocketConnection
-from tickets.celery_tasks.message import send_message_to_client
+from tickets.background.telegram.message import send_message_to_client
 
 
 class LiveScoreConsumer(WebsocketConsumer):
