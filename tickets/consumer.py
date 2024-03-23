@@ -22,7 +22,7 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         tickets = Ticket.objects.all()
 
-        new_tickets = tickets.filter(status='created')[:20]
+        new_tickets = tickets.filter(status='created').order_by('-last_message__date_created')[:20]
         in_progress_tickets = tickets.filter(status='in_progress')[:20]
         # closed_tickets = tickets.filter(status='closed')[:20]
 
