@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from backend.models import *
-from backend.serializers import TicketMessageSerializer
+from backend.serializers import TicketMessageSerializer, TicketSerializer
 from tickets.celery_tasks import send_message_to_client
 
 
@@ -47,8 +47,10 @@ def telegram(request, token):
             status='created',
         )
         cur_ticket.save()
+        is_new_ticket = True
     else:
         cur_ticket = tickets.order_by('-date_created').first()
+        is_new_ticket = True
 
     if data.get('message', {}).get('text', None):
         new_message = TicketMessage(
@@ -79,11 +81,17 @@ def telegram(request, token):
     #
     #
     channel_layer = get_channel_layer()
+
+
     data = {
         'event': "incoming",
         'type': 'new_message',
         'message': TicketMessageSerializer(new_message, context={"from_user_type": "support"}).data
     }
+
+    if is_new_ticket:
+        data["new_ticket"] = TicketSerializer(cur_ticket, context={"from_user_type": "support"})
+
     async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
                                                   "message": json.dumps(data)})
     # json.dumps({
