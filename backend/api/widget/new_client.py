@@ -33,7 +33,7 @@ def widget_client_auth(request):
         type="client",
         source="widget",
         platform=Platform.objects.get(uuid=platform),
-        username=f"Пользователь сайта{User.objects.count() + 1}",
+        username=f"Пользователь сайта {User.objects.filter(type='client').count() + 1}",
     )
 
     new_client.save()
