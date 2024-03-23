@@ -97,7 +97,7 @@ class TicketSerializer(serializers.ModelSerializer):
         model = Ticket
 
     def get_last_message(self, obj):
-        return TicketMessageSerializer(obj.last_message, context=self.context).data if obj.last_message else []
+        return TicketMessageSerializer(obj.last_message, context=self.context).data if obj.last_message else None
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
