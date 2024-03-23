@@ -6,7 +6,7 @@ import json
 
 
 @shared_task()
-def send_message_to_client(message_id):
+def telegram_message(message_id):
     from backend.models import TicketMessage, TelegramBot
     from backend.serializers import TicketMessageSerializer
     from tickets.settings import SUPPORTBOT
