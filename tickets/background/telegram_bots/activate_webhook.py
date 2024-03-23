@@ -29,32 +29,32 @@ def activate_webhook_telegram(bot_id):
         bot.save()
 
 
-
-@shared_task()
-def send_message_read_messages(ids_array, sender):
-    from backend.models import TicketMessage
-    from backend.serializers import TicketMessageSerializer
-    print(ids_array)
-    messages = TicketMessage.objects.filter(id__in=ids_array, sending_state="delivered", sender=sender)
-    print(messages)
-    for message in messages:
-
-        data = {
-            'event': 'incoming',
-            'type': 'update_message',
-            'ok': True,
-            'message': TicketMessageSerializer(message, context={"from_user_type": message.sender}).data,
-        }
-        print(message.sender)
-        channel_layer = get_channel_layer()
-        if message.sender == "support":
-            async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
-                                                                   "message": json.dumps(data)})
-        else:
-            async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
-                                                                                     "message": json.dumps(data)})
-
-    messages.update(sending_state="read", read_by_received=True)
+#
+# @shared_task()
+# def send_message_read_messages(ids_array, sender):
+#     from backend.models import TicketMessage
+#     from backend.serializers import TicketMessageSerializer
+#     print(ids_array)
+#     messages = TicketMessage.objects.filter(id__in=ids_array, sending_state="delivered", sender=sender)
+#     print(messages)
+#     for message in messages:
+#
+#         data = {
+#             'event': 'incoming',
+#             'type': 'update_message',
+#             'ok': True,
+#             'message': TicketMessageSerializer(message, context={"from_user_type": message.sender}).data,
+#         }
+#         print(message.sender)
+#         channel_layer = get_channel_layer()
+#         if message.sender == "support":
+#             async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+#                                                                    "message": json.dumps(data)})
+#         else:
+#             async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
+#                                                                                      "message": json.dumps(data)})
+#
+#     messages.update(sending_state="read", read_by_received=True)
 
 
 @shared_task()
