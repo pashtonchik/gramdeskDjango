@@ -96,6 +96,9 @@ def telegram(request, token):
                                                   "message": json.dumps(data)})
     new_message.sending_state = 'delivered'
     new_message.save()
+
+    TicketMessage.objects.select_for_update().filter(sending_state="delivered").update(sending_state="read", read_by_received=True)
+
     # json.dumps({
     #     'file': None,
     #     'text': data['message'],
