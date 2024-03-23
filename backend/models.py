@@ -62,6 +62,7 @@ class Ticket(models.Model):
     status = models.CharField(max_length=50)
     date_created = models.DateTimeField(auto_now_add=True)
     date_closed = models.DateTimeField(blank=True, null=True)
+    date_last_message = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return f'{self.tg_user.tg_username} {self.date_created}'
