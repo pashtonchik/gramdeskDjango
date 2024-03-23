@@ -11,7 +11,7 @@ def telegram_message(message_id):
     from backend.serializers import TicketMessageSerializer
     from tickets.settings import SUPPORTBOT
     from django.db import transaction
-
+    print(message_id)
     with transaction.atomic():
         msg = TicketMessage.objects.select_for_update().get(id=message_id)
         print('отправка сообщения в бот')
