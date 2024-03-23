@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from backend.models import *
 from backend.serializers import TicketMessageSerializer, TicketSerializer
-from tickets.celery_tasks import send_message_to_client
+from tickets.background.telegram_bots.activate_webhook  import send_message_read_messages
 
 
 @transaction.atomic()
@@ -97,8 +97,10 @@ def telegram(request, token):
     new_message.sending_state = 'delivered'
     new_message.save()
 
-    TicketMessage.objects.select_for_update().filter(sending_state="delivered").update(sending_state="read", read_by_received=True)
 
+    unread_messages = TicketMessage.objects.select_for_update().filter(sending_state="delivered")
+    unread_messages.update(sending_state="read", read_by_received=True)
+    send_message_read_messages.delay([*unread_messages.values_list('id', flat=True)], "support")
     # json.dumps({
     #     'file': None,
     #     'text': data['message'],
