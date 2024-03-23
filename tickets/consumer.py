@@ -7,7 +7,7 @@ from django.db import transaction
 from tickets.background.telegram_bots.activate_webhook import send_message_read_messages
 
 from backend.models import SocketConnection
-from tickets.background.telegram.message import send_message_to_client
+from tickets.background.telegram.message import telegram_message
 
 
 class LiveScoreConsumer(WebsocketConsumer):
@@ -164,7 +164,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
                                                                "message": json.dumps(output_data_supports)})
             if message.ticket.tg_user.source == 'telegram':
-                send_message_to_client.delay(message_id=message.id)
+                telegram_message.delay(message_id=message.id)
                 print(1)
             else:
                 async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
