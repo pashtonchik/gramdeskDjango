@@ -1,1 +1,1 @@
-from read_messages import *
+from .read_messages import *
