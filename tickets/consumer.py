@@ -105,75 +105,76 @@ class LiveScoreConsumer(WebsocketConsumer):
     def new_message_to_client(self, data):
         from backend.models import Ticket, TicketMessage, User, Attachment
         from backend.serializers import TicketMessageSerializer
-        new_message = data['message']
-        ticket = Ticket.objects.select_for_update().get(uuid=new_message['chat_id'])
+        with transaction.atomic():
+            new_message = data['message']
+            ticket = Ticket.objects.select_for_update().get(uuid=new_message['chat_id'])
 
-        message = TicketMessage(
-            tg_user=ticket.tg_user,
-            employee=User.objects.all().first(),
-            sender='support',
-            content_type='text',
-            sending_state='sent',
-            message_text=new_message['content'],
-            ticket=ticket,
-        )
+            message = TicketMessage(
+                tg_user=ticket.tg_user,
+                employee=User.objects.all().first(),
+                sender='support',
+                content_type='text',
+                sending_state='sent',
+                message_text=new_message['content'],
+                ticket=ticket,
+            )
 
-        if 'message_to_reply' in new_message:
-            if new_message['message_to_reply']:
-                message.message_to_reply = TicketMessage.objects.get(id=new_message['message_to_reply']['id'], ticket=message.ticket)
+            if 'message_to_reply' in new_message:
+                if new_message['message_to_reply']:
+                    message.message_to_reply = TicketMessage.objects.get(id=new_message['message_to_reply']['id'], ticket=message.ticket)
 
 
-        if 'media' in new_message:
-            if new_message['media']:
-                message.sending_state = 'uploading_attachments'
-                message.save()
-                for file in new_message['media']:
-                    Attachment(
-                        message=message,
-                        name=file['name'],
-                        total_bytes=file['total_size'],
-                        ext=file['ext'],
-                        buf_size=500_000,
-                    ).save()
+            if 'media' in new_message:
+                if new_message['media']:
+                    message.sending_state = 'uploading_attachments'
+                    message.save()
+                    for file in new_message['media']:
+                        Attachment(
+                            message=message,
+                            name=file['name'],
+                            total_bytes=file['total_size'],
+                            ext=file['ext'],
+                            buf_size=500_000,
+                        ).save()
+                else:
+                    message.save()
             else:
                 message.save()
-        else:
-            message.save()
 
-        responce_data = {
-            'event': "response_action",
-            'action': "send_message",
-            'message': TicketMessageSerializer(message, context={"from_user_type": "support"}).data,
-        }
-        self.send(text_data=json.dumps(responce_data))
-
-        if message.sending_state == 'sent':
-            output_data_clients = {
-                'event': "incoming",
-                'type': 'new_message',
-                'message': TicketMessageSerializer(message, context={"from_user_type": "client"}).data,
-            }
-
-            output_data_supports = {
-                'event': "incoming",
-                'type': 'new_message',
+            responce_data = {
+                'event': "response_action",
+                'action': "send_message",
                 'message': TicketMessageSerializer(message, context={"from_user_type": "support"}).data,
             }
+            self.send(text_data=json.dumps(responce_data))
 
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
-                                                               "message": json.dumps(output_data_supports)})
-            if message.ticket.tg_user.source == 'telegram':
-                telegram_message.delay(message_id=message.id)
-                print(1)
-            else:
-                async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
-                                                               "message": json.dumps(output_data_clients)})
-                message.sending_state = "delivered"
-                message.save()
-                print(2)
+            if message.sending_state == 'sent':
+                output_data_clients = {
+                    'event': "incoming",
+                    'type': 'new_message',
+                    'message': TicketMessageSerializer(message, context={"from_user_type": "client"}).data,
+                }
 
-        ticket.save()
+                output_data_supports = {
+                    'event': "incoming",
+                    'type': 'new_message',
+                    'message': TicketMessageSerializer(message, context={"from_user_type": "support"}).data,
+                }
+
+                channel_layer = get_channel_layer()
+                async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+                                                                   "message": json.dumps(output_data_supports)})
+                if message.ticket.tg_user.source == 'telegram':
+                    transaction.on_commit(lambda: telegram_message.delay(message_id=message.id))
+                    print(1)
+                else:
+                    async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
+                                                                   "message": json.dumps(output_data_clients)})
+                    message.sending_state = "delivered"
+                    message.save()
+                    print(2)
+
+            ticket.save()
 
     def update_message_by_support(self, data):
         from backend.models import TicketMessage
