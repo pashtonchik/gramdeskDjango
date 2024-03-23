@@ -50,7 +50,7 @@ def telegram(request, token):
         is_new_ticket = True
     else:
         cur_ticket = tickets.order_by('-date_created').first()
-        is_new_ticket = True
+        is_new_ticket = False
 
     if data.get('message', {}).get('text', None):
         new_message = TicketMessage(
