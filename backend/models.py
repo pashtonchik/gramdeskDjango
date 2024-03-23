@@ -82,6 +82,9 @@ class Ticket(models.Model):
     def get_user_name(self):
         return self.tg_user.username
 
+    def get_user_source(self):
+        return self.tg_user.source
+
 
 class TicketMessage(models.Model):
 
