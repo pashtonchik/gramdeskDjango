@@ -1,9 +1,8 @@
 import json
-
+from celery import shared_task
 import requests
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from celery import shared_task
 from backend.serializers import TicketMessageSerializer
 from tickets.celery import app
 from tickets.settings import SUPPORTBOT
