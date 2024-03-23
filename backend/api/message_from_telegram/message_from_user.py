@@ -94,6 +94,8 @@ def telegram(request, token):
 
     async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
                                                   "message": json.dumps(data)})
+    new_message.sending_state = 'delivered'
+    new_message.save()
     # json.dumps({
     #     'file': None,
     #     'text': data['message'],
