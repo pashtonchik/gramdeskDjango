@@ -91,7 +91,7 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         # if message_to_output.filter(id__in=ids_messages_to_output, sender="client", sending_state="delivered").exists():
         message_to_read = message_to_output.filter(id__in=ids_messages_to_output, sender="client", sending_state="delivered")
-        message_to_read.update(senging_state="read", read_by_received=True)
+        message_to_read.update(sending_state="read", read_by_received=True)
 
         array_message_to_read = [*message_to_read.values_list('id', flat=True)]
 
