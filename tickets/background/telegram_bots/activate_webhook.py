@@ -36,6 +36,7 @@ def send_message_read_messages(ids_array, sender):
     from backend.serializers import TicketMessageSerializer
     print(ids_array)
     messages = TicketMessage.objects.filter(id__in=ids_array, sending_state="delivered", sender=sender)
+    messages.update(sending_state="read", read_by_received=True)
     print(messages)
     for message in messages:
 
@@ -53,7 +54,5 @@ def send_message_read_messages(ids_array, sender):
         else:
             async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
                                                                                      "message": json.dumps(data)})
-
-    messages.update(sending_state="read", read_by_received=True)
 
 
