@@ -35,7 +35,7 @@ def send_message_read_messages(ids_array, sender):
     from backend.models import TicketMessage
     from backend.serializers import TicketMessageSerializer
     print(ids_array)
-    messages = TicketMessage.objects.filter(id__in=ids_array, sending_state="delivered", sender=sender)
+    messages = TicketMessage.objects.filter(id__in=ids_array)
     print(messages)
     for message in messages:
 
