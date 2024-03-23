@@ -4,6 +4,7 @@ from asgiref.sync import async_to_sync, sync_to_async
 from celery import shared_task
 from django.db import transaction
 import json
+from tickets.settings import SUPPORTBOT
 
 
 @shared_task()
@@ -55,4 +56,5 @@ def send_message_read_messages(ids_array, sender):
                                                                                      "message": json.dumps(data)})
 
     messages.update(sending_state="read", read_by_received=True)
+
 

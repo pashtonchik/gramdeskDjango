@@ -3,7 +3,6 @@ from celery import shared_task
 import requests
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from backend.serializers import TicketMessageSerializer
 from tickets.celery import app
 from tickets.settings import SUPPORTBOT
 
@@ -11,6 +10,7 @@ from tickets.settings import SUPPORTBOT
 @shared_task()
 def send_message_to_client(message_id):
     from backend.models import TicketMessage, TelegramBot
+    from backend.serializers import TicketMessageSerializer
 
     msg = TicketMessage.objects.get(id=message_id)
     print('отправка сообщения в бот')
