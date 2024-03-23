@@ -99,7 +99,10 @@ def telegram(request, token):
 
 
     unread_messages = TicketMessage.objects.select_for_update().filter(sending_state="delivered", sender="support")
-    send_message_read_messages.delay([*unread_messages.values_list('id', flat=True)], "support")
+    array = [*unread_messages.values_list('id', flat=True)]
+    unread_messages.update(sending_state="read", read_by_received=True)
+
+    send_message_read_messages.delay(array, "support")
     # json.dumps({
     #     'file': None,
     #     'text': data['message'],
