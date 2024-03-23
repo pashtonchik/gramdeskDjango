@@ -46,6 +46,7 @@ def telegram(request, token):
             platform=bot.platform,
             tg_user=cur_user,
             status='created',
+            date_last_message=datetime.datetime.now(),
         )
         cur_ticket.save()
         is_new_ticket = True

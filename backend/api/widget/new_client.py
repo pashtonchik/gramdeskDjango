@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.response import Response
@@ -41,6 +43,7 @@ def widget_client_auth(request):
         status='created',
         platform=new_client.platform,
         source="widget",
+        date_last_message=datetime.datetime.now(),
 
     )
     cur_ticket.save()
