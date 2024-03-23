@@ -180,7 +180,7 @@ class ClientConsumer(WebsocketConsumer):
                                                                "message": json.dumps(data_supports)})
             message.sending_state = "delivered"
             message.save()
-        ticket.date_last_message = ticket.datetime.now()
+        ticket.date_last_message = datetime.datetime.now()
         ticket.save()
 
     def update_message_by_client(self, data):

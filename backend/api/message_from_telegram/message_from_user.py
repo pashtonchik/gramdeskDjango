@@ -1,3 +1,4 @@
+import datetime
 import json
 
 from asgiref.sync import async_to_sync
@@ -91,7 +92,7 @@ def telegram(request, token):
 
     if is_new_ticket:
         data["new_ticket"] = TicketSerializer(cur_ticket, context={"from_user_type": "support"}).data
-    cur_ticket.date_last_message = cur_ticket.datetime.now()
+    cur_ticket.date_last_message = datetime.datetime.now()
     cur_ticket.save()
     async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
                                                   "message": json.dumps(data)})

@@ -173,7 +173,7 @@ class LiveScoreConsumer(WebsocketConsumer):
                     message.sending_state = "delivered"
                     message.save()
                     print(2)
-            ticket.date_last_message = ticket.datetime.now()
+            ticket.date_last_message = datetime.datetime.now()
             ticket.save()
 
     def update_message_by_support(self, data):
