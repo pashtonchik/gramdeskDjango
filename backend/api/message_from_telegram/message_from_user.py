@@ -66,7 +66,7 @@ def telegram(request, token):
             )
             new_message.save()
 
-        if data.get('message', {}).get('text', None):
+        elif data.get('message', {}).get('text', None):
             new_message = TicketMessage(
                 tg_user=cur_user,
                 sender='client',
@@ -76,53 +76,31 @@ def telegram(request, token):
                 ticket=cur_ticket,
             )
             new_message.save()
-        # elif data['content_type'] == 'file':
-        #     new_message = TicketMessage(
-        #         tg_user=cur_user,
-        #         sender='client',
-        #         content_type='file',
-        #         sending_state='sent',
-        #         message_text=data['caption'],
-        #         ticket=cur_ticket,
-        #     )
-        #     new_message.save()
-        #
-        #     file = request.data['file']
-        #     new_message.message_file.save(file.name, file, save=True)
-        #     new_message.save()
-        #
-        #
-        #
-        #
-        channel_layer = get_channel_layer()
+
+            channel_layer = get_channel_layer()
+
+            data = {
+                'event': "incoming",
+                'type': 'new_message',
+                'message': TicketMessageSerializer(new_message, context={"from_user_type": "support"}).data
+            }
+
+            if is_new_ticket:
+                data["new_ticket"] = TicketSerializer(cur_ticket, context={"from_user_type": "support"}).data
+            cur_ticket.date_last_message = datetime.datetime.now()
+            cur_ticket.save()
+            async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+                                                          "message": json.dumps(data)})
+            new_message.sending_state = 'delivered'
+            new_message.save()
 
 
-        data = {
-            'event': "incoming",
-            'type': 'new_message',
-            'message': TicketMessageSerializer(new_message, context={"from_user_type": "support"}).data
-        }
+            unread_messages = TicketMessage.objects.select_for_update().filter(sending_state="delivered", sender="support")
+            array = [*unread_messages.values_list('id', flat=True)]
+            unread_messages.update(sending_state="read", read_by_received=True)
 
-        if is_new_ticket:
-            data["new_ticket"] = TicketSerializer(cur_ticket, context={"from_user_type": "support"}).data
-        cur_ticket.date_last_message = datetime.datetime.now()
-        cur_ticket.save()
-        async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
-                                                      "message": json.dumps(data)})
-        new_message.sending_state = 'delivered'
-        new_message.save()
-
-
-        unread_messages = TicketMessage.objects.select_for_update().filter(sending_state="delivered", sender="support")
-        array = [*unread_messages.values_list('id', flat=True)]
-        unread_messages.update(sending_state="read", read_by_received=True)
-
-        send_message_read_messages.delay(array, "support")
-        # json.dumps({
-        #     'file': None,
-        #     'text': data['message'],
-        #     'date': int(new_message.date_created.timestamp())
-        # })
+            send_message_read_messages.delay(array, "support")
         return Response(status=status.HTTP_200_OK, data=data)
-    except:
+    except Exception as e:
+        print(e)
         return Response(status=status.HTTP_200_OK)

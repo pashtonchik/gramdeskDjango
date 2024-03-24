@@ -4,9 +4,11 @@ from asgiref.sync import async_to_sync, sync_to_async
 import requests
 import json
 
+from backend.models import Attachment
+
 
 @shared_task()
-def telegram_message(message_id):
+def telegram_message(message_id, telegram_data):
     from backend.models import TicketMessage, TelegramBot
     from backend.serializers import TicketMessageSerializer
     from tickets.settings import SUPPORTBOT
@@ -15,36 +17,22 @@ def telegram_message(message_id):
     with transaction.atomic():
 
         cur_message = TicketMessage.objects.select_for_update().get(id=message_id)
-
-        for file in new_message['media']:
-            Attachment(
-                message=message,
-                name=file['name'],
-                total_bytes=file['total_size'],
-                ext=file['ext'],
+        if not telegram_data.get("message", {}).get("media_group_id", None) and telegram_data.get("message", {}).get("document", None):
+            new_file = Attachment(
+                message=cur_message,
+                name=telegram_data["message"]["document"]["file_name"].split('.')[:-1],
+                total_bytes=int(telegram_data["message"]["document"]["file_size"]),
+                ext=telegram_data["message"]["document"]["file_name"].split('.')[-1],
                 buf_size=500_000,
-            ).save()
+                telegram_file_id=telegram_data["message"]["document"]["file_id"]
+            )
+            new_file.save()
 
-        msg = TicketMessage.objects.select_for_update().get(id=message_id)
-        print('отправка сообщения в бот')
-        data = {
-            "chat_id": msg.tg_user.tg_id,
-            "parse_mode": "HTML",
-            "text": msg.message_text,
-        }
-
-        send_message = requests.get(
-            f"https://api.telegram.org/bot{TelegramBot.objects.get(platform=msg.ticket.platform).bot_apikey}/sendMessage", json=data)
-        print(send_message.status_code, send_message.text)
-        if send_message.status_code != 200:
-            send_message = requests.get(
-                f"https://api.telegram.org/bot{SUPPORTBOT}/sendMessage", json=data)
-
-        if send_message.status_code == 200:
-            msg.sending_state = 'delivered'
-            msg.save()
-
-            channel_layer = get_channel_layer()
-            data = {'type': 'message_delivered', 'message': TicketMessageSerializer(msg).data}
-            async_to_sync(channel_layer.group_send)("active", {"type": "chat.message",
-                                                              "message": json.dumps(data)})
+            get_file_path = requests.get(f"https://api.telegram.org/bot{TelegramBot.objects.get(platform=new_file.message.ticket.platform).bot_apikey}/getFile?file_id={new_file.telegram_file_id}")
+            if get_file_path.status_code == 200:
+                data = get_file_path.json()
+                new_file.telegram_file_path = data['result']['file_path']
+            else:
+                raise KeyError
+        else:
+            media_group_id = telegram_data.get("message", {}).get("media_group_id", None)
