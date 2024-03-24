@@ -53,4 +53,4 @@ def widget_script(request):
     
     """
 
-    return HttpResponse("parent.Response_OK()", content_type="application/x-javascript")
+    return HttpResponse(script, content_type="application/x-javascript")
