@@ -37,11 +37,11 @@ def get_file(message_id, telegram_data, is_new_ticket):
             else:
                 new_file = Attachment(
                     message=cur_message,
-                    name=telegram_data["message"]["photo"][0]["file_unique_id"],
-                    total_bytes=int(telegram_data["message"]["photo"][0]["file_size"]),
+                    name=telegram_data["message"]["photo"][-1]["file_unique_id"],
+                    total_bytes=int(telegram_data["message"]["photo"][-1]["file_size"]),
                     ext='jpeg',
                     buf_size=500_000,
-                    telegram_file_id=telegram_data["message"]["photo"][0]["file_id"]
+                    telegram_file_id=telegram_data["message"]["photo"][-1]["file_id"]
                 )
             new_file.save()
             bot_apikey = TelegramBot.objects.get(platform=new_file.message.ticket.platform).bot_apikey
