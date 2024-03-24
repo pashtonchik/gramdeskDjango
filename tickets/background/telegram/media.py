@@ -20,7 +20,7 @@ def send_media(self, message_id):
                 print(data)
                 send_code = requests.get(
                     f"https://api.telegram.org/bot{bot_apikey}/sendDocument", data=data, files={
-                        'document': open(media.file, "rb")
+                        'document': open(media.file.content, "rb")
                     })
 
                 print(send_code.text)
