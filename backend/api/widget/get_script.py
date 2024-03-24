@@ -21,4 +21,36 @@ from backend.serializers import TicketSerializer, TicketMessageSerializer
 @api_view(["GET"])
 @transaction.atomic()
 def widget_script(request):
+
+    script = """
+        window.onload = function() {
+            var iframe = document.createElement('iframe');
+            iframe.src = 'http://localhost:3001/123';
+            iframe.id = 'fixed-iframe';
+
+            iframe.style.position = 'fixed';
+            iframe.style.bottom = '10px';
+            iframe.style.right = '10px';
+            iframe.style.border = 'none';
+            iframe.style.borderRadius = '10px';
+            iframe.style.height = '60px';
+            // iframe.style.width = '40px';
+
+            document.body.appendChild(iframe);
+        };
+
+        // Функция для обработки сообщений от источника iframe
+        function handleMessage(event) {
+            console.log('Получено сообщение:', event.data);
+            if (event.data && event.data.type === 'resize') {
+            // Изменение высоты iframe
+            document.getElementById('fixed-iframe').style.height = event.data.height + 'px';
+        }
+        }
+
+        // Добавление обработчика события message
+        window.addEventListener('message', handleMessage);    
+    
+    """
+
     return HttpResponse("parent.Response_OK()", content_type="application/x-javascript")
