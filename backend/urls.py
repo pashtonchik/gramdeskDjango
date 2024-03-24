@@ -67,6 +67,7 @@ urlpatterns = [
 
     # Widget Client
     path('api/v2/clients/registrate/', widget_client_auth),
+    path('api/clientScript.js', widget_client_auth),
 
 
 ] + router.urls
