@@ -1,3 +1,5 @@
+import base64
+
 from celery import shared_task
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync, sync_to_async
@@ -10,9 +12,8 @@ from backend.models import Attachment
 @shared_task()
 def get_file(message_id, telegram_data):
     from backend.models import TicketMessage, TelegramBot
-    from backend.serializers import TicketMessageSerializer
-    from tickets.settings import SUPPORTBOT
     from django.db import transaction
+    from django.core.files.base import ContentFile
     print(message_id)
     with transaction.atomic():
 
@@ -38,7 +39,10 @@ def get_file(message_id, telegram_data):
 
             download_file = requests.get(f"https://api.telegram.org/file/bot{bot_apikey}/{new_file.telegram_file_path}")
             if download_file.status_code == 200:
-                new_file.file = download_file.content
+                new_file.file.save(name=new_file.name + new_file.ext,
+                                        content=ContentFile(
+                                            base64.b64decode(data['cheque']['content'].encode('UTF-8'))),
+                                        save=True)
                 new_file.save()
             else:
                 raise KeyError
