@@ -22,7 +22,7 @@ def get_file(message_id, telegram_data, is_new_ticket):
 
         cur_message = TicketMessage.objects.select_for_update().get(id=message_id)
         cur_ticket = Ticket.objects.select_for_update().get(uuid=cur_message.ticket.uuid)
-        if not telegram_data.get("message", {}).get("media_group_id", None) and telegram_data.get("message", {}).get("document", None):
+        if telegram_data.get("message", {}).get("document", None):
             new_file = Attachment(
                 message=cur_message,
                 name=''.join(telegram_data["message"]["document"]["file_name"].split('.')[:-1]),
