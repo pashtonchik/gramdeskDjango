@@ -64,9 +64,9 @@ def auth(request):
         'email': user.my_email,
         'username': user.username,
         'id': user.id,
-        'platform_name': user.platform.name,
-        'platform_description': user.platform.description,
-        'supervisor': user == user.platform.admin,
+        'platform_name': user.platform.name if user.platform else None,
+        'platform_description': user.platform.description if user.platform else None,
+        'supervisor': user == user.platform.admin if user.platform else False,
         'tg_bot': TelegramBot.objects.filter(platform=user.platform).exists()
     })
 

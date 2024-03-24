@@ -58,6 +58,7 @@ def registrate(request):
 
             user, create = User.objects.get_or_create(
                 my_email=email,
+                type="support"
             )
 
             if not create:
