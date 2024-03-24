@@ -69,6 +69,19 @@ def telegram(request, token):
 
             get_file.delay(new_message.id, data, is_new_ticket)
 
+        if data.get('message', {}).get('photo', None):
+            new_message = TicketMessage(
+                tg_user=cur_user,
+                sender='client',
+                content_type='file',
+                sending_state='uploading_attachments',
+                message_text=data.get('message', {}).get('caption', ''),
+                ticket=cur_ticket,
+            )
+            new_message.save()
+
+            get_file.delay(new_message.id, data, is_new_ticket)
+
         elif data.get('message', {}).get('text', None):
             new_message = TicketMessage(
                 tg_user=cur_user,

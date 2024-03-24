@@ -22,14 +22,17 @@ def get_file(message_id, telegram_data, is_new_ticket):
 
         cur_message = TicketMessage.objects.select_for_update().get(id=message_id)
         cur_ticket = Ticket.objects.select_for_update().get(uuid=cur_message.ticket.uuid)
-        if telegram_data.get("message", {}).get("document", None):
+
+        document = 'document' if telegram_data.get("message", {}).get("document", None) else 'photo'
+
+        if telegram_data.get("message", {}).get(document, None):
             new_file = Attachment(
                 message=cur_message,
-                name=''.join(telegram_data["message"]["document"]["file_name"].split('.')[:-1]),
-                total_bytes=int(telegram_data["message"]["document"]["file_size"]),
-                ext=telegram_data["message"]["document"]["file_name"].split('.')[-1],
+                name=''.join(telegram_data["message"][document]["file_name"].split('.')[:-1]),
+                total_bytes=int(telegram_data["message"][document]["file_size"]),
+                ext=telegram_data["message"][document]["file_name"].split('.')[-1],
                 buf_size=500_000,
-                telegram_file_id=telegram_data["message"]["document"]["file_id"]
+                telegram_file_id=telegram_data["message"][document]["file_id"]
             )
             new_file.save()
             bot_apikey = TelegramBot.objects.get(platform=new_file.message.ticket.platform).bot_apikey
