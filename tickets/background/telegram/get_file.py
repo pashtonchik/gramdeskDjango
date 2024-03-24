@@ -8,7 +8,7 @@ from backend.models import Attachment
 
 
 @shared_task()
-def telegram_message(message_id, telegram_data):
+def get_file(message_id, telegram_data):
     from backend.models import TicketMessage, TelegramBot
     from backend.serializers import TicketMessageSerializer
     from tickets.settings import SUPPORTBOT

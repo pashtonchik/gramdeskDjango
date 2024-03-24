@@ -9,7 +9,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from backend.models import *
 from backend.serializers import TicketMessageSerializer, TicketSerializer
-from tickets.background.telegram_bots.activate_webhook  import send_message_read_messages
+from tickets.background.telegram_bots.activate_webhook import send_message_read_messages
+from tickets.background.telegram.get_file import get_file
 
 
 @transaction.atomic()
@@ -65,6 +66,8 @@ def telegram(request, token):
                 ticket=cur_ticket,
             )
             new_message.save()
+
+            get_file.delay(new_message.id, data)
 
         elif data.get('message', {}).get('text', None):
             new_message = TicketMessage(
