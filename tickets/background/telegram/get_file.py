@@ -48,6 +48,9 @@ def get_file(message_id, telegram_data, is_new_ticket):
                                         save=True)
                 new_file.save()
 
+                cur_message.sending_state = 'sent'
+                cur_message.save()
+
                 channel_layer = get_channel_layer()
 
                 data = {
