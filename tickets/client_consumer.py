@@ -176,7 +176,7 @@ class ClientConsumer(WebsocketConsumer):
             async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
                                                                "message": json.dumps(data_clients)})
 
-            async_to_sync(channel_layer.group_send)(f"active_support", {"type": "chat.message",
+            async_to_sync(channel_layer.group_send)(f"support_{str(message.ticket.platform.uuid)}", {"type": "chat.message",
                                                                "message": json.dumps(data_supports)})
             message.sending_state = "delivered"
             message.save()
@@ -214,7 +214,7 @@ class ClientConsumer(WebsocketConsumer):
         }
 
         channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+        async_to_sync(channel_layer.group_send)(f"support_{str(cur_message.ticket.platform.uuid)}", {"type": "chat.message",
                                                           "message": json.dumps(data_supports)})
         async_to_sync(channel_layer.group_send)(f"client_{cur_message.tg_user.id}", {"type": "chat.message",
                                                            "message": json.dumps(data_clients)})
@@ -249,7 +249,7 @@ class ClientConsumer(WebsocketConsumer):
         }
 
         channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+        async_to_sync(channel_layer.group_send)(f"support_{str(cur_message.ticket.platform.uuid)}", {"type": "chat.message",
                                                           "message": json.dumps(data_supports)})
         async_to_sync(channel_layer.group_send)(f"client_{cur_message.tg_user.id}", {"type": "chat.message",
                                                            "message": json.dumps(data_clients)})

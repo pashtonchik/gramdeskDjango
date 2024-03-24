@@ -16,7 +16,7 @@ class LiveScoreConsumer(WebsocketConsumer):
     def connect(self):
         from backend.models import Ticket
         from backend.serializers import TicketSerializer
-        async_to_sync(self.channel_layer.group_add)("active_support", self.channel_name)
+        async_to_sync(self.channel_layer.group_add)(f"support_{self.scope['user'].platform.uuid}", self.channel_name)
         async_to_sync(self.channel_layer.group_add)(f'active_connections', self.channel_name)
         print(self.channel_name)
 
@@ -166,7 +166,7 @@ class LiveScoreConsumer(WebsocketConsumer):
                 }
 
                 channel_layer = get_channel_layer()
-                async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+                async_to_sync(channel_layer.group_send)(f"support_{str(message.ticket.platform.uuid)}", {"type": "chat.message",
                                                                    "message": json.dumps(output_data_supports)})
                 if message.ticket.tg_user.source == 'telegram':
                     transaction.on_commit(lambda: telegram_message.delay(message_id=message.id))
@@ -213,7 +213,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             'message': TicketMessageSerializer(cur_message, context={"from_user_type": "client"}).data,
         }
         channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+        async_to_sync(channel_layer.group_send)(f"support_{str(cur_message.ticket.platform.uuid)}", {"type": "chat.message",
                                                           "message": json.dumps(data_supports)})
         async_to_sync(channel_layer.group_send)(f"client_{cur_message.tg_user.id}", {"type": "chat.message",
                                                            "message": json.dumps(data_clients)})
@@ -249,7 +249,7 @@ class LiveScoreConsumer(WebsocketConsumer):
             'message': TicketMessageSerializer(cur_message, context={"from_user_type": "client"}).data,
         }
         channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+        async_to_sync(channel_layer.group_send)(f"support_{str(cur_message.ticket.platform.uuid)}", {"type": "chat.message",
                                                           "message": json.dumps(data_supports)})
         async_to_sync(channel_layer.group_send)(f"client_{cur_message.tg_user.id}", {"type": "chat.message",
                                                            "message": json.dumps(data_clients)})

@@ -109,7 +109,7 @@ class UploadConsumer(WebsocketConsumer):
                 }
 
                 channel_layer = get_channel_layer()
-                async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+                async_to_sync(channel_layer.group_send)(f"support_{str(current_message.ticket.platform.uuid)}", {"type": "chat.message",
                                                                            "message": json.dumps(output_data_supports)})
 
                 if current_message.ticket.tg_user.source == 'telegram':

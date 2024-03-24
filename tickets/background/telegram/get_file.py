@@ -78,7 +78,7 @@ def get_file(message_id, telegram_data, is_new_ticket):
                 cur_ticket.date_last_message = datetime.datetime.now()
                 cur_ticket.save()
 
-                async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+                async_to_sync(channel_layer.group_send)(f"support_{str(cur_ticket.platform.uuid)}", {"type": "chat.message",
                                                                            "message": json.dumps(data)})
                 cur_message.sending_state = 'delivered'
                 cur_message.save()

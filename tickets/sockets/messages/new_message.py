@@ -56,7 +56,7 @@ def new_message_to_client(connection, data, from_user_type):
     connection.send(text_data=json.dumps(responce_data))
 
     if message.sending_state == 'sent':
-        new_message_by_channel_group('support', 'active_support', message)
+        new_message_by_channel_group('support', f"support_{str(message.ticket.platform.uuid)}", message)
         new_message_by_channel_group('client', f'client_{message.tg_user.id}', message)
     ticket.date_last_message = datetime.datetime.now()
     ticket.save()

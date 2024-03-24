@@ -105,7 +105,7 @@ def telegram(request, token):
                 data["new_ticket"] = TicketSerializer(cur_ticket, context={"from_user_type": "support"}).data
             cur_ticket.date_last_message = datetime.datetime.now()
             cur_ticket.save()
-            async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+            async_to_sync(channel_layer.group_send)(f"support_{cur_ticket.platform.uuid}", {"type": "chat.message",
                                                           "message": json.dumps(data)})
             new_message.sending_state = 'delivered'
             new_message.save()

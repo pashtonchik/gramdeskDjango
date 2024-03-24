@@ -24,8 +24,8 @@ def delete_message_by_support(connection, data, from_user_type):
             'message': TicketMessageSerializer(cur_message, context={"from_user_type": from_user_type}).data,
         }
 
-        delete_message_by_channel_group('support', 'active_support', message)
-        delete_message_by_channel_group('client', f'client_{message.tg_user.id}', message)
+        delete_message_by_channel_group('support', f'support_{cur_message.ticket.platform.uuid}', message)
+        delete_message_by_channel_group('client', f'client_{cur_message.tg_user.id}', message)
     else:
         response_data = {
             'ok': False,

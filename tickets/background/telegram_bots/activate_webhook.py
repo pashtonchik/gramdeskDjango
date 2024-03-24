@@ -48,7 +48,7 @@ def send_message_read_messages(ids_array, sender):
         print(message.sender)
         channel_layer = get_channel_layer()
         if message.sender == "support":
-            async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+            async_to_sync(channel_layer.group_send)(f"support_{str(message.ticket.platform.uuid)}", {"type": "chat.message",
                                                                    "message": json.dumps(data)})
         else:
             async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",

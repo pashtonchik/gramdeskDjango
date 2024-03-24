@@ -26,5 +26,5 @@ def update_message_by_support(connection, data, from_user_type):
     }
     connection.send(text_data=json.dumps(responce_data))
 
-    update_message_by_channel_group('support', 'active_support', message)
+    update_message_by_channel_group('support', f"support_{str(cur_message.ticket.platform.uuid)}", message)
     update_message_by_channel_group('client', f'client_{message.tg_user.id}', message)

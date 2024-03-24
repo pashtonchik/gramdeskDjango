@@ -65,7 +65,7 @@ def widget_client_auth(request):
         "new_ticket": TicketSerializer(cur_ticket, context={"from_user_type": "support"}).data,
     }
 
-    async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+    async_to_sync(channel_layer.group_send)(f"support_{str(cur_ticket.platform.uuid)}", {"type": "chat.message",
                                                   "message": json.dumps(data)})
 
     return Response(status=status.HTTP_200_OK, data={
