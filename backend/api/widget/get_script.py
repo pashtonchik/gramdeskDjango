@@ -20,12 +20,12 @@ from backend.serializers import TicketSerializer, TicketMessageSerializer
 
 @api_view(["GET"])
 @transaction.atomic()
-def widget_script(request):
+def widget_script(request, platform):
 
     script = """
         window.onload = function() {
             var iframe = document.createElement('iframe');
-            iframe.src = 'http://localhost:3001/123';
+            iframe.src = 'http://localhost:3001/""" + platform + """';
             iframe.id = 'fixed-iframe';
 
             iframe.style.position = 'fixed';
@@ -39,7 +39,6 @@ def widget_script(request):
             document.body.appendChild(iframe);
         };
 
-        // Функция для обработки сообщений от источника iframe
         function handleMessage(event) {
             console.log('Получено сообщение:', event.data);
             if (event.data && event.data.type === 'resize') {
@@ -48,7 +47,6 @@ def widget_script(request):
         }
         }
 
-        // Добавление обработчика события message
         window.addEventListener('message', handleMessage);    
     
     """
