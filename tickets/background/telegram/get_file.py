@@ -20,7 +20,7 @@ def get_file(message_id, telegram_data):
         if not telegram_data.get("message", {}).get("media_group_id", None) and telegram_data.get("message", {}).get("document", None):
             new_file = Attachment(
                 message=cur_message,
-                name=telegram_data["message"]["document"]["file_name"].split('.')[:-1],
+                name=''.join(telegram_data["message"]["document"]["file_name"].split('.')[:-1]),
                 total_bytes=int(telegram_data["message"]["document"]["file_size"]),
                 ext=telegram_data["message"]["document"]["file_name"].split('.')[-1],
                 buf_size=500_000,
@@ -32,6 +32,7 @@ def get_file(message_id, telegram_data):
             if get_file_path.status_code == 200:
                 data = get_file_path.json()
                 new_file.telegram_file_path = data['result']['file_path']
+                new_file.save()
             else:
                 raise KeyError
         else:
