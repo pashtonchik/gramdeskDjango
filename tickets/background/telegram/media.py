@@ -24,10 +24,13 @@ def send_media(self, message_id):
                     })
 
                 print(send_code.text)
-
+                msg.sending_state = "delivered"
+                msg.save()
                 if send_code.status_code != 200:
                     print(send_code.text)
                     raise Exception
+
+
 
     except Exception as e:
         print(e)
