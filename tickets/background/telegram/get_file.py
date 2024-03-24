@@ -40,8 +40,7 @@ def get_file(message_id, telegram_data):
             download_file = requests.get(f"https://api.telegram.org/file/bot{bot_apikey}/{new_file.telegram_file_path}")
             if download_file.status_code == 200:
                 new_file.file.save(name=new_file.name + new_file.ext,
-                                        content=ContentFile(
-                                            base64.b64decode(data['cheque']['content'].encode('UTF-8'))),
+                                        content=ContentFile(download_file.content),
                                         save=True)
                 new_file.save()
             else:
