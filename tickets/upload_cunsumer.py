@@ -14,6 +14,7 @@ import logging
 import io
 from backend.models import TicketMessage, Attachment
 from backend.serializers import TicketMessageSerializer
+from tickets.background.telegram.media import send_media
 
 logger = logging.getLogger('main')
 
@@ -110,9 +111,15 @@ class UploadConsumer(WebsocketConsumer):
                 channel_layer = get_channel_layer()
                 async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
                                                                            "message": json.dumps(output_data_supports)})
-                async_to_sync(channel_layer.group_send)(f"client_{current_message.tg_user.id}", {"type": "chat.message",
-                                                                                         "message": json.dumps(
-                                                                                             output_data_clients)})
+
+                if current_message.ticket.tg_user.source == 'telegram':
+                    send_media.delay(message_id=current_message.id)
+                else:
+                    async_to_sync(channel_layer.group_send)(f"client_{current_message.tg_user.id}", {"type": "chat.message",
+                                                                                             "message": json.dumps(
+                                                                                                 output_data_clients)})
+                    current_message.sending_state = "delivered"
+                    current_message.save()
         else:
             current_attachment.save()
         logger.info("RESPONSE")
