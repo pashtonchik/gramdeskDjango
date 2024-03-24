@@ -62,7 +62,7 @@ def telegram(request, token):
                 sender='client',
                 content_type='file',
                 sending_state='uploading_attachments',
-                message_text="",
+                message_text=data.get('message', {}).get('caption', ''),
                 ticket=cur_ticket,
             )
             new_message.save()
