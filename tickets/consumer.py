@@ -22,8 +22,8 @@ class LiveScoreConsumer(WebsocketConsumer):
 
         tickets = Ticket.objects.all()
 
-        new_tickets = tickets.filter(status='created').order_by('-date_last_message')[:20]
-        in_progress_tickets = tickets.filter(status='in_progress')[:20]
+        new_tickets = tickets.filter(status='created', platform=self.scope['user'].platform).order_by('-date_last_message')
+        in_progress_tickets = tickets.filter(status='in_progress', platform=self.scope['user'].platform)
         # closed_tickets = tickets.filter(status='closed')[:20]
 
         new_socket_connection = SocketConnection(
