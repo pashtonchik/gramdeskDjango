@@ -20,5 +20,5 @@ from backend.serializers import TicketSerializer, TicketMessageSerializer
 
 @api_view(["GET"])
 @transaction.atomic()
-def widget_client_auth(request):
+def widget_script(request):
     return HttpResponse("parent.Response_OK()", content_type="application/x-javascript")

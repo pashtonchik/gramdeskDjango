@@ -21,6 +21,7 @@ from backend.api.telegram_managment.add_telegram_bot import create_telegram_bot
 from backend.api.telegram_managment.delete_telegram_bot import delete_telegram_bot
 from backend.api.telegram_managment.edit_telegram_bot import edit_telegram_bot
 from backend.api.telegram_managment.get_telegram_bot import get_telegram_bot
+from backend.api.widget.get_script import widget_script
 from backend.api.widget.new_client import widget_client_auth
 from backend.permissions import ProfiatIntegration
 
@@ -67,7 +68,7 @@ urlpatterns = [
 
     # Widget Client
     path('api/v2/clients/registrate/', widget_client_auth),
-    path('api/clientScript.js', widget_client_auth),
+    path('api/clientScript.js', widget_script),
 
 
 ] + router.urls
