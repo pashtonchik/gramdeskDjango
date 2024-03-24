@@ -27,13 +27,21 @@ def get_file(message_id, telegram_data):
                 telegram_file_id=telegram_data["message"]["document"]["file_id"]
             )
             new_file.save()
-
-            get_file_path = requests.get(f"https://api.telegram.org/bot{TelegramBot.objects.get(platform=new_file.message.ticket.platform).bot_apikey}/getFile?file_id={new_file.telegram_file_id}")
+            bot_apikey = TelegramBot.objects.get(platform=new_file.message.ticket.platform).bot_apikey
+            get_file_path = requests.get(f"https://api.telegram.org/bot{bot_apikey}/getFile?file_id={new_file.telegram_file_id}")
             if get_file_path.status_code == 200:
                 data = get_file_path.json()
                 new_file.telegram_file_path = data['result']['file_path']
                 new_file.save()
             else:
                 raise KeyError
+
+            download_file = requests.get(f"https://api.telegram.org/file/bot{bot_apikey}/{new_file.telegram_file_path}")
+            if download_file.status_code == 200:
+                new_file.file = download_file.content
+                new_file.save()
+            else:
+                raise KeyError
+
         else:
             media_group_id = telegram_data.get("message", {}).get("media_group_id", None)
