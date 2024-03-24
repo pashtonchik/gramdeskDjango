@@ -67,7 +67,7 @@ def telegram(request, token):
             )
             new_message.save()
 
-            get_file.delay(new_message.id, data)
+            get_file.delay(new_message.id, data, is_new_ticket)
 
         elif data.get('message', {}).get('text', None):
             new_message = TicketMessage(

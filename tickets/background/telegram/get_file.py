@@ -1,4 +1,5 @@
 import base64
+import datetime
 
 from celery import shared_task
 from channels.layers import get_channel_layer
@@ -7,17 +8,20 @@ import requests
 import json
 
 from backend.models import Attachment
+from tickets.background.telegram_bots.activate_webhook import send_message_read_messages
 
 
 @shared_task()
-def get_file(message_id, telegram_data):
-    from backend.models import TicketMessage, TelegramBot
+def get_file(message_id, telegram_data, is_new_ticket):
+    from backend.models import TicketMessage, TelegramBot, Ticket
     from django.db import transaction
     from django.core.files.base import ContentFile
+    from backend.serializers import TicketMessageSerializer, TicketSerializer
     print(message_id)
     with transaction.atomic():
 
         cur_message = TicketMessage.objects.select_for_update().get(id=message_id)
+        cur_ticket = Ticket.objects.select_for_update().get(uuid=cur_message.ticket.uuid)
         if not telegram_data.get("message", {}).get("media_group_id", None) and telegram_data.get("message", {}).get("document", None):
             new_file = Attachment(
                 message=cur_message,
@@ -43,6 +47,33 @@ def get_file(message_id, telegram_data):
                                         content=ContentFile(download_file.content),
                                         save=True)
                 new_file.save()
+
+                channel_layer = get_channel_layer()
+
+                data = {
+                    'event': "incoming",
+                    'type': 'new_message',
+                    'message': TicketMessageSerializer(cur_message, context={"from_user_type": "support"}).data
+                }
+
+                if is_new_ticket:
+                    data["new_ticket"] = TicketSerializer(cur_message.ticket, context={"from_user_type": "support"}).data
+
+                cur_ticket.date_last_message = datetime.datetime.now()
+                cur_ticket.save()
+
+                async_to_sync(channel_layer.group_send)("active_support", {"type": "chat.message",
+                                                                           "message": json.dumps(data)})
+                cur_message.sending_state = 'delivered'
+                cur_message.save()
+
+                unread_messages = TicketMessage.objects.select_for_update().filter(sending_state="delivered",
+                                                                                   sender="support")
+                array = [*unread_messages.values_list('id', flat=True)]
+                unread_messages.update(sending_state="read", read_by_received=True)
+
+                send_message_read_messages.delay(array, "support")
+
             else:
                 raise KeyError
 
