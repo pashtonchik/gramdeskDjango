@@ -72,6 +72,7 @@ def widget_client_auth(request):
         "ok": True,
         'access': access,
         "chat_id": str(cur_ticket.uuid),
+        "platform": new_client.platform.name,
         'message': 'Успешная регистрация.',
         'user_id': new_client.id,
 
