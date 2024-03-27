@@ -8,7 +8,7 @@ from backend.serializers import ClientSerializer
 
 
 @transaction.atomic()
-@api_view(['GET'])
+@api_view(['POST'])
 def get_client(request):
 
     chat_id = data.get('chat_id')
