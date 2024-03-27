@@ -43,7 +43,7 @@ def update_client_info(request):
                 cur_user.username = new_username
 
             if new_description:
-                cur_user.username = new_description
+                cur_user.description = new_description
             cur_user.save()
 
             data = ClientSerializer(cur_user).data
