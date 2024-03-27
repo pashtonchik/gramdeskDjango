@@ -36,6 +36,7 @@ def get_info(request):
         "bot_token": bot.bot_apikey if bot else '',
         "webhook_connected": bot.webhook_connected if bot else False,
         "telegram_error": bot.message_error if bot else "",
+        "code": f'''<script src="https://pashtonp.space/api/clientScript.js/{str(platform.uuid)}/"></script>'''
     }
 
     return Response(status=status.HTTP_200_OK, data=data)
