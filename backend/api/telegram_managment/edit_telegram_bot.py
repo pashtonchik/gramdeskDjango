@@ -76,7 +76,7 @@ def edit_telegram_bot(request):
             data = req.json()
             print(data)
 
-            if data['ok'] and data['result']:
+            if data['ok'] and data['result'] and req.status_code == 200:
                 new_bot.webhook_connected = True
             else:
                 new_bot.message_error = data['description']
