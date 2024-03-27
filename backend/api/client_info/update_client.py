@@ -36,25 +36,25 @@ def update_client_info(request):
 
 
     if chats.exists():
-        try:
-            cur_user = User.objects.select_for_update().get(id=chats.first().tg_user.id)
+        # try:
+        cur_user = User.objects.select_for_update().get(id=chats.first().tg_user.id)
 
-            if new_username:
-                cur_user.username = new_username
+        if new_username:
+            cur_user.username = new_username
 
-            if new_description:
-                cur_user.description = new_description
-            cur_user.save()
+        if new_description:
+            cur_user.description = new_description
+        cur_user.save()
 
-            data = ClientSerializer(cur_user).data
+        data = ClientSerializer(cur_user).data
 
-            data["ok"] = True
-            data["message"] = "Данные успешно изменены."
+        data["ok"] = True
+        data["message"] = "Данные успешно изменены."
 
-            return Response(status=status.HTTP_200_OK, data=data)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST,
-                            data={"ok": False, "message": "Произошла ошибка, попробуйте изменить данные еще раз."})
+        return Response(status=status.HTTP_200_OK, data=data)
+        # except:
+        #     return Response(status=status.HTTP_400_BAD_REQUEST,
+        #                     data={"ok": False, "message": "Произошла ошибка, попробуйте изменить данные еще раз."})
 
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "Пользователя не найдено."})
