@@ -80,7 +80,7 @@ def edit_telegram_bot(request):
                 new_bot.webhook_connected = True
             else:
                 new_bot.message_error = data['description']
-                new_bot.webhook_connected = True
+                new_bot.webhook_connected = False
         except:
             new_bot.message_error = "Произошла ошибка, в токене ошибка."
             print("Какая то ошибка")
