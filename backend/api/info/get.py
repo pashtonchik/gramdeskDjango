@@ -35,6 +35,7 @@ def get_info(request):
         "platform_description": platform.description if platform else '',
         "bot_token": bot.bot_apikey if bot else '',
         "webhook_connected": bot.webhook_connected if bot else False,
+        "telegram_error": bot.message_error if bot else "",
     }
 
     return Response(status=status.HTTP_200_OK, data=data)
