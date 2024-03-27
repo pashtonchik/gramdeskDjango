@@ -48,7 +48,7 @@ def delete_telegram_bot(request):
         transaction.on_commit(lambda: delete_webhook_telegram.delay(token))
 
         return Response(status=status.HTTP_200_OK,
-                        data={"ok": False, "message": "Бот успешно удален."})
+                        data={"ok": True, "message": "Бот успешно удален."})
 
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST,
