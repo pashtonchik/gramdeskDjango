@@ -13,7 +13,7 @@ from backend.models import TelegramBot, Platform
 def get_info(request):
 
     try:
-        support_user = request.user
+        support_user = User.objects.get(id=request.user.id)
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "Произошла ошибка, обновите страницу."})
 
