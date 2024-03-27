@@ -13,7 +13,7 @@ import pyotp
 def update_platform_info(request):
     data = json.loads(request.body.decode("utf-8"))
 
-    platform_id = data.get('platform_id')
+    user_id = data.get('id')
     new_name = data.get('new_name')
     new_description = data.get('new_description')
     code = data.get('code')
@@ -27,8 +27,8 @@ def update_platform_info(request):
     if not code:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "Field Code, Code is required."})
 
-    if not platform_id:
-        return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "Field Platfrom_Id, Platfrom_Id is required."})
+    if not user_id:
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "Field id, id is required."})
 
     if not new_description and not new_name:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok": False, "message": "One of Fields (NewName ot NewDescription) is required."})
@@ -38,7 +38,7 @@ def update_platform_info(request):
                         data={"ok": False, "message": "Одноразовый пароль неверен, повторите Вашу попытку."})
 
 
-    platforms = Platform.objects.filter(uuid=platform_id, admin=support_user)
+    platforms = Platform.objects.filter(admin_id=user_id, admin=support_user)
 
 
     if platforms.exists():
