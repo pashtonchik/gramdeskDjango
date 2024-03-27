@@ -29,6 +29,7 @@ def get_info(request):
         platform = None
 
     data = {
+        "ok": True,
         "username": support_user.username,
         "platform_name": platform.name if platform else '',
         "platform_description": platform.description if platform else '',
