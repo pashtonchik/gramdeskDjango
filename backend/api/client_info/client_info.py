@@ -36,6 +36,7 @@ def get_client(request):
         data = ClientSerializer(cur_user).data
 
         data["ok"] = True
+        data["timestamp_date_added"] = cur_user.date_added.timestamp() if cur_user.date_added else 0
 
         return Response(status=status.HTTP_200_OK, data=data)
 
