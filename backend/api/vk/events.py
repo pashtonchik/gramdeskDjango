@@ -11,6 +11,7 @@ from backend.models import *
 from backend.serializers import TicketMessageSerializer, TicketSerializer
 from tickets.background.telegram_bots.activate_webhook import send_message_read_messages
 from tickets.background.telegram.get_file import get_file
+from django.http import HttpResponse
 
 
 @transaction.atomic()
@@ -21,7 +22,7 @@ def vk_event(request, platform_id):
         print(data)
         if data.get("type") == "confirmation":
             a = {"code": "eaff7eef"}
-            return Response(status=status.HTTP_200_OK, data=a)
+            return HttpResponse("eaff7eef")
         else:
             # bot = TelegramBot.objects.get(bot_apikey=token)
             #
