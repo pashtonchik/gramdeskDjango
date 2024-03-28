@@ -29,11 +29,11 @@ def get_file(message_id, vk_data, is_new_ticket):
                 attachment = vk_data.get("object", {}).get("message", {}).get("attachments", [])[-1]
                 new_file = Attachment(
                     message=cur_message,
-                    name=attachment["sizes"][-1]["url"].split("impq/")[1].split(".")[0],
+                    name=attachment["photo"]["sizes"][-1]["url"].split("impq/")[1].split(".")[0],
                     total_bytes=1,
-                    ext=attachment["sizes"][-1]["url"].split("impq/")[1].split(".")[1].split("?"),
+                    ext=attachment["photo"]["sizes"][-1]["url"].split("impq/")[1].split(".")[1].split("?"),
                     buf_size=500_000,
-                    vk_file_url=attachment["sizes"][-1]["url"],
+                    vk_file_url=attachment["photo"]["sizes"][-1]["url"],
                 )
 
             new_file.save()
