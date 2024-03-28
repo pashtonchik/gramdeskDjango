@@ -39,26 +39,38 @@ def get_file(message_id, vk_data, is_new_ticket):
 
             for attach in attachments:
                 type = attach["type"]
-                new_file = Attachment(
-                    message=cur_message,
-                    name=attach[type]["sizes"][-1]["url"].split("impg/")[1].split(".")[0],
-                    total_bytes=1,
-                    ext=attach[type]["sizes"][-1]["url"].split("impg/")[1].split(".")[1].split("?")[0],
-                    buf_size=500_000,
-                    vk_file_url=attach[type]["sizes"][-1]["url"],
-                )
+                if type in ['photo', 'doc']:
+                    if type != 'doc':
+                        new_file = Attachment(
+                            message=cur_message,
+                            name=attach[type]["sizes"][-1]["url"].split("impg/")[1].split(".")[0],
+                            total_bytes=1,
+                            ext=attach[type]["sizes"][-1]["url"].split("impg/")[1].split(".")[1].split("?")[0],
+                            buf_size=500_000,
+                            vk_file_url=attach[type]["sizes"][-1]["url"],
+                        )
+                    else:
+                        new_file = Attachment(
+                            message=cur_message,
+                            name=attach[type]['title'].split('.')[0],
+                            total_bytes=1,
+                            ext=attach[type]['ext'],
+                            buf_size=500_000,
+                            vk_file_url=attach[type]['url'],
+                        )
 
-                new_file.save()
 
-                download_file = requests.get(new_file.vk_file_url)
-                if download_file.status_code == 200:
-                    new_file.file.save(name=new_file.name + '.' + new_file.ext,
-                                            content=ContentFile(download_file.content),
-                                            save=True)
-                    new_file.received_bytes = new_file.total_bytes
                     new_file.save()
-                else:
-                    new_file.delete()
+
+                    download_file = requests.get(new_file.vk_file_url)
+                    if download_file.status_code == 200:
+                        new_file.file.save(name=new_file.name + '.' + new_file.ext,
+                                                content=ContentFile(download_file.content),
+                                                save=True)
+                        new_file.received_bytes = new_file.total_bytes
+                        new_file.save()
+                    else:
+                        new_file.delete()
 
 
             cur_message.sending_state = 'sent'
