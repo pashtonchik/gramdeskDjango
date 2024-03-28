@@ -123,7 +123,7 @@ class TicketMessage(models.Model):
     content_type = models.CharField(max_length=20)
     read_by_received = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
-    vk_message_id = models.CharField(max_length=20, defalt="0")
+    vk_message_id = models.CharField(max_length=20, default="0")
 
     def get_ticket_id(self):
         return str(self.ticket.uuid)
