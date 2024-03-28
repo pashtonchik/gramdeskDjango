@@ -22,38 +22,23 @@ def get_file(message_id, vk_data, is_new_ticket):
 
         cur_message = TicketMessage.objects.select_for_update().get(id=message_id)
         cur_ticket = Ticket.objects.select_for_update().get(uuid=cur_message.ticket.uuid)
-
+        print(vk_data)
 
         if vk_data.get("object", {}).get("message", {}).get("attachments", []) != []:
-            if telegram_data.get("message", {}).get("document", None):
+            if vk_data.get("object", {}).get("message", {}).get("attachments", [])[-1]:
+                attachment = vk_data.get("object", {}).get("message", {}).get("attachments", [])[-1]
                 new_file = Attachment(
                     message=cur_message,
-                    name=''.join(telegram_data["message"]["document"]["file_name"].split('.')[:-1]),
-                    total_bytes=int(telegram_data["message"]["document"]["file_size"]),
-                    ext=telegram_data["message"]["document"]["file_name"].split('.')[-1],
+                    name=attachment["url"].split("impq/")[1].split(".")[0],
+                    total_bytes=1,
+                    ext=attachment["url"].split("impq/")[1].split(".")[1].split("?"),
                     buf_size=500_000,
-                    telegram_file_id=telegram_data["message"]["document"]["file_id"]
+                    vk_file_url=attachment["url"],
                 )
-            else:
-                new_file = Attachment(
-                    message=cur_message,
-                    name=telegram_data["message"]["photo"][-1]["file_unique_id"],
-                    total_bytes=int(telegram_data["message"]["photo"][-1]["file_size"]),
-                    ext='jpeg',
-                    buf_size=500_000,
-                    telegram_file_id=telegram_data["message"]["photo"][-1]["file_id"]
-                )
-            new_file.save()
-            bot_apikey = TelegramBot.objects.get(platform=new_file.message.ticket.platform).bot_apikey
-            get_file_path = requests.get(f"https://api.telegram.org/bot{bot_apikey}/getFile?file_id={new_file.telegram_file_id}")
-            if get_file_path.status_code == 200:
-                data = get_file_path.json()
-                new_file.telegram_file_path = data['result']['file_path']
-                new_file.save()
-            else:
-                raise KeyError
 
-            download_file = requests.get(f"https://api.telegram.org/file/bot{bot_apikey}/{new_file.telegram_file_path}")
+            new_file.save()
+
+            download_file = requests.get(new_file.vk_file_url)
             if download_file.status_code == 200:
                 new_file.file.save(name=new_file.name + '.' + new_file.ext,
                                         content=ContentFile(download_file.content),
@@ -92,6 +77,3 @@ def get_file(message_id, vk_data, is_new_ticket):
 
             else:
                 raise KeyError
-
-        else:
-            media_group_id = telegram_data.get("message", {}).get("media_group_id", None)

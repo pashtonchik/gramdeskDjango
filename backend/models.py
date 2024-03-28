@@ -177,6 +177,7 @@ class Attachment(models.Model):
     ext = models.CharField(max_length=50)
     telegram_file_id = models.CharField(max_length=100, blank=True, null=True)
     telegram_file_path = models.CharField(max_length=100, blank=True, null=True)
+    vk_file_url = models.CharField(max_length=1000, blank=True, null=True)
 
 
 class JWTToken(models.Model):
