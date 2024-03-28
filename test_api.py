@@ -1,26 +1,15 @@
-import turtle as t
+import requests
 
-k = 20
+token = "vk1.a.DPKLG_W7WXiFZE8uSjlbsUhNTuYL2vrQQGWBrFHDuBp5n2n9hfg9VZ2gJ4o7GyFmYFPeHpO-lRBLitF8686VBRWsNy_cbkFtX03uDG758enD3blKnlliwKAaD6GGbtf3_ha1iAXE6vVwoS65AVQBboH-JXOTcbv0aO49lgRRD5rd2-6KbGHq9mq9QOkdLjJRyplzXsNTiVrSn8CiyfQURQ"
 
-t.speed(20)
+d = {
+    "Authorization": f"Bearer {token}"
+}
 
-for i in range(4):
-    t.forward(10 * k)
+a = {
+    "message_ids": 7
+}
 
-    t.right(60)
+a = requests.post("https://api.vk.com/method/messages.getById?message_ids=7&v=5.199", json=a, headers=d)
 
-    t.forward(10 * k)
-
-    t.right(120)
-
-t.up()
-
-
-for x in range(-10, 20):
-    for y in range(-10, 4):
-        t.goto(x * k, y * k)
-        t.dot(3)
-
-
-
-t.done()
+print(a.text)
