@@ -31,7 +31,7 @@ def get_file(message_id, vk_data, is_new_ticket):
                     message=cur_message,
                     name=attachment["photo"]["sizes"][-1]["url"].split("impg/")[1].split(".")[0],
                     total_bytes=1,
-                    ext=attachment["photo"]["sizes"][-1]["url"].split("impg/")[1].split(".")[1].split("?"),
+                    ext=attachment["photo"]["sizes"][-1]["url"].split("impg/")[1].split(".")[1].split("?")[0],
                     buf_size=500_000,
                     vk_file_url=attachment["photo"]["sizes"][-1]["url"],
                 )
