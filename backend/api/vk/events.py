@@ -79,6 +79,7 @@ def vk_event(request, platform_id):
                     sending_state='uploading_attachments',
                     message_text=data.get('object', {}).get('message', {}).get('text', ""),
                     ticket=cur_ticket,
+                    vk_message_id=data.get('object', {}).get('message', {}).get("id", "0")
                 )
                 new_message.save()
 
