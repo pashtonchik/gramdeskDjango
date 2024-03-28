@@ -1,9 +1,26 @@
-import base64
-import requests
+import turtle as t
+
+k = 20
+
+t.speed(20)
+
+for i in range(4):
+    t.forward(10 * k)
+
+    t.right(60)
+
+    t.forward(10 * k)
+
+    t.right(120)
+
+t.up()
 
 
-a = requests.get('https://api.telegram.org/bot5368795970:AAFHF5s1P2j_b5rbfBeN25F4ZRcQZAF8e_Y/')
+for x in range(-10, 20):
+    for y in range(-10, 4):
+        t.goto(x * k, y * k)
+        t.dot(3)
 
-b = a.json()
 
-print(b)
+
+t.done()
