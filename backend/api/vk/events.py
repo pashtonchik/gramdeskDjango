@@ -20,7 +20,8 @@ def vk_event(request, platform_id):
         data = json.loads(request.body.decode("utf-8"))
         print(data)
         if data.get("type") == "confirmation":
-            return Response(status=status.HTTP_200_OK, data=data)
+            a = {"code": "eaff7eef"}
+            return Response(status=status.HTTP_200_OK, data=a)
         else:
             # bot = TelegramBot.objects.get(bot_apikey=token)
             #
