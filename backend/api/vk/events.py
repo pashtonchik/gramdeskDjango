@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from backend.models import *
 from backend.serializers import TicketMessageSerializer, TicketSerializer
 from tickets.background.telegram_bots.activate_webhook import send_message_read_messages
-from tickets.background.telegram.get_file import get_file
+from tickets.background.vk.get_file import get_file
 from django.http import HttpResponse
 
 
@@ -71,18 +71,18 @@ def vk_event(request, platform_id):
                 cur_ticket = tickets.order_by('-date_created').first()
                 is_new_ticket = False
 
-            # if data.get('object', {}).get('message', {}).get('attachments', []) != []:
-            #     new_message = TicketMessage(
-            #         tg_user=cur_user,
-            #         sender='client',
-            #         content_type='file',
-            #         sending_state='uploading_attachments',
-            #         message_text=data.get('object', {}).get('message', {}).get('text', ""),
-            #         ticket=cur_ticket,
-            #     )
-            #     new_message.save()
-            #
-            #     get_file.delay(new_message.id, data, is_new_ticket)
+            if data.get('object', {}).get('message', {}).get('attachments', []) != []:
+                new_message = TicketMessage(
+                    tg_user=cur_user,
+                    sender='client',
+                    content_type='file',
+                    sending_state='uploading_attachments',
+                    message_text=data.get('object', {}).get('message', {}).get('text', ""),
+                    ticket=cur_ticket,
+                )
+                new_message.save()
+
+                get_file.delay(new_message.id, data, is_new_ticket)
 
             # if data.get('message', {}).get('photo', None):
             #     new_message = TicketMessage(
