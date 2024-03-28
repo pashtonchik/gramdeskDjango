@@ -67,6 +67,7 @@ def get_file(message_id, vk_data, is_new_ticket):
                         new_file.file.save(name=new_file.name + '.' + new_file.ext,
                                                 content=ContentFile(download_file.content),
                                                 save=True)
+                        new_file.total_bytes = new_file.file.size
                         new_file.received_bytes = new_file.total_bytes
                         new_file.save()
                     else:
