@@ -15,6 +15,7 @@ class Platform(models.Model):
     admin = models.ForeignKey(to='User', on_delete=models.PROTECT, related_name="admin_platform")
     name = models.CharField(max_length=1000)
     description = models.TextField(blank=True, null=True)
+    vk_confirmation_code = models.CharField(max_length=100)
 
 
 class User(AbstractUser):
@@ -26,7 +27,8 @@ class User(AbstractUser):
 
     source_selector = (
         ('telegram', 'Телеграм'),
-        ('widget', 'Виджет')
+        ('widget', 'Виджет'),
+        ('vk', "ВК")
     )
 
     type = models.CharField(max_length=100, blank=True, choices=user_type_selector)
@@ -40,8 +42,13 @@ class User(AbstractUser):
     profiat_id = models.CharField(max_length=100, blank=True, null=True)
     profiat_username = models.CharField(max_length=100, blank=True, null=True)
     profiat_email = models.CharField(max_length=100, blank=True, null=True)
+
     tg_id = models.CharField(max_length=100, blank=True, null=True)
     tg_username = models.CharField(max_length=500, blank=True, null=True)
+
+    vk_id = models.CharField(max_length=100, blank=True, null=True)
+    vk_username = models.CharField(max_length=500, blank=True, null=True)
+
     description = models.TextField(blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
     otp_key = models.CharField(max_length=300, blank=True, null=True)
@@ -116,6 +123,7 @@ class TicketMessage(models.Model):
     content_type = models.CharField(max_length=20)
     read_by_received = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
+    vk_message_id = models.CharField(max_legth=20, defalt="0")
 
     def get_ticket_id(self):
         return str(self.ticket.uuid)
