@@ -16,18 +16,17 @@ def vk_message(message_id):
     print(message_id)
     with transaction.atomic():
         msg = TicketMessage.objects.select_for_update().get(id=message_id)
-        uploaded_docs = []
         if Attachment.objects.filter(message=msg).exists():
             str_files = '&attachment='
             for attach in Attachment.objects.filter(message=msg):
-                uploaded_docs.append(upload_doc.delay(attach_id=attach.id, platform_id=str(msg.ticket.platform.uuid)))
+                uploaded_docs = upload_doc.delay(attach_id=attach.id, platform_id=str(msg.ticket.platform.uuid))
             print(uploaded_docs)
-            for doc in uploaded_docs:
-                with allow_join_result():
-                    result = doc.wait(timeout=10, interval=0.5)
-                print(result)
-                str_files += f'{result["type"]}{result["owner_id"]}_{result["id"]},'
-                print(str_files)
+            # for doc in uploaded_docs:
+            with allow_join_result():
+                result = uploaded_docs.wait(timeout=10, interval=0.5)
+            print(result)
+            str_files += f'{result["type"]}{result["owner_id"]}_{result["id"]},'
+            print(str_files)
         else:
             str_files = ''
 
