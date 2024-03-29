@@ -31,7 +31,7 @@ def delete_vk_bot(request):
                         data={"ok": False, "message": "Одноразовый пароль неверен, повторите Вашу попытку."})
 
 
-    if not Platform.objects.get(admin=support_user).vk_access_key:
+    if Platform.objects.get(admin=support_user).vk_access_key == "":
         return Response(status=status.HTTP_400_BAD_REQUEST,
                         data={"ok": False,
                               "message": "К данной платформе не привязан никакой бот, обновите страницу."})
