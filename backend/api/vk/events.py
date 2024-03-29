@@ -1,6 +1,7 @@
 import datetime
 import json
 
+import requests
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db import transaction
@@ -45,12 +46,26 @@ def vk_event(request, platform_id):
                     return Response(status=status.HTTP_200_OK, data={"ok": True})
 
             else:
+
+                auth = {
+                    "Authorization": f"Bearer {platform.vk_access_key}"
+                }
+                user_id = data.get('object', {}).get('message', {}).get('from_id', "Не известно")
+                get_user = requests.get(
+                    f"https://api.vk.com/method/users.get?user_ids={user_id}&v=5.199",
+                    headers=auth)
+                if get_user.status_code == 200:
+                    username = get_user.json()["response"]["first_name"] + " " + get_user.json()["response"]["last_name"]
+                else:
+                    username = f'ВК User {User.objects.all().count() + 1}'
+
+
                 cur_user = User(
-                    username=User.objects.all().count() + 1,
+                    username=username,
                     type='client',
                     source='vk',
                     vk_id=data.get('object', {}).get('message', {}).get('from_id', "Не известно"),
-                    vk_username=User.objects.all().count() + 1,
+                    vk_username=username,
                 )
                 cur_user.save()
 
