@@ -116,7 +116,7 @@ class UploadConsumer(WebsocketConsumer):
 
                 if current_message.ticket.tg_user.source == 'telegram':
                     send_media.delay(message_id=current_message.id)
-                elif current_message.ticket.tg_user.source == 'telegram':
+                elif current_message.ticket.tg_user.source == 'vk':
                     vk_message.delay(message_id=current_message.id)
                 else:
                     async_to_sync(channel_layer.group_send)(f"client_{current_message.tg_user.id}", {"type": "chat.message",
