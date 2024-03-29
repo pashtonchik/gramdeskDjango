@@ -64,6 +64,7 @@ def registrate(request):
             if not create:
                 if not user.verify_email:
                     user.username = username
+                    user.support_name = username
                     user.set_password(password)
                     user.save()
                     transaction.on_commit(lambda: send_email_code_for_registration.delay(email))

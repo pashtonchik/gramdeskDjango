@@ -39,6 +39,7 @@ class User(AbstractUser):
     my_email = models.CharField(max_length=5000, unique=True, null=True, blank=True)
     verify_email = models.BooleanField(default=False)
     username = models.CharField(max_length=50, unique=True)
+    support_name = models.CharField(max_length=200)
     phone = models.CharField(max_length=50, blank=True, null=True)
     is_blocked = models.BooleanField(default=False)
     profiat_id = models.CharField(max_length=100, blank=True, null=True)

@@ -31,6 +31,7 @@ def get_info(request):
     data = {
         "ok": True,
         "email": support_user.my_email,
+        "support_name": support_user.support_name,
         "username": support_user.username,
         "platform_name": platform.name if platform else '',
         "platform_description": platform.description if platform else '',
