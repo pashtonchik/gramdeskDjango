@@ -17,6 +17,7 @@ class Platform(models.Model):
     description = models.TextField(blank=True, null=True)
     vk_confirmation_code = models.CharField(max_length=100)
     vk_access_key = models.CharField(max_length=1000)
+    vk_webhook_connected = models.BooleanField(default=False)
 
 
 class User(AbstractUser):

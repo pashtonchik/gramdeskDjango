@@ -23,6 +23,8 @@ from backend.api.telegram_managment.delete_telegram_bot import delete_telegram_b
 from backend.api.telegram_managment.edit_telegram_bot import edit_telegram_bot
 from backend.api.telegram_managment.get_telegram_bot import get_telegram_bot
 from backend.api.vk.events import vk_event
+from backend.api.vk_managment.delete_vk_bot import delete_vk_bot
+from backend.api.vk_managment.edit_vk_bot import edit_vk_bot
 from backend.api.widget.get_script import widget_script
 from backend.api.widget.new_client import widget_client_auth
 from backend.permissions import ProfiatIntegration
@@ -79,5 +81,9 @@ urlpatterns = [
     #VK
     path('vk/<str:platform_id>/', vk_event),
 
+
+    #Vk Managment
+    path('api/v3/support/edit/vk/bot/', edit_vk_bot),
+    path('api/v3/support/delete/vk/bot/', delete_vk_bot),
 
 ] + router.urls
