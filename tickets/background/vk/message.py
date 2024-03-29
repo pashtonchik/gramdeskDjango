@@ -19,7 +19,7 @@ def vk_message(message_id):
         uploaded_docs = []
         if Attachment.objects.filter(message=msg).exists():
             str_files = '&attachment='
-            for attach in Attachment.object.filter(message=msg):
+            for attach in Attachment.objects.filter(message=msg):
                 uploaded_docs.append(upload_doc.delay(attach_id=attach.id, platform_id=str(msg.ticket.platform.uuid)))
 
             for doc in uploaded_docs:
