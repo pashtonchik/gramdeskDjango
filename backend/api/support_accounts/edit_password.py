@@ -3,23 +3,20 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import json
 from rest_framework_simplejwt.tokens import RefreshToken
-from dispatcher.models import User, DualFactorRequest, Payments, Notify
 from datetime import datetime, timedelta
 from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Sum
-from dispatcher.permission import ProfiatDefaultUser, permissions
 from rest_framework.decorators import api_view, permission_classes
 import re
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
-from profiat.send_email_code import send_email_code_for_edit_password
-from dispatcher.models import JWTToken
 from django.db.models import F, Q
 from django.db import transaction
 import pyotp
 
+from backend.models import User
+
 
 @api_view(['POST'])
-@permission_classes([ProfiatDefaultUser])
 @transaction.atomic()
 def edit_password(request):
     data = json.loads(request.body.decode("utf-8"))
