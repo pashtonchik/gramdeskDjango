@@ -17,7 +17,7 @@ def vk_message(message_id):
     with transaction.atomic():
         msg = TicketMessage.objects.select_for_update().get(id=message_id)
         uploaded_docs = []
-        if Attachment.object.filter(message=msg).exists():
+        if Attachment.objects.filter(message=msg).exists():
             str_files = '&attachment='
             for attach in Attachment.object.filter(message=msg):
                 uploaded_docs.append(upload_doc.delay(attach_id=attach.id, platform_id=str(msg.ticket.platform.uuid)))
