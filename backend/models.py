@@ -66,7 +66,7 @@ class Ticket(models.Model):
     uuid = models.UUIDField(primary_key=True, max_length=40, default=uuid.uuid4, editable=False, unique=True)
     platform = models.ForeignKey(to=Platform, on_delete=models.PROTECT)
     source = models.CharField(max_length=50, choices=source_selector)
-    tg_user = models.ForeignKey(to=User, on_delete=models.PROTECT, related_name="tg_user")
+    tg_user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="tg_user")
     status = models.CharField(max_length=50)
     date_created = models.DateTimeField(auto_now_add=True)
     date_closed = models.DateTimeField(blank=True, null=True)
@@ -113,10 +113,10 @@ class TicketMessage(models.Model):
         ('read', 'Прочитано получателем')
     )
 
-    ticket = models.ForeignKey(to=Ticket, on_delete=models.PROTECT)
+    ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE)
     sender = models.CharField(max_length=20, choices=sender_selector)
     employee = models.ForeignKey(to=User, on_delete=models.PROTECT, blank=True, null=True, related_name='ticket_message_employee')
-    tg_user = models.ForeignKey(to=User, on_delete=models.PROTECT, related_name='ticket_message_client')
+    tg_user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='ticket_message_client')
     sending_state = models.CharField(max_length=50)
     message_to_reply = models.ForeignKey(to='TicketMessage', on_delete=models.CASCADE, blank=True, null=True)
     deleted = models.BooleanField(default=False)
@@ -167,7 +167,7 @@ class TicketMessage(models.Model):
 
 
 class Attachment(models.Model):
-    message = models.ForeignKey(to=TicketMessage, on_delete=models.PROTECT)
+    message = models.ForeignKey(to=TicketMessage, on_delete=models.CASCADE)
     file = models.FileField(blank=True, null=True)
     name = models.CharField(max_length=500)
     content = models.BinaryField(blank=True, null=True)
