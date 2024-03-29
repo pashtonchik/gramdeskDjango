@@ -16,6 +16,7 @@ class Platform(models.Model):
     name = models.CharField(max_length=1000)
     description = models.TextField(blank=True, null=True)
     vk_confirmation_code = models.CharField(max_length=100)
+    vk_access_key = models.CharField(max_length=1000)
 
 
 class User(AbstractUser):
@@ -178,6 +179,11 @@ class Attachment(models.Model):
     telegram_file_id = models.CharField(max_length=100, blank=True, null=True)
     telegram_file_path = models.CharField(max_length=100, blank=True, null=True)
     vk_file_url = models.CharField(max_length=1000, blank=True, null=True)
+    vk_upload_url = models.CharField(max_length=1000, blank=True, null=True)
+    vk_file_id = models.CharField(max_length=100, blank=True, null=True)
+    vk_owner_id = models.CharField(max_length=100, blank=True, null=True)
+    vk_file_data = models.CharField(max_length=1000, blank=True, null=True)
+    vk_file_type = models.CharField(max_length=1000, blank=True, null=True)
 
 
 class JWTToken(models.Model):

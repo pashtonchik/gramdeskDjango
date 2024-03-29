@@ -8,6 +8,7 @@ from tickets.background.telegram_bots.activate_webhook import send_message_read_
 
 from backend.models import SocketConnection
 from tickets.background.telegram.message import telegram_message
+from tickets.background.vk.message import vk_message
 
 
 class LiveScoreConsumer(WebsocketConsumer):
@@ -170,6 +171,10 @@ class LiveScoreConsumer(WebsocketConsumer):
                                                                    "message": json.dumps(output_data_supports)})
                 if message.ticket.tg_user.source == 'telegram':
                     transaction.on_commit(lambda: telegram_message.delay(message_id=message.id))
+                    print(1)
+
+                elif message.ticket.tg_user.source == 'vk':
+                    transaction.on_commit(lambda: vk_message.delay(message_id=message.id))
                     print(1)
                 else:
                     async_to_sync(channel_layer.group_send)(f"client_{message.tg_user.id}", {"type": "chat.message",
