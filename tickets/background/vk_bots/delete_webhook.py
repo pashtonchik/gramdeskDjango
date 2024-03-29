@@ -2,8 +2,8 @@ import requests
 from celery import shared_task
 
 
-@shared_task()
-def delete_webhook_vk(token):
+@shared_task(bind=True)
+def delete_webhook_vk(self, token):
 
     try:
 
