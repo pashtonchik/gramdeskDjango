@@ -36,7 +36,10 @@ def get_info(request):
         "bot_token": bot.bot_apikey if bot else '',
         "webhook_connected": bot.webhook_connected if bot else False,
         "telegram_error": bot.message_error if bot else "",
-        "code": f'''<script src="https://pashtonp.space/api/clientScript.js/{str(platform.uuid)}/"></script>'''
+        "code": f'''<script src="https://pashtonp.space/api/clientScript.js/{str(platform.uuid)}/"></script>''',
+        "vk_callback_url": f"https://pashtonp.space/vk/{str(platform.uuid)}/",
+        "vk_access_key": platform.vk_access_key,
+        "vk_confirmation_code": platform.vk_access_key,
     }
 
     return Response(status=status.HTTP_200_OK, data=data)
