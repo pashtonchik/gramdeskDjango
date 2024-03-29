@@ -23,7 +23,7 @@ def vk_message(message_id):
             print(uploaded_docs)
             # for doc in uploaded_docs:
             with allow_join_result():
-                result = uploaded_docs.wait(timeout=10, interval=0.5)
+                result = uploaded_docs.wait(timeout=15, interval=0.5)
             print(result)
             str_files += f'{result["type"]}{result["owner_id"]}_{result["id"]},'
             print(str_files)
