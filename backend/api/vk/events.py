@@ -30,6 +30,8 @@ def vk_event(request, platform_id):
 
         if data.get("type") == "confirmation":
             code = platform.vk_confirmation_code
+            platform.vk_webhook_connected = True
+            platform.save()
             return HttpResponse(f"{code}")
         elif data.get("type") == "message_new":
             if TicketMessage.objects.filter(vk_message_id=data.get('object', {}).get('message', {}).get('id', "0")).exists():
