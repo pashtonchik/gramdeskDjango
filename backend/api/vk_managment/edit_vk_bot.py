@@ -93,7 +93,7 @@ def edit_vk_bot(request):
             "message": "Бот успешно изменен.",
             "vk_confirmation_code": platform.vk_confirmation_code,
             "vk_access_key": platform.vk_access_key,
-            "callback_url": f"https://pashtonp.space/api/vk/{str(platform.uuid)}/"
+            "callback_url": f"https://pashtonp.space/vk/{str(platform.uuid)}/"
         }
 
 
