@@ -55,7 +55,7 @@ def vk_event(request, platform_id):
                     f"https://api.vk.com/method/users.get?user_ids={user_id}&v=5.199",
                     headers=auth)
                 if get_user.status_code == 200:
-                    username = get_user.json()["response"]["first_name"] + " " + get_user.json()["response"]["last_name"]
+                    username = get_user.json()["response"][0]["first_name"] + " " + get_user.json()["response"][0]["last_name"]
                 else:
                     username = f'ВК User {User.objects.all().count() + 1}'
 
