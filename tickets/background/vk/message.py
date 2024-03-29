@@ -19,13 +19,8 @@ def vk_message(message_id):
         if Attachment.objects.filter(message=msg).exists():
             str_files = '&attachment='
             for attach in Attachment.objects.filter(message=msg):
-                uploaded_docs = upload_doc.delay(attach_id=attach.id, platform_id=str(msg.ticket.platform.uuid))
-            print(uploaded_docs)
-            # for doc in uploaded_docs:
-            # with allow_join_result():
-            result = uploaded_docs.get(timeout=10)
-            print(result)
-            str_files += f'{result["type"]}{result["owner_id"]}_{result["id"]},'
+                result = upload_doc(attach_id=attach.id, platform_id=str(msg.ticket.platform.uuid))
+                str_files += f'{result["type"]}{result["owner_id"]}_{result["id"]},'
             print(str_files)
         else:
             str_files = ''
