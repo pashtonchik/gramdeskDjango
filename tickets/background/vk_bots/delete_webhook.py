@@ -3,7 +3,7 @@ from celery import shared_task
 
 
 @shared_task()
-def delete_webhook_vk(self, token):
+def delete_webhook_vk(token):
 
     try:
 
