@@ -36,6 +36,10 @@ def edit_password(request):
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok" : False,  "message" : "Field re_new_password is required"})
 
+    if new_password == password:
+        return Response(status=status.HTTP_400_BAD_REQUEST,
+                        data={"ok": False, "message": "Старый и новый пароли совпадают."})
+
 
     try:
         user = User.objects.select_for_update().get(username=request.user.username)
