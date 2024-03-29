@@ -27,10 +27,10 @@ def vk_message(message_id):
                     result = doc.wait(timeout=10, interval=0.5)
                 print(result)
                 str_files += f'{result["type"]}{result["owner_id"]}_{result["id"]},'
+                print(str_files)
         else:
             str_files = ''
 
-        print(str_files)
 
         auth = {
             "Authorization": f"Bearer {msg.ticket.platform.vk_access_key}"
