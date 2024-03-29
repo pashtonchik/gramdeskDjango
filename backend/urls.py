@@ -12,6 +12,7 @@ from backend.api.platform_management.update_platform import update_platform_info
 from backend.api.profiat_accounts.auth import profiat_auth_client
 from backend.api.profiat_accounts.close_access import close_access
 from backend.api.profiat_accounts.refresh import refresh as refresh_profiat
+from backend.api.support_accounts.edit_profile import edit_profile_data
 from backend.api.support_accounts.refresh import refresh as refresh_support
 from backend.api.support_accounts.auth import auth, abc123
 from backend.api.support_accounts.auth_verify import verify_token
@@ -54,6 +55,7 @@ urlpatterns = [
     path('api/v3/support/signup/verify/email/', registration_verify_email),
     path('api/v3/support/signup/connect/otp/', registration_enable_otp),
     path('api/v3/support/signup/reverify/email/', registrate_req_new_code),
+    path('api/v3/support/update/profile/', edit_profile_data),
 
     path('api/v3/support/restore/', restore),
 
