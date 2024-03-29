@@ -52,7 +52,11 @@ def upload_doc(self, attach_id, platform_id):
         else:
             print(save_doc.text)
             raise KeyError
-
+        print({
+            "type": attach.vk_file_type,
+            "id": attach.vk_file_id,
+            "owner_id": attach.vk_owner_id,
+        })
         return {
             "type": attach.vk_file_type,
             "id": attach.vk_file_id,

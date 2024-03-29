@@ -21,10 +21,11 @@ def vk_message(message_id):
             str_files = '&attachment='
             for attach in Attachment.objects.filter(message=msg):
                 uploaded_docs.append(upload_doc.delay(attach_id=attach.id, platform_id=str(msg.ticket.platform.uuid)))
-
+            print(uploaded_docs)
             for doc in uploaded_docs:
                 with allow_join_result():
                     result = doc.wait(timeout=100, interval=0.5)
+                    print(result)
                     str_files += f'{result["type"]}{result["owner_id"]}_{result["id"]},'
         else:
             str_files = ''
