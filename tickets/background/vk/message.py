@@ -24,11 +24,13 @@ def vk_message(message_id):
             print(uploaded_docs)
             for doc in uploaded_docs:
                 with allow_join_result():
-                    result = doc.wait(timeout=100, interval=0.5)
-                    print(result)
-                    str_files += f'{result["type"]}{result["owner_id"]}_{result["id"]},'
+                    result = doc.wait(timeout=10, interval=0.5)
+                print(result)
+                str_files += f'{result["type"]}{result["owner_id"]}_{result["id"]},'
         else:
             str_files = ''
+
+        print(str_files)
 
         auth = {
             "Authorization": f"Bearer {msg.ticket.platform.vk_access_key}"
