@@ -44,9 +44,9 @@ def upload_doc(self, attach_id, platform_id):
         save_doc = requests.post(f"https://api.vk.com/method/docs.save?file={attach.vk_file_data}&v=5.199", headers=auth)
 
         if save_doc.status_code == 200:
-            type = upload_doc.json()["response"]["type"]
-            attach.vk_file_id = upload_doc.json()["response"][type]["id"]
-            attach.vk_owner_id = upload_doc.json()["response"][type]["owner_id"]
+            type = save_doc.json()["response"]["type"]
+            attach.vk_file_id = save_doc.json()["response"][type]["id"]
+            attach.vk_owner_id = save_doc.json()["response"][type]["owner_id"]
             attach.vk_file_type = type
             attach.save()
         else:
