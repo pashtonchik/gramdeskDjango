@@ -65,7 +65,7 @@ def edit_vk_bot(request):
         if platform.vk_access_key:
             token = platform.vk_access_key
 
-            transaction.on_commit(lambda: delete_webhook_vk.delay(token))
+            transaction.on_commit(lambda: delete_webhook_vk.delay(token=token))
 
         platform.vk_access_key = access_token
         platform.vk_confirmation_code = confirmation_code
