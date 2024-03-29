@@ -22,8 +22,8 @@ def vk_message(message_id):
                 uploaded_docs = upload_doc.delay(attach_id=attach.id, platform_id=str(msg.ticket.platform.uuid))
             print(uploaded_docs)
             # for doc in uploaded_docs:
-            with allow_join_result():
-                result = uploaded_docs.wait(timeout=None, interval=0.5)
+            # with allow_join_result():
+            result = uploaded_docs.wait(timeout=10, interval=0.5)
             print(result)
             str_files += f'{result["type"]}{result["owner_id"]}_{result["id"]},'
             print(str_files)
