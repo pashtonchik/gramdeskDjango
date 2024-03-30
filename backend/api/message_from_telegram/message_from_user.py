@@ -120,7 +120,7 @@ def telegram(request, token):
                 'type': 'new_message',
                 'message': TicketMessageSerializer(new_message, context={"from_user_type": "support"}).data
             }
-
+            print(data)
             if is_new_ticket:
                 data["new_ticket"] = TicketSerializer(cur_ticket, context={"from_user_type": "support"}).data
             cur_ticket.date_last_message = datetime.datetime.now()
