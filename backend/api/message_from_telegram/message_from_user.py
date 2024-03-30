@@ -1,5 +1,6 @@
 import datetime
 import json
+import traceback
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -137,5 +138,5 @@ def telegram(request, token):
             send_message_read_messages.delay(array, "support")
         return Response(status=status.HTTP_200_OK, data=data)
     except Exception as e:
-        print(e)
+        traceback.print_exc()
         return Response(status=status.HTTP_200_OK)

@@ -158,7 +158,7 @@ class TicketMessage(models.Model):
             return True
 
     def get_toxic(self):
-        return self.emotional > 0.9
+        return self.emotional >= 0.9
 
     @transaction.atomic()
     def get_files(self):
