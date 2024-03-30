@@ -57,6 +57,7 @@ class ReplyToMessageSerializer(serializers.ModelSerializer):
     content = serializers.ReadOnlyField(source='message_text')
     is_outgoing = serializers.SerializerMethodField('get_is_outgoing')
     media = serializers.ReadOnlyField(source='get_files')
+    toxic = serializers.ReadOnlyField(source='get_toxic')
     date = serializers.ReadOnlyField(source='get_date')
 
     def get_is_outgoing(self, obj):

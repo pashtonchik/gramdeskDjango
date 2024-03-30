@@ -157,6 +157,9 @@ class TicketMessage(models.Model):
         else:
             return True
 
+    def get_toxic(self):
+        return self.emotional > 0.9
+
     @transaction.atomic()
     def get_files(self):
         from backend.serializers import AttachmentSerializer
