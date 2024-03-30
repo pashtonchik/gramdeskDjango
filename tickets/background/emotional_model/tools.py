@@ -18,3 +18,4 @@ def predict_toxical(text):
     matrixFromtokenizer = tokenizer.texts_to_matrix(np.array([clear_text(text)]), mode='count')
     predict = emotional_model.predict(np.array(matrixFromtokenizer))[0][0]
     print(text, 'Токсичность данного заголовка равна: {:.2f}%'.format(predict*100))
+    return predict
