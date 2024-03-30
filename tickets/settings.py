@@ -271,3 +271,18 @@ LOGGING = {
         },
     }
 }
+
+from keras import models
+import pickle
+
+def load_model(model_name):
+    return models.load_model(model_name+'.h5')
+
+
+# Модуль для работы с Токенайзером (сохраненить / загрузить), чтобы каждый раз не создавать его заново
+def read_from_pickle(file_name):
+    with open(file_name + '.pickle', 'rb') as file:
+        return pickle.load(file)
+
+tokenizer = read_from_pickle('my_tokenizer')
+emotional_model = load_model('my_model')
