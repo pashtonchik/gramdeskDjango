@@ -84,7 +84,7 @@ class TicketMessageSerializer(ReplyToMessageSerializer):
             return obj.get_is_outgoing_client()
 
     class Meta:
-        fields = ('id', 'chat_id', 'sending_state', 'sender_id', 'sender_username', 'is_outgoing', 'content', 'media', 'date', "message_to_reply")
+        fields = ('id', 'chat_id', 'sending_state', 'sender_id', 'sender_username', 'is_outgoing', 'content', 'media', 'date', "message_to_reply", 'toxic')
         model = TicketMessage
 
 
