@@ -127,6 +127,7 @@ class TicketMessage(models.Model):
     read_by_received = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     vk_message_id = models.CharField(max_length=20, default="0")
+    emotional = models.FloatField()
 
     def get_ticket_id(self):
         return str(self.ticket.uuid)
