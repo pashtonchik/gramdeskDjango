@@ -77,6 +77,11 @@ def telegram(request, token):
             get_file.delay(new_message.id, data, is_new_ticket)
 
         if data.get('message', {}).get('photo', None):
+
+            message_text = data.get('message', {}).get('caption', '')
+
+            model_result = predict_toxical(message_text)
+
             new_message = TicketMessage(
                 tg_user=cur_user,
                 sender='client',
@@ -84,12 +89,18 @@ def telegram(request, token):
                 sending_state='uploading_attachments',
                 message_text=data.get('message', {}).get('caption', ''),
                 ticket=cur_ticket,
+                emotional=model_result,
             )
             new_message.save()
 
             get_file.delay(new_message.id, data, is_new_ticket)
 
         elif data.get('message', {}).get('text', None):
+
+            message_text = data.get('message', {}).get('text', '')
+
+            model_result = predict_toxical(message_text)
+
             new_message = TicketMessage(
                 tg_user=cur_user,
                 sender='client',
@@ -97,6 +108,7 @@ def telegram(request, token):
                 sending_state='sent',
                 message_text=data['message']['text'],
                 ticket=cur_ticket,
+                emotional=model_result,
             )
             new_message.save()
 

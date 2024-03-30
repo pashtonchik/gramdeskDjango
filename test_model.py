@@ -47,4 +47,4 @@ def predict_toxical(text):
 # for i in range(20):
 #     predict_toxical(ATA_title[i])
 
-predict_toxical("""Добрый день, помогите пожалуйста, потерял телефон с OTP аутентификатором""")
+predict_toxical("""идите лесом тупые уебаны""")
