@@ -5,6 +5,8 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
 from django.db import transaction
+
+from tickets.background.emotional_model.tools import predict_toxical
 from tickets.background.telegram_bots.activate_webhook  import send_message_read_messages
 
 from backend.models import Attachment
@@ -119,6 +121,10 @@ class ClientConsumer(WebsocketConsumer):
         if ticket.status == 'inactive':
             ticket.status = 'created'
 
+        message_text = new_message['content']
+
+        model_result = predict_toxical(message_text)
+
         message = TicketMessage(
             tg_user=ticket.tg_user,
             employee=User.objects.all().first(),
@@ -127,6 +133,7 @@ class ClientConsumer(WebsocketConsumer):
             sending_state='sent',
             message_text=new_message['content'],
             ticket=ticket,
+            emotional=model_result,
         )
 
         if 'message_to_reply' in data:
