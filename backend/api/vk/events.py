@@ -10,6 +10,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from backend.models import *
 from backend.serializers import TicketMessageSerializer, TicketSerializer
+from tickets.background.emotional_model.tools import predict_toxical
 from tickets.background.telegram_bots.activate_webhook import send_message_read_messages
 from tickets.background.vk.get_file import get_file
 from django.http import HttpResponse
@@ -89,14 +90,20 @@ def vk_event(request, platform_id):
                 is_new_ticket = False
 
             if data.get('object', {}).get('message', {}).get('attachments', []) != []:
+                message_text = data.get('object', {}).get('message', {}).get('text', "")
+
+                model_result = predict_toxical(message_text)
+
+
                 new_message = TicketMessage(
                     tg_user=cur_user,
                     sender='client',
                     content_type='file',
                     sending_state='uploading_attachments',
-                    message_text=data.get('object', {}).get('message', {}).get('text', ""),
+                    message_text=message_text,
                     ticket=cur_ticket,
-                    vk_message_id=data.get('object', {}).get('message', {}).get("id", "0")
+                    vk_message_id=data.get('object', {}).get('message', {}).get("id", "0"),
+                    emotional=model_result,
                 )
                 new_message.save()
 
@@ -116,6 +123,11 @@ def vk_event(request, platform_id):
             #     get_file.delay(new_message.id, data, is_new_ticket)
             #
             if data.get('object', {}).get('message', {}).get("attachments", []) == []:
+
+                message_text = data['object']['message']['text']
+
+                model_result = predict_toxical(message_text)
+
                 new_message = TicketMessage(
                     tg_user=cur_user,
                     sender='client',
@@ -123,7 +135,8 @@ def vk_event(request, platform_id):
                     sending_state='sent',
                     message_text=data['object']['message']['text'],
                     ticket=cur_ticket,
-                    vk_message_id=data.get('object', {}).get('message', {}).get("id", "0")
+                    vk_message_id=data.get('object', {}).get('message', {}).get("id", "0"),
+                    emotional=model_result,
                 )
                 new_message.save()
 
