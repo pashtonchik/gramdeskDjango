@@ -25,7 +25,7 @@ def widget_script(request, platform):
     script = """
         window.onload = function() {
             var iframe = document.createElement('iframe');
-            iframe.src = 'http://localhost:3001/""" + platform + """';
+            iframe.src = 'https://client.pashtonp.space/""" + platform + """';
             iframe.id = 'fixed-iframe';
 
             iframe.style.position = 'fixed';
