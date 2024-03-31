@@ -9,7 +9,7 @@ from backend.models import TelegramBot, Platform
 
 
 @transaction.atomic()
-@api_view(['GET'])
+@api_view(['POST'])
 def get_info(request):
 
     try:
