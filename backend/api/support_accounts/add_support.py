@@ -41,7 +41,7 @@ def add_new_support(request):
         except:
             pass
 
-        if not pyotp.TOTP(request.user.otp_key).verify(code, valid_window=1):
+        if not pyotp.TOTP(admin.otp_key).verify(code, valid_window=1):
             return Response(status=status.HTTP_400_BAD_REQUEST,
                             data={"ok": False, "message": "Одноразовый пароль неверен, повторите Вашу попытку."})
 

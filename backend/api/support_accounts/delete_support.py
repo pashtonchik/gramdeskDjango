@@ -52,7 +52,7 @@ def delete_support(request):
 
             user = users.first()
 
-            if not pyotp.TOTP(request.user.otp_key).verify(code, valid_window=1):
+            if not pyotp.TOTP(admin.otp_key).verify(code, valid_window=1):
                 return Response(status=status.HTTP_400_BAD_REQUEST,
                                 data={"ok": False, "message": "Одноразовый пароль неверен, повторите Вашу попытку."})
             old_id = user.id
