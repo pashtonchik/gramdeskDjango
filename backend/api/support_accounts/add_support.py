@@ -83,6 +83,19 @@ def add_new_support(request):
                 user.set_password(password)
                 user.save()
 
+        supporters_array = []
+        supporters = User.objects.filter(platform=admin.platform, type="support")
+
+        for supp in supporters:
+            if supp != admin:
+                supporters_array.append({
+                    "user_id": supp.id,
+                    "username": supp.username,
+                    "otp_url": supp.otp_key,
+                    "otp_key": f'''otpauth://totp/Gramdesk: {supp.platform.name}?secret={supp.otp_key}''',
+                    "isEditing": False,
+                })
+
         return Response(status=status.HTTP_200_OK,
                         data={
                             "ok": True,
@@ -90,7 +103,8 @@ def add_new_support(request):
                             "username": user.username,
                             "user_id": user.id,
                             'otp_key': user.otp_key,
-                            'url': f'''otpauth://totp/Gramdesk: {user.username}?secret={user.otp_key}'''
+                            'url': f'''otpauth://totp/Gramdesk: {user.username}?secret={user.otp_key}''',
+                            "supporters": supporters_array
                         })
 
     except IntegrityError:

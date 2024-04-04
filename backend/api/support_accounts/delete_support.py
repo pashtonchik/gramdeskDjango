@@ -58,10 +58,24 @@ def delete_support(request):
             old_id = user.id
             user.delete()
 
+            supporters_array = []
+            supporters = User.objects.filter(platform=admin.platform, type="support")
+
+            for supp in supporters:
+                if supp != admin:
+                    supporters_array.append({
+                        "user_id": supp.id,
+                        "username": supp.username,
+                        "otp_url": supp.otp_key,
+                        "otp_key": f'''otpauth://totp/Gramdesk: {supp.platform.name}?secret={supp.otp_key}''',
+                        "isEditing": False,
+                    })
+
             return Response(status=status.HTTP_200_OK, data={
                 "ok": True,
                 'message': 'Сотрудник поддержки успешно удален!',
-                "user_id": old_id
+                "user_id": old_id,
+                "supporters": supporters_array
             })
     except Exception as e:
         return Response(status=status.HTTP_400_BAD_REQUEST,
