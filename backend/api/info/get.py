@@ -28,6 +28,18 @@ def get_info(request):
     else:
         platform = None
 
+    supporters_array = []
+    supporters = User.objects.filter(platform=support_user.platform)
+
+    for supp in supporters:
+        supporters_array.append({
+            "user_id": supp.id,
+            "username": supp.username,
+            "otp_url": supp.otp_key,
+            "otp_key": f'''otpauth://totp/Gramdesk: {supp.platfrom.name}?secret={supp.otp_key}''',
+            "isEditing": False,
+        })
+
     data = {
         "ok": True,
         "email": support_user.my_email,
@@ -42,6 +54,7 @@ def get_info(request):
         "vk_callback_url": f"https://pashtonp.space/vk/{str(platform.uuid)}/" if platform.vk_access_key else "",
         "vk_access_key": platform.vk_access_key,
         "vk_confirmation_code": platform.vk_access_key,
+        "supporters": supporters_array,
     }
 
     return Response(status=status.HTTP_200_OK, data=data)
