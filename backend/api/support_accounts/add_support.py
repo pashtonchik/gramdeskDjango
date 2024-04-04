@@ -28,6 +28,14 @@ def add_new_support(request):
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST,
                             data={"ok": False, "message": "Произошла ошибка, попробуйте обновить страницу."})
+
+        try:
+            username = User.objects.get(username=username)
+            return Response(status=status.HTTP_400_BAD_REQUEST,
+                            data={"ok": False, "message": "Аккаунт с таким никнеймом уже существует."})
+        except:
+            pass
+
         if not username:
             return Response(status=status.HTTP_400_BAD_REQUEST,
                             data={"ok": False, "message": "Field username, username is required"})
