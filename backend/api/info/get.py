@@ -32,13 +32,14 @@ def get_info(request):
     supporters = User.objects.filter(platform=support_user.platform, type="support")
 
     for supp in supporters:
-        supporters_array.append({
-            "user_id": supp.id,
-            "username": supp.username,
-            "otp_url": supp.otp_key,
-            "otp_key": f'''otpauth://totp/Gramdesk: {supp.platform.name}?secret={supp.otp_key}''',
-            "isEditing": False,
-        })
+        if supp != support_user:
+            supporters_array.append({
+                "user_id": supp.id,
+                "username": supp.username,
+                "otp_url": supp.otp_key,
+                "otp_key": f'''otpauth://totp/Gramdesk: {supp.platform.name}?secret={supp.otp_key}''',
+                "isEditing": False,
+            })
 
     data = {
         "ok": True,
