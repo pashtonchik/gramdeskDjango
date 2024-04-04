@@ -22,6 +22,7 @@ def add_new_support(request):
         username = data.get('username', None)
         password = data.get('password', None)
         re_password = data.get('re_password', None)
+        code = data.get('code', None)
         # invite = data.get('invite', None)
         try:
             admin = User.objects.get(username="root")
@@ -29,12 +30,20 @@ def add_new_support(request):
             return Response(status=status.HTTP_400_BAD_REQUEST,
                             data={"ok": False, "message": "Произошла ошибка, попробуйте обновить страницу."})
 
+        if not code:
+            return Response(status=status.HTTP_400_BAD_REQUEST,
+                            data={"ok": False, "message": "Field code, code is required"})
+
         try:
             username = User.objects.get(username=username)
             return Response(status=status.HTTP_400_BAD_REQUEST,
                             data={"ok": False, "message": "Аккаунт с таким никнеймом уже существует."})
         except:
             pass
+
+        if not pyotp.TOTP(request.user.otp_key).verify(code, valid_window=1):
+            return Response(status=status.HTTP_400_BAD_REQUEST,
+                            data={"ok": False, "message": "Одноразовый пароль неверен, повторите Вашу попытку."})
 
         if not username:
             return Response(status=status.HTTP_400_BAD_REQUEST,
