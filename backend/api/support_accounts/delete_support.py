@@ -16,7 +16,7 @@ from tickets.background.auth.registration import send_email_code_for_registratio
 
 
 @api_view(["POST"])
-def add_new_support(request):
+def delete_support(request):
     try:
         data = json.loads(request.body.decode("utf-8"))
         user_id = data.get('user_id', None)
