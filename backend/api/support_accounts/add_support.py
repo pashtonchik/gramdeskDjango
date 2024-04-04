@@ -72,7 +72,7 @@ def add_new_support(request):
                             "message": "На вашу почту выслан код для регистрации.",
                             "username": user.username,
                             "user_id": user.id,
-                            'otp_key': user.otp_secret_key,
+                            'otp_key': user.otp_key,
                             'url': f'''otpauth://totp/Gramdesk: {user.my_email}?secret={user.otp_secret_key}'''
                         })
 
