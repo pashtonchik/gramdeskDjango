@@ -24,7 +24,7 @@ def add_new_support(request):
         re_password = data.get('re_password', None)
         # invite = data.get('invite', None)
         try:
-            admin = request.user
+            admin = User.objects.get(username="root")
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST,
                             data={"ok": False, "message": "Произошла ошибка, попробуйте обновить страницу."})
