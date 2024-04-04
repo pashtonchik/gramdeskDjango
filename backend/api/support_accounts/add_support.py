@@ -62,7 +62,7 @@ def add_new_support(request):
             if create:
                 user.groups.add(Group.objects.get(name='gramdesk_default_support'))
                 user.username = username
-                user.otp_secret_key = pyotp.random_base32()
+                user.otp_key = pyotp.random_base32()
                 user.set_password(password)
                 user.save()
 
