@@ -2,8 +2,10 @@ channels
 channels-redis
 daphne
 Django
+pyotp
 djangorestframework
 pyOpenSSL
 redis
 requests
 rsa
+psycopg2-binary

@@ -77,3 +77,22 @@ def widget_client_auth(request):
         'user_id': new_client.id,
 
     })
+
+
+@api_view(["POST"])
+@transaction.atomic()
+def get_platform(request):
+    data = json.loads(request.body.decode("utf-8"))
+    logger = logging.getLogger("mylogger")
+    logger.info(data)
+    try:
+        platform = data['platform']
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={"ok" : False, "message" : "Field Platform is required"})
+
+
+    return Response(status=status.HTTP_200_OK, data={
+        "ok": True,
+        "platform": Platform.objects.get(uuid=platform).name,
+
+    })

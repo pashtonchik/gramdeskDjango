@@ -30,7 +30,7 @@ from backend.api.vk.events import vk_event
 from backend.api.vk_managment.delete_vk_bot import delete_vk_bot
 from backend.api.vk_managment.edit_vk_bot import edit_vk_bot
 from backend.api.widget.get_script import widget_script
-from backend.api.widget.new_client import widget_client_auth
+from backend.api.widget.new_client import widget_client_auth, get_platform
 from backend.permissions import ProfiatIntegration
 
 router = routers.DefaultRouter()
@@ -85,6 +85,7 @@ urlpatterns = [
 
     # Widget Client
     path('api/v2/clients/registrate/', widget_client_auth),
+    path('api/v2/clients/get_platform/', get_platform),
     path('api/clientScript.js/<str:platform>/', widget_script),
 
 

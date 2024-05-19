@@ -5,7 +5,7 @@ import os
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tickets.settings')
 
-app = Celery(APP_NAME_CELERY, broker='redis://localhost')
+app = Celery(APP_NAME_CELERY)
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 

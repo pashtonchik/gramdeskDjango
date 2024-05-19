@@ -44,6 +44,36 @@ class GramDeskDefaultSupport(permissions.BasePermission):
             return False
         if not JWTToken.objects.filter(jwt=token, active=True).exists():
             return False
+        import jwt
+        jwt_info = jwt.decode(token, pub_key_jwt, algorithms=["RS512"])
+        logger.info(jwt_info)
+        if request.user.is_blocked:
+            return False
+
+        if request.user.type != 'support':
+            return False
+        if request.user.groups.filter(name='gramdesk_default_support').exists():
+            return True
+        return False
+
+
+class GramDeskAdminSupport(permissions.BasePermission):
+    def has_permission(self, request, view):
+        token = ''
+        bearer = ''
+        print(request.user)
+        logger = logging.getLogger("mylogger")
+        logger.info(request.headers)
+
+        if not request.headers.get('Authorization'):
+            return False
+
+        bearer, token = request.headers.get('Authorization').split()
+        print(token)
+        if not token:
+            return False
+        if not JWTToken.objects.filter(jwt=token, active=True).exists():
+            return False
 
         import jwt
         jwt_info = jwt.decode(token, pub_key_jwt, algorithms=["RS512"])
@@ -51,6 +81,8 @@ class GramDeskDefaultSupport(permissions.BasePermission):
         if request.user.is_blocked:
             return False
 
+        if request.user.platform.admin != request.user:
+            return False
         if request.user.type != 'support':
             return False
         if request.user.groups.filter(name='gramdesk_default_support').exists():

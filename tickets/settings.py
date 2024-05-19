@@ -66,6 +66,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # "corsheaders.middleware.CorsMiddleware",
 ]
+
 DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 CELERY_BROKER_URL = PORTREDIS
 CELERY_RESULT_BACKEND = 'redis'
@@ -110,8 +111,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'gramdesk',
-        'USER': 'root_gramdesk',
-        'PASSWORD': 'KuJh~qExPY',
+        'USER': 'postgres',
+        'PASSWORD': '11111111',
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -166,8 +167,8 @@ PEERXBOT_PUBKEY = '123'
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=6),
+    'REFRESH_TOKEN_LIFETIME': timedelta(hours=24),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': True,
@@ -272,17 +273,17 @@ LOGGING = {
     }
 }
 
-from keras import models
-import pickle
+# from keras import models
+# import pickle
+#
+# def load_model(model_name):
+#     return models.load_model(model_name+'.h5')
+#
+#
+# # Модуль для работы с Токенайзером (сохраненить / загрузить), чтобы каждый раз не создавать его заново
+# def read_from_pickle(file_name):
+#     with open(file_name + '.pickle', 'rb') as file:
+#         return pickle.load(file)
 
-def load_model(model_name):
-    return models.load_model(model_name+'.h5')
-
-
-# Модуль для работы с Токенайзером (сохраненить / загрузить), чтобы каждый раз не создавать его заново
-def read_from_pickle(file_name):
-    with open(file_name + '.pickle', 'rb') as file:
-        return pickle.load(file)
-
-tokenizer = read_from_pickle('my_tokenizer')
-emotional_model = load_model('my_model')
+# tokenizer = read_from_pickle('my_tokenizer')
+# emotional_model = load_model('my_model')

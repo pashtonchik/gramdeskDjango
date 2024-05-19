@@ -1,6 +1,6 @@
 import re
 import numpy as np
-from tickets.settings import tokenizer, emotional_model
+# from tickets.settings import tokenizer, emotional_model
 
 
 def clear_text(text):
@@ -15,7 +15,8 @@ def clear_text(text):
 
 
 def predict_toxical(text):
-    matrixFromtokenizer = tokenizer.texts_to_matrix(np.array([clear_text(text)]), mode='count')
-    predict = emotional_model.predict(np.array(matrixFromtokenizer))[0][0]
-    print(text, 'Токсичность данного заголовка равна: {:.2f}%'.format(predict*100))
-    return predict
+    # matrixFromtokenizer = tokenizer.texts_to_matrix(np.array([clear_text(text)]), mode='count')
+    # predict = emotional_model.predict(np.array(matrixFromtokenizer))[0][0]
+    # print(text, 'Токсичность данного заголовка равна: {:.2f}%'.format(predict*100))
+    # return predict
+    return 0
